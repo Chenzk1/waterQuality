@@ -6,6 +6,12 @@ Vue.use(Router)
 /* Layout */
 import Layout from '@/layout'
 
+/* Router Modules */
+// import componentsRouter from './modules/components'
+// import chartsRouter from './modules/charts'
+// import tableRouter from './modules/table'
+// import nestedRouter from './modules/nested'
+
 /**
  * Note: 路由配置项
  *
@@ -91,7 +97,93 @@ export const constantRoutes = [
         meta: { title: '字典数据', icon: '' }
       }
     ]
-  }
+  },
+  {
+    path: '/dataManage',
+    component: Layout,
+    redirect: '/dataManage/index',
+    hidden: false,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/dataManage/index'),
+        name: 'DataManage',
+        meta: { title: '数据管理', icon: 'table', noCache: true }
+      }
+    ]
+  },
+  // {
+  //   path: '/monitorEvaluation',
+  //   component: Layout,
+  //   redirect: '/MonitorEvaluation/monitor',
+  //   hidden: false,
+  //   name: 'MonitorEvaluation',
+  //   meta: {
+  //     title: '数据监测与评价',
+  //     icon: 'example'
+  //   },
+  //   children: [
+  //     {
+  //       path: 'monitor/:id',
+  //       component: () => import('@/views/monitorEvaluation/monitor'),
+  //       name: 'Monitor',
+  //       meta: {
+  //         title: '水质监测',
+  //         icon: 'example'
+  //       }
+  //     },
+  //     {
+  //       path: '',
+  //       component: Layout,
+  //       children: [
+  //         {
+  //           path: 'http://kjs.mee.gov.cn/hjbhbz/bzwb/shjbh/shjzlbz/200206/t20020601_66497.shtml',
+  //           meta: { title: '地表水标准', icon: 'link' }
+  //         }
+  //       ]
+  //     }
+  //   ]
+  // },
+  // {
+  //   path: '/queryAnalysis',
+  //   component: Layout,
+  //   redirect: '/queryAnalysis/index',
+  //   hidden: false,
+  //   name: 'QueryAnalysis',
+  //   meta: {
+  //     title: '数据查询与分析',
+  //     icon: 'chart'
+  //   },
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       component: () => import('@/views/queryAnalysis/index'),
+  //       name: 'Info',
+  //       meta: {
+  //         title: '信息统计',
+  //         icon: 'example'
+  //       }
+  //     },
+  //     {
+  //       path: 'query',
+  //       component: () => import('@/views/queryAnalysis/query'),
+  //       name: 'Query',
+  //       meta: {
+  //         title: '数据查询',
+  //         icon: 'example'
+  //       }
+  //     },
+  //     {
+  //       path: 'analysis',
+  //       component: () => import('@/views/queryAnalysis/analysis'),
+  //       name: 'Analysis',
+  //       meta: {
+  //         title: '数据分析',
+  //         icon: 'example'
+  //       }
+  //     }
+  //   ]
+  // }
 ]
 
 export default new Router({
