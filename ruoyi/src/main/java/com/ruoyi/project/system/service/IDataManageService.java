@@ -1,8 +1,9 @@
 package com.ruoyi.project.system.service;
 
 import java.util.List;
-import java.util.Set;
+
 import com.ruoyi.project.system.domain.DataManage;
+import com.ruoyi.project.system.domain.RetrievalResult;
 
 /**
  * 角色业务层
@@ -19,6 +20,21 @@ public interface IDataManageService
      */
     public List<DataManage> selectDataList(DataManage dataQuery);
 
+    public List<String> selectUniqueByDictCode(String dictCode);
+
+    public int selectNUniqueByDictCode(String dictCode);
+
+    public List<RetrievalResult> selectResultByDictCode(RetrievalResult dataQuery);
+
+    /**
+     * 修改保存水体信息
+     *
+     * @param dataManage 水体信息
+     * @return 结果
+     */
+    public int updateWater(DataManage dataManage);
+    public int insertWater(DataManage dataManage);
+//    public List<DataManage> insertDataManage(DataManage dataManage);
 //    /**
 //     * 根据用户ID查询角色
 //     *

@@ -8,11 +8,52 @@ export function fetchList(query) {
   })
 }
 
-export function fetchUnique(query) {
+export function getUnique(dictCode) {
   return request({
-    url: '/data/unique',
+    url: '/data/list/unique/' + dictCode,
+    method: 'get'
+  })
+}
+
+export function getNUnique(dictCode) {
+  return request({
+    url: '/data/list/nunique/' + dictCode,
+    method: 'get'
+  })
+}
+
+export function fetchResult(query) {
+  return request({
+    url: '/data/list/result',
     method: 'get',
     params: query
+
+  })
+}
+
+export function fetchRetrieval(query) {
+  return request({
+    url: '/data/list/retrieval',
+    method: 'get',
+    params: query
+
+  })
+}
+
+
+export function fetchCreate(data) {
+  return request({
+    url: '/data/list',
+    method: 'post',
+    data
+  })
+}
+
+export function fetchUpdate(data) {
+  return request({
+    url: '/data/list',
+    method: 'put',
+    data
   })
 }
 
@@ -24,26 +65,4 @@ export function fetchData(id) {
   })
 }
 
-export function fetchPv(pv) {
-  return request({
-    url: '/data/pv',
-    method: 'get',
-    params: { pv }
-  })
-}
 
-export function createData(data) {
-  return request({
-    url: '/data/create',
-    method: 'post',
-    data
-  })
-}
-
-export function updateData(data) {
-  return request({
-    url: '/data/update',
-    method: 'post',
-    data
-  })
-}

@@ -20,11 +20,23 @@ create table water_info (
   file_path         varchar(255)     default ''                comment '文件路径',
   rgb_path          varchar(255)     default ''                comment 'RGB图片路径',
   del_flag          char(1)         default '0'                comment '删除标志（0代表存在 2代表删除）',
+  level             int(4)          default -1                 comment '水质等级',
+  county            varchar(50)     default '西湖区'            comment '县区', 
+  location          varchar(50)     default ''                 comment '位置', 
+  department        varchar(50)     default ''                 comment '主管部门',
+  contact           varchar(50)     default ''                 comment '联系人',
+  contact_information varchar(20)   default ''                 comment '联系方式',
   primary key (water_id)
 ) engine=innodb auto_increment=200 comment = '水体表';
 
-insert into water_info values(1000,'滇池', '2018-07-31', '中国','云南省','昆明市', 'LANDSAT-8',6,'czk','2019-10-16 11-33-00',
-'czk','2019-10-29 11-33-00','','20180731Dianchi.img','waterData/origin/20180731Dianchi.img','waterData/origin/rgb/20180731Dianchi.ipg','0' );
+insert into water_info values(1000,'滇池', '2018-07-31', '中国','云南省','昆明市', 'LANDSAT-8',6,'czk','2019-10-06 11-33-00',
+'czk','2019-10-19 11-33-00','','20180731Dianchi.img','waterData/origin/20180731Dianchi.img','waterData/origin/rgb/20180731Dianchi.ipg','0',1,'','','','','' );
+insert into water_info values(1001,'西湖', '2018-07-31', '中国','浙江省','杭州市', 'LANDSAT-5',5,'czk','2019-10-16 11-33-00',
+'czk','2019-10-29 11-33-00','','20180731Dianchi.img','waterData/origin/20180731Dianchi.img','waterData/origin/rgb/20180731Dianchi.ipg','0',1,'','','','','' );
+insert into water_info values(1002,'太湖', '2018-07-31', '中国','江苏省','苏州市', 'MODIS',1234,'czk','2019-10-13 11-33-00',
+'czk','2019-10-27 11-33-00','','20180731Dianchi.img','waterData/origin/20180731Dianchi.img','waterData/origin/rgb/20180731Dianchi.ipg','0',1,'','','','','' );
+
+
 -- ----------------------------
 -- 01、TP
 -- ----------------------------
@@ -33,12 +45,15 @@ create table tp (
   water_id          bigint(20)      not null auto_increment    comment '水体id',
   update_time       datetime                                   comment '更新时间',
   rgb               varchar(255)    default ''                 comment '反演结果路径',
+  para_1            float(32)       default 5                  comment '参数1',
+  para_2            float(32)       default 5                  comment '参数2',
+  para_3            float(32)       default 5                  comment '参数3',
   min               float(32)       default 0                  comment 'min',
-  max               float(32)       default 0                  comment 'min',
-  mean              float(32)       default 0                  comment 'min',
+  max               float(32)       default 0                  comment 'max',
+  mean              float(32)       default 0                  comment 'mean',
   primary key (water_id)
 ) engine=innodb auto_increment=200 comment = '总磷表';
-insert into tp values(1000,'2019-10-30 11-33-00','waterData/tp/rgb/20180731Dianchi.ipg',0,0,0 );
+insert into tp values(1000,'2019-10-30 11-33-00','waterData/tp/rgb/20180731Dianchi.ipg',5,5,5,0,0,0 );
 -- ----------------------------
 -- 02、nh
 -- ----------------------------
@@ -47,12 +62,15 @@ create table nh (
   water_id          bigint(20)      not null auto_increment    comment '水体id',
   update_time       datetime                                   comment '更新时间',
   rgb               varchar(255)    default ''                 comment '反演结果路径',
+  para_1            float(32)       default 5                  comment '参数1',
+  para_2            float(32)       default 5                  comment '参数2',
+  para_3            float(32)       default 5                  comment '参数3',
   min               float(32)       default 0                  comment 'min',
-  max               float(32)       default 0                  comment 'min',
-  mean              float(32)       default 0                  comment 'min',
+  max               float(32)       default 0                  comment 'max',
+  mean              float(32)       default 0                  comment 'mean',
   primary key (water_id)
 ) engine=innodb auto_increment=200 comment = '氨氮表';
-insert into nh values(1000,'2019-10-30 11-33-00','waterData/nh/rgb/20180731Dianchi.ipg',0,0,0 );
+insert into nh values(1000,'2019-10-30 11-33-00','waterData/nh/rgb/20180731Dianchi.ipg',5,5,5,0,0,0 );
 -- 03、TN
 -- ----------------------------
 drop table if exists tn;
@@ -60,12 +78,15 @@ create table tn (
   water_id          bigint(20)      not null auto_increment    comment '水体id',
   update_time       datetime                                   comment '更新时间',
   rgb               varchar(255)    default ''                 comment '反演结果路径',
+  para_1            float(32)       default 5                  comment '参数1',
+  para_2            float(32)       default 5                  comment '参数2',
+  para_3            float(32)       default 5                  comment '参数3',
   min               float(32)       default 0                  comment 'min',
-  max               float(32)       default 0                  comment 'min',
-  mean              float(32)       default 0                  comment 'min',
+  max               float(32)       default 0                  comment 'max',
+  mean              float(32)       default 0                  comment 'mean',
   primary key (water_id)
 ) engine=innodb auto_increment=200 comment = '总氮表';
-insert into tn values(1000,'2019-10-30 11-33-00','waterData/tn/rgb/20180731Dianchi.ipg',0,0,0 );
+insert into tn values(1000,'2019-10-30 11-33-00','waterData/tn/rgb/20180731Dianchi.ipg',5,5,5,0,0,0 );
 
 -- ----------------------------
 -- 04、TSS
@@ -75,12 +96,15 @@ create table tss (
   water_id          bigint(20)      not null auto_increment    comment '水体id',
   update_time       datetime                                   comment '更新时间',
   rgb               varchar(255)    default ''                 comment '反演结果路径',
+  para_1            float(32)       default 5                  comment '参数1',
+  para_2            float(32)       default 5                  comment '参数2',
+  para_3            float(32)       default 5                  comment '参数3',
   min               float(32)       default 0                  comment 'min',
-  max               float(32)       default 0                  comment 'min',
-  mean              float(32)       default 0                  comment 'min',
+  max               float(32)       default 0                  comment 'max',
+  mean              float(32)       default 0                  comment 'mean',
   primary key (water_id)
 ) engine=innodb auto_increment=200 comment = '总悬浮物表';
-insert into tss values(1000,'2019-10-30 11-33-00','waterData/tss/rgb/20180731Dianchi.ipg',0,0,0 );
+insert into tss values(1000,'2019-10-30 11-33-00','waterData/tss/rgb/20180731Dianchi.ipg',5,5,5,0,0,0 );
 -- ----------------------------
 -- 05、COD
 -- ----------------------------
@@ -89,12 +113,15 @@ create table cod (
   water_id          bigint(20)      not null auto_increment    comment '水体id',
   update_time       datetime                                   comment '更新时间',
   rgb               varchar(255)    default ''                 comment '反演结果路径',
+  para_1            float(32)       default 5                  comment '参数1',
+  para_2            float(32)       default 5                  comment '参数2',
+  para_3            float(32)       default 5                  comment '参数3',
   min               float(32)       default 0                  comment 'min',
-  max               float(32)       default 0                  comment 'min',
-  mean              float(32)       default 0                  comment 'min',
+  max               float(32)       default 0                  comment 'max',
+  mean              float(32)       default 0                  comment 'mean',
   primary key (water_id)
 ) engine=innodb auto_increment=200 comment = 'COD表';
-insert into cod values(1000,'2019-10-30 11-33-00','waterData/cod/rgb/20180731Dianchi.ipg',0,0,0 );
+insert into cod values(1000,'2019-10-30 11-33-00','waterData/cod/rgb/20180731Dianchi.ipg',5,5,5,0,0,0 );
 
 -- ----------------------------
 -- 06、Chla
@@ -104,12 +131,15 @@ create table chla (
   water_id          bigint(20)      not null auto_increment    comment '水体id',
   update_time       datetime                                   comment '更新时间',
   rgb               varchar(255)    default ''                 comment '反演结果路径',
+  para_1            float(32)       default 5                  comment '参数1',
+  para_2            float(32)       default 5                  comment '参数2',
+  para_3            float(32)       default 5                  comment '参数3',
   min               float(32)       default 0                  comment 'min',
-  max               float(32)       default 0                  comment 'min',
-  mean              float(32)       default 0                  comment 'min',
+  max               float(32)       default 0                  comment 'max',
+  mean              float(32)       default 0                  comment 'mean',
   primary key (water_id)
 ) engine=innodb auto_increment=200 comment = '叶绿素a表';
-insert into chla values(1000,'2019-10-30 11-33-00','waterData/chla/rgb/20180731Dianchi.ipg',0,0,0 );
+insert into chla values(1000,'2019-10-30 11-33-00','waterData/chla/rgb/20180731Dianchi.ipg',5,5,5,0,0,0 );
 
 -- ----------------------------
 -- 1、部门表
@@ -178,8 +208,8 @@ create table sys_user (
 -- ----------------------------
 -- 初始化-用户信息表数据
 -- ----------------------------
-insert into sys_user values(1,  100, 'admin', 'lxr', '00', 'lxr@zju.edu.cn', '15888888888', '1', '', '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '0', '0', '127.0.0.1', '2018-03-16 11-33-00', 'admin', '2018-03-16 11-33-00', 'czk', '2018-03-16 11-33-00', '管理员');
-insert into sys_user values(2,  105, 'ry', 'czk', '00', 'czk@qq.com',  '15666666666', '1', '', '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '0', '0', '127.0.0.1', '2018-03-16 11-33-00', 'admin', '2018-03-16 11-33-00', 'czk', '2018-03-16 11-33-00', '测试员');
+insert into sys_user values(1,  100, 'admin', 'czk', '00', 'czk@zju.edu.cn', '15888888888', '1', '', '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '0', '0', '127.0.0.1', '2018-03-16 11-33-00', 'admin', '2018-03-16 11-33-00', 'czk', '2018-03-16 11-33-00', '管理员');
+insert into sys_user values(2,  105, 'ry', 'lxr', '00', 'lxr@qq.com',  '15666666666', '1', '', '$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '0', '0', '127.0.0.1', '2018-03-16 11-33-00', 'admin', '2018-03-16 11-33-00', 'czk', '2018-03-16 11-33-00', '测试员');
 
 
 -- ----------------------------
@@ -204,7 +234,7 @@ create table sys_post
 -- ----------------------------
 -- 初始化-岗位信息表数据
 -- ----------------------------
-insert into sys_post values(1, 'ceo',  '董事长',    1, '0', 'admin', '2018-03-16 11-33-00', 'ry', '2018-03-16 11-33-00', '');
+insert into sys_post values(1, 'ceo',  '普通员工',    1, '0', 'admin', '2018-03-16 11-33-00', 'ry', '2018-03-16 11-33-00', '');
 insert into sys_post values(2, 'se',   '项目经理',  2, '0', 'admin', '2018-03-16 11-33-00', 'ry', '2018-03-16 11-33-00', '');
 insert into sys_post values(3, 'hr',   '人力资源',  3, '0', 'admin', '2018-03-16 11-33-00', 'ry', '2018-03-16 11-33-00', '');
 insert into sys_post values(4, 'user', '普通员工',  4, '0', 'admin', '2018-03-16 11-33-00', 'ry', '2018-03-16 11-33-00', '');
@@ -268,7 +298,7 @@ create table sys_menu (
 insert into sys_menu values('1', '系统管理', '0', '1', 'system',   null,  1, 'M', '0', '', 'system',   'admin', '2018-03-16 11-33-00', 'ry', '2018-03-16 11-33-00', '系统管理目录');
 insert into sys_menu values('2', '系统监控', '0', '2', 'monitor',  null,  1, 'M', '0', '', 'monitor',  'admin', '2018-03-16 11-33-00', 'ry', '2018-03-16 11-33-00', '系统监控目录');
 insert into sys_menu values('3', '系统工具', '0', '3', 'tool',     null,  1, 'M', '0', '', 'tool',     'admin', '2018-03-16 11-33-00', 'ry', '2018-03-16 11-33-00', '系统工具目录');
-INSERT INTO sys_menu VALUES('4', '若依官网', '0', '4', 'http://ruoyi.vip',  NULL ,  0, 'M', '0', '', 'guide',     'admin', '2018-03-16 11-33-00', 'ry', '2018-03-16 11-33-00', '若依官网');
+-- INSERT INTO sys_menu VALUES('4', '若依官网', '0', '4', 'http://ruoyi.vip',  NULL ,  0, 'M', '0', '', 'guide',     'admin', '2018-03-16 11-33-00', 'ry', '2018-03-16 11-33-00', '若依官网');
 -- 二级菜单
 insert into sys_menu values('100',  '用户管理', '1',   '1', 'user',       'system/user/index',        1, 'C', '0', 'system:user:list',        'user',          'admin', '2018-03-16 11-33-00', 'ry', '2018-03-16 11-33-00', '用户管理菜单');
 insert into sys_menu values('101',  '角色管理', '1',   '2', 'role',       'system/role/index',        1, 'C', '0', 'system:role:list',        'peoples',       'admin', '2018-03-16 11-33-00', 'ry', '2018-03-16 11-33-00', '角色管理菜单');

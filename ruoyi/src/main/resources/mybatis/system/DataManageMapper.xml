@@ -18,16 +18,121 @@
         <result property="updateBy"     column="update_by"      />
         <result property="updateTime"   column="update_time"    />
         <result property="filePath"       column="file_path"         />
-<!--        <result property="fileName"       column="file_name"         />-->
+        <result property="rgbPath"       column="rgb_path"         />
+        <!--        <result property="fileName"       column="file_name"         />-->
 <!--        <result property="rgbPath"       column="rgb_path"         />-->
+    </resultMap>
+
+    <resultMap type="RetrievalResult" id="RetrievalResult">
+        <id     property="waterId"       column="water_id"        />
+        <result property="updateTime"   column="update_time"    />
+        <result property="rgbPath"       column="rgb"         />
+        <result property="para1"       column="para_1"         />
+        <result property="para2"       column="para_2"         />
+        <result property="para3"       column="para_3"         />
+        <result property="min"       column="min"         />
+        <result property="max"       column="max"         />
+        <result property="mean"       column="mean"         />
+        <result property="county"       column="county"         />
+        <result property="location"       column="location"         />
+        <result property="department"       column="department"         />
+        <result property="contact"       column="contact"         />
+        <result property="contactInformation"       column="contact_information"         />
+
     </resultMap>
 
     <sql id="selectDataVo">
 	    select distinct r.water_id, r.water_name, r.photo_time, r.country, r.province,
             r.city, r.type, r.bands, r.create_by, r.create_time, r.update_by, r.update_time,
-            r.file_path
+            r.file_path, r.rgb_path, r.county, r.location, r.department, r.contact, r.contact_information
         from water_info r
     </sql>
+
+    <sql id="selectResultVo">
+	    select distinct r.water_id, r.update_time, r.rgb, r.para_1, r.para_2, r.para_3, r.min, r.max, r.mean
+    </sql>
+
+
+    <select id="selectUniqueType" resultType="String">
+        select distinct r.type
+        from water_info r where r.del_flag = '0'
+    </select>
+    <select id="selectNUniqueType" resultType="Integer">
+	    select count(distinct r.type) from water_info r where r.del_flag = '0'
+	</select>
+
+    <select id="selectUniqueWaterName" resultType="String">
+        select distinct r.water_name
+        from water_info r where r.del_flag = '0'
+    </select>
+    <select id="selectNUniqueWaterName" resultType="Integer">
+	    select count(distinct r.water_name) from water_info r where r.del_flag = '0'
+	</select>
+
+    <select id="selectUniqueProvince" resultType="String">
+        select distinct r.province
+        from water_info r where r.del_flag = '0'
+    </select>
+    <select id="selectNUniqueProvince" resultType="Integer">
+	    select count(distinct r.province) from water_info r where r.del_flag = '0'
+	</select>
+
+    <select id="selectUniqueCountry" resultType="String">
+        select distinct r.country
+        from water_info r where r.del_flag = '0'
+    </select>
+    <select id="selectNUniqueCountry" resultType="Integer">
+	    select count(distinct r.country) from water_info r where r.del_flag = '0'
+	</select>
+
+    <select id="selectUniqueCity" resultType="String">
+        select distinct r.city
+        from water_info r where r.del_flag = '0'
+    </select>
+    <select id="selectNUniqueCity" resultType="Integer">
+	    select count(distinct r.city) from water_info r where r.del_flag = '0'
+	</select>
+
+    <select id="selectUniqueId" resultType="String">
+        select distinct r.water_id
+        from water_info r
+        where r.del_flag = '0'
+    </select>
+    <select id="selectNUniqueId" resultType="Integer">
+	    select count(distinct r.water_id) from water_info r
+	    where r.del_flag = '0'
+	</select>
+
+    <select id="selectTp" parameterType="Long" resultMap="RetrievalResult">
+        <include refid="selectResultVo"/>
+        from tp r
+        where r.water_id = #{waterId}
+    </select>
+    <select id="selectTn" parameterType="Long" resultMap="RetrievalResult">
+        <include refid="selectResultVo"/>
+        from tn r
+        where r.water_id = #{waterId}
+    </select>
+    <select id="selectTss" parameterType="Long" resultMap="RetrievalResult">
+        <include refid="selectResultVo"/>
+        from tss r
+        where r.water_id = #{waterId}
+    </select>
+    <select id="selectChla" parameterType="Long" resultMap="RetrievalResult">
+        <include refid="selectResultVo"/>
+        from chla r
+        where r.water_id = #{waterId}
+    </select>
+    <select id="selectCod" parameterType="Long" resultMap="RetrievalResult">
+        <include refid="selectResultVo"/>
+        from cod r
+        where r.water_id = #{waterId}
+    </select>
+    <select id="selectNh" parameterType="Long" resultMap="RetrievalResult">
+        <include refid="selectResultVo"/>
+        from nh r
+        where r.water_id = #{waterId}
+    </select>
 
     <select id="selectDataList" parameterType="DataManage" resultMap="DataManageResult">
         <include refid="selectDataVo"/>
@@ -52,5 +157,93 @@
 <!--        ${dataScope}-->
     </select>
 
+    <select id="selectUniqueByDictCode" parameterType="Long" resultMap="DataManageResult">
+        <include refid="selectDataVo"/>
+        where r.del_flag = '0'
+        <if test="type != null and type != ''">
+            AND r.type = #{type}
+        </if>
+        <if test="waterName != null and waterName != ''">
+            AND r.water_name like concat('%', #{waterName}, '%')
+        </if>
+        <if test="waterId != null and waterId != ''">
+            AND r.water_id = #{waterId}
+        </if>
+        <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+            and date_format(r.photo_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+        </if>
+        <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+            and date_format(r.photo_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+        </if>
+        <!--        &lt;!&ndash; 数据范围过滤 &ndash;&gt;-->
+        <!--        ${dataScope}-->
+    </select>
+
+    <update id="updateWater" parameterType="DataManage">
+        update water_info
+        <set>
+            <if test="type != null and type != ''">type = #{type},</if>
+            <if test="waterName != null and waterName != ''">water_name = #{waterName},</if>
+            <if test="country != null and country != ''">country = #{country},</if>
+            <if test="province != null and province != ''">province = #{province},</if>
+            <if test="city != null and city != ''">city = #{city},</if>
+            <if test="photoTime != null">photo_time= #{photoTime},</if>
+            <if test="remark != null and remark != ''">remark = #{remark},</if>
+            <if test="bands != null and bands != ''">bands = #{bands},</if>
+            <if test="filePath != null and filePath != ''">file_path = #{filePath},</if>
+            <if test="fileName != null and fileName != ''">file_name = #{fileName},</if>
+            <if test="rgbPath != null and rgbPath != ''">rgb_path = #{rgbPath},</if>
+            <if test="county != null and county != ''">county = #{county},</if>
+            <if test="location != null and location != ''">location = #{location},</if>
+            <if test="department != null and department != ''">department = #{department},</if>
+            <if test="contact != null and contact != ''">contact = #{contact},</if>
+            <if test="contactInformation != null and contactInformation != ''">contact_information = #{contactInformation},</if>
+            <if test="updateTime != null">update_time= #{updateTime},</if>
+            <if test="updateBy != null">update_by= #{updateBy},</if>
+        </set>
+        where water_id = #{waterId}
+    </update>
+
+    <insert id="insertWater" parameterType="DataManage" useGeneratedKeys="true" keyProperty="waterId">
+        insert into water_info(
+        <if test="type != null and type != ''">type,</if>
+        <if test="waterName != null and waterName != ''">water_name,</if>
+        <if test="country != null and country != ''">country,</if>
+        <if test="province != null and province != ''">province,</if>
+        <if test="city != null and city != ''">city,</if>
+        <if test="photoTime != null">photo_time,</if>
+        <if test="bands != null and bands != ''">bands,</if>
+        <if test="filePath != null and filePath != ''">file_path,</if>
+        <if test="fileName != null and fileName != ''">file_name,</if>
+        <if test="rgbPath != null and rgbPath != ''">rgb_path,</if>
+        <if test="county != null and county != ''">county,</if>
+        <if test="location != null and location != ''">location,</if>
+        <if test="department != null and department != ''">department,</if>
+        <if test="contact != null and contact != ''">contact,</if>
+        <if test="contactInformation != null and contactInformation != ''">contact_information,</if>
+        <if test="createBy != null and createBy != ''">create_by,</if>
+        <if test="remark != null and remark != ''">remark,</if>
+        create_time
+        )values(
+        <if test="type != null and type != ''">#{type},</if>
+        <if test="waterName != null and waterName != ''">#{waterName},</if>
+        <if test="country != null and country != ''">#{country},</if>
+        <if test="province != null and province != ''">#{province},</if>
+        <if test="city != null and city != ''">#{city},</if>
+        <if test="photoTime != null">#{photoTime},</if>
+        <if test="bands != null and bands != ''">#{bands},</if>
+        <if test="filePath != null and filePath != ''">#{filePath},</if>
+        <if test="fileName != null and fileName != ''">#{fileName},</if>
+        <if test="rgbPath != null and rgbPath != ''">#{rgbPath},</if>
+        <if test="county != null and county != ''">#{county},</if>
+        <if test="location != null and location != ''">#{location},</if>
+        <if test="department != null and department != ''">#{department},</if>
+        <if test="contact != null and contact != ''">#{contact},</if>
+        <if test="contactInformation != null and contactInformation != ''">#{contactInformation},</if>
+        <if test="createBy != null and createBy != ''">#{createBy},</if>
+        <if test="remark != null and remark != ''">#{remark},</if>
+        sysdate()
+        )
+    </insert>
 
 </mapper>

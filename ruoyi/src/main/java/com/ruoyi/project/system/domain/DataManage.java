@@ -26,7 +26,7 @@ public class DataManage extends BaseEntity
     private String filePath;
 
     /** 文件名称 */
-//    private String fileName;
+    private String fileName;
 
     private String country;
     private String province;
@@ -35,9 +35,14 @@ public class DataManage extends BaseEntity
     private String rgbPath;
     private String remark;
 
+    private String county;
+    private String location;
+    private String department;
+    private String contact;
+    private String contactInformation;
+
     public DataManage()
     {
-
     }
 
     public DataManage(Long waterId)
@@ -145,6 +150,16 @@ public class DataManage extends BaseEntity
         this.filePath = filePath;
     }
 
+    public String getFileName()
+    {
+        return fileName;
+    }
+
+    public void setFileName(String fileName)
+    {
+        this.fileName = fileName;
+    }
+
     public String getRgbPath()
     {
         return rgbPath;
@@ -154,5 +169,55 @@ public class DataManage extends BaseEntity
     {
         this.rgbPath = rgbPath;
     }
+
+    public String getCounty()
+    {
+        return county;
+    }
+
+    public void setCounty(String county)
+    {
+        this.county = county;
+    }
+
+    public String getLocation()
+{
+    return location;
+}
+
+    public void setLocation(String location)
+    {
+        this.location = location;
+    }
+
+    public void setDepartment(String department)
+    {
+        this.department = department;
+    }
+
+    public String getDepartment()
+{
+    return department;
+}
+
+    public void setContact(String contact)
+    {
+        this.contact = contact;
+    }
+
+    public String getContact()
+{
+    return contact;
+}
+
+    public void setContactInformation(String contactInformation)
+    {
+        this.contactInformation = contactInformation;
+    }
+
+    public String getContactInformation()
+{
+    return contactInformation;
+}
 
 }

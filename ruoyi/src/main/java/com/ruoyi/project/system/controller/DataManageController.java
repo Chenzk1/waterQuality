@@ -1,6 +1,8 @@
 package com.ruoyi.project.system.controller;
 
 import java.util.List;
+
+import com.ruoyi.project.system.domain.RetrievalResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -28,14 +30,14 @@ import com.ruoyi.project.system.service.IDataManageService;
  * @author ruoyi
  */
 @RestController
-@RequestMapping("/data/")
+@RequestMapping("/data/list")
 public class DataManageController extends BaseController{
 
     @Autowired
     private IDataManageService dataService;
 
 //    @PreAuthorize("@ss.hasPermi('system:role:list')")
-    @GetMapping("/list")
+    @GetMapping
     public TableDataInfo list(DataManage dataQuery)
     {
         startPage();
@@ -43,6 +45,51 @@ public class DataManageController extends BaseController{
         return getDataTable(list);
     }
 
+    /**
+     * 根据dictCode查询unique nunique
+     */
+    @GetMapping(value = "/unique/{dictCode}")
+    public AjaxResult getUniqueByDictCode(@PathVariable String dictCode)
+    {
+        return AjaxResult.success(dataService.selectUniqueByDictCode(dictCode));
+    }
+
+    @GetMapping(value = "/nunique/{dictCode}")
+    public AjaxResult getNUniqueByDictCode(@PathVariable String dictCode)
+    {
+        return AjaxResult.success(dataService.selectNUniqueByDictCode(dictCode));
+    }
+
+    @GetMapping(value = "/result")
+    public TableDataInfo getResultByDictCode(RetrievalResult dataQuery)
+    {
+        startPage();
+        List<RetrievalResult> retrievalResults = dataService.selectResultByDictCode(dataQuery);
+        return getDataTable(retrievalResults);
+    }
+
+    /**
+     * 修改保存角色
+     */
+//    @PreAuthorize("@ss.hasPermi('system:role:edit')")
+    @Log(title = "数据管理", businessType = BusinessType.UPDATE)
+    @PutMapping
+    public AjaxResult edit(@RequestBody DataManage dataManage)
+    {
+        dataManage.setUpdateBy(SecurityUtils.getUsername());
+        return toAjax(dataService.updateWater(dataManage));
+    }
+
+    /**
+     * 新增
+     */
+    @Log(title = "数据管理", businessType = BusinessType.INSERT)
+    @PostMapping
+    public AjaxResult add(@RequestBody DataManage dataManage)
+    {
+        dataManage.setCreateBy(SecurityUtils.getUsername());
+        return toAjax(dataService.insertWater(dataManage));
+    }
 //    /**
 //     * 根据角色编号获取详细信息
 //     */
