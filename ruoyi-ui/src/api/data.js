@@ -66,3 +66,9 @@ export function fetchData(id) {
 }
 
 
+export function delWaterId(waterId) {
+  return request({
+    url: '/data/list/' + waterId,
+    method: 'delete'
+  })
+}

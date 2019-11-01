@@ -34,6 +34,10 @@ public interface IDataManageService
      */
     public int updateWater(DataManage dataManage);
     public int insertWater(DataManage dataManage);
+
+    //public void checkUserAllowed(DataManage dataManage);
+
+    public int deleteWaterById(Long waterId);
 //    public List<DataManage> insertDataManage(DataManage dataManage);
 //    /**
 //     * 根据用户ID查询角色

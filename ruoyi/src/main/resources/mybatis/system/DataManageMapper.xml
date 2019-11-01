@@ -246,4 +246,67 @@
         )
     </insert>
 
+    <insert id="insertTp" parameterType="long" useGeneratedKeys="true" keyProperty="waterId">
+        insert into tp(
+        <if test="waterId != null and waterId != ''">water_id,</if>
+        update_time
+        )values(
+        <if test="waterId != null and waterId != ''">#{waterId},</if>
+        sysdate()
+        )
+    </insert>
+
+    <insert id="insertTn" parameterType="long" useGeneratedKeys="true" keyProperty="waterId">
+        insert into tn(
+        <if test="waterId != null and waterId != ''">water_id,</if>
+        update_time
+        )values(
+        <if test="waterId != null and waterId != ''">#{waterId},</if>
+        sysdate()
+        )
+    </insert>
+
+    <insert id="insertTss" parameterType="long" useGeneratedKeys="true" keyProperty="waterId">
+        insert into tss(
+        <if test="waterId != null and waterId != ''">water_id,</if>
+        update_time
+        )values(
+        <if test="waterId != null and waterId != ''">#{waterId},</if>
+        sysdate()
+        )
+    </insert>
+
+    <insert id="insertChla" parameterType="long" useGeneratedKeys="true" keyProperty="waterId">
+        insert into chla(
+        <if test="waterId != null and waterId != ''">water_id,</if>
+        update_time
+        )values(
+        <if test="waterId != null and waterId != ''">#{waterId},</if>
+        sysdate()
+        )
+    </insert>
+
+    <insert id="insertCod" parameterType="long" useGeneratedKeys="true" keyProperty="waterId">
+        insert into cod(
+        <if test="waterId != null and waterId != ''">water_id,</if>
+        update_time
+        )values(
+        <if test="waterId != null and waterId != ''">#{waterId},</if>
+        sysdate()
+        )
+    </insert>
+
+    <insert id="insertNh" parameterType="long" useGeneratedKeys="true" keyProperty="waterId">
+        insert into nh(
+        <if test="waterId != null and waterId != ''">water_id,</if>
+        update_time
+        )values(
+        <if test="waterId != null and waterId != ''">#{waterId},</if>
+        sysdate()
+        )
+    </insert>
+
+    <delete id="deleteWaterById" parameterType="Long">
+ 		delete from water_info where water_id = #{waterId}
+ 	</delete>
 </mapper>

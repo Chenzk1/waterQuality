@@ -44,7 +44,7 @@
       style="width: 100%;"
       @sort-change="sortChange"
     >
-      <el-table-column label="ID" prop="waterId" sortable="custom" align="center" width="80" :class-name="getSortClass('id')">
+      <el-table-column fixed label="ID" prop="waterId" sortable="custom" align="center" width="80" :class-name="getSortClass('id')">
         <template slot-scope="scope">
           <span>{{ scope.row.waterId }}</span>
         </template>
@@ -104,7 +104,7 @@
           <span>{{ scope.row.bands }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="Actions" align="center" width="230" class-name="small-padding fixed-width">
+      <el-table-column fixed='right' label="Actions" align="center" width="230" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
           <el-button type="text" size="mini" icon="el-icon-edit" @click="handleUpdate(row)">
             编辑
@@ -112,7 +112,7 @@
           <el-button type="text" size="mini" icon="el-icon-view" @click="handleView(row)">
             查看
           </el-button>
-          <el-button type="text" size="mini" icon="el-icon-delete" @click="handleDelete(row)">
+          <el-button type="text" size="mini" icon="el-icon-delete" @click="handleDelete(row)" v-hasPermi="['system:user:remove']">
             删除
           </el-button>
         </template>
@@ -202,7 +202,7 @@
 </template>
 
 <script>
-import { fetchList, fetchCreate, fetchUpdate } from '@/api/data'
+import { fetchList, fetchCreate, fetchUpdate, delWaterId } from '@/api/data'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import { parseTime } from "@/utils/ruoyi";
@@ -428,6 +428,7 @@ export default {
               type: 'success',
               duration: 2000
             })
+            this.getList();
           })
         }
       })
@@ -478,17 +479,28 @@ export default {
     // handleRemove(file, fileList) {
     //     this.temp.fileName;
     // },
+    // handleDelete(row) {
+    //   this.$notify({
+    //     title: 'Success',
+    //     message: '删除成功',
+    //     type: 'success',
+    //     duration: 2000
+    //   })
+    //   const index = this.list.indexOf(row)
+    //   this.list.splice(index, 1)
+    // },
     handleDelete(row) {
-      this.$notify({
-        title: 'Success',
-        message: '删除成功',
-        type: 'success',
-        duration: 2000
-      })
-      const index = this.list.indexOf(row)
-      this.list.splice(index, 1)
+      this.$confirm('是否确认删除ID为"' + row.waterId + '"的水体数据?', "警告", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        }).then(function() {
+          return delWaterId(row.waterId);
+        }).then(() => {
+          this.getList();
+          this.msgSuccess("删除成功");
+        }).catch(function() {});
     },
-
     handleDownload() {
       this.downloadLoading = true
       import('@/vendor/Export2Excel').then(excel => {

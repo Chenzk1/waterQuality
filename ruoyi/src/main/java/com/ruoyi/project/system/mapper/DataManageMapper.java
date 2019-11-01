@@ -3,14 +3,10 @@ package com.ruoyi.project.system.mapper;
 import java.util.List;
 import com.ruoyi.project.system.domain.DataManage;
 import com.ruoyi.project.system.domain.RetrievalResult;
+import org.apache.ibatis.annotations.Param;
+
 
 public interface DataManageMapper {
-    /**
-     * 根据条件分页查询角色数据
-     *
-     * @param role 角色信息
-     * @return 角色数据集合信息
-     */
     public List<DataManage> selectDataList(DataManage dataQuery);
 
     public List<DataManage> selectUniqueByDictCode(DataManage dataQuery);
@@ -38,4 +34,12 @@ public interface DataManageMapper {
 
     public void updateWater(DataManage dataManage);
     public int insertWater(DataManage dataManage);
+    public void insertTp(@Param("waterId")long waterId);
+    public void insertTn(@Param("waterId")long waterId);
+    public void insertTss(@Param("waterId")long waterId);
+    public void insertCod(@Param("waterId")long waterId);
+    public void insertChla(@Param("waterId")long waterId);
+    public void insertNh(@Param("waterId")long waterId);
+    public int deleteWaterById(long waterId);
+
 }

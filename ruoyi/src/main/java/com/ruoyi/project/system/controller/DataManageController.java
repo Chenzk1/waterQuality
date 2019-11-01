@@ -90,6 +90,15 @@ public class DataManageController extends BaseController{
         dataManage.setCreateBy(SecurityUtils.getUsername());
         return toAjax(dataService.insertWater(dataManage));
     }
+
+    @PreAuthorize("@ss.hasPermi('system:user:remove')")
+    @Log(title = "水体管理", businessType = BusinessType.DELETE)
+    @DeleteMapping("/{waterId}")
+    public AjaxResult remove(@PathVariable Long waterId)
+    {
+        //dataService.checkUserAllowed(new DataManage(waterId));
+        return toAjax(dataService.deleteWaterById(waterId));
+    }
 //    /**
 //     * 根据角色编号获取详细信息
 //     */

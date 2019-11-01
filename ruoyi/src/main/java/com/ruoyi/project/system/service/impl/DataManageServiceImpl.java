@@ -124,21 +124,28 @@ public class DataManageServiceImpl implements IDataManageService {
     @Transactional
     public int insertWater(DataManage dataManage)
     {
-        int rows = dataManageMapper.insertWater(dataManage);
+        int row = dataManageMapper.insertWater(dataManage);
+        long waterId = dataManage.getWaterId();
         // 关联
-//        insertTp(dataManage);
-//        insertTn(dataManage);
-//        insertChla(dataManage);
-//        insertNh(dataManage);
-//        insertCod(dataManage);
-//        insertTss(dataManage);
-        return rows;
+        dataManageMapper.insertTp(waterId);
+        dataManageMapper.insertTn(waterId);
+        dataManageMapper.insertChla(waterId);
+        dataManageMapper.insertNh(waterId);
+        dataManageMapper.insertCod(waterId);
+        dataManageMapper.insertTss(waterId);
+        return row;
     }
 
-//    public void insertTp(DataManage dataManage)
+    @Override
+    public int deleteWaterById(Long waterId)
+    {
+//        userRoleMapper.deleteUserRoleByUserId(userId);
+//        userPostMapper.deleteUserPostByUserId(userId);
+        return dataManageMapper.deleteWaterById(waterId);
+    }
+//    public void insertTp(int rows)
 //    {
-//        Long[] roles = user.getRoleIds();
-//        if (StringUtils.isNotNull(roles))
+//        if (rows!=0)
 //        {
 //            // 新增用户与角色管理
 //            List<SysUserRole> list = new ArrayList<SysUserRole>();
