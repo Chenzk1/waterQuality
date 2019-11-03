@@ -61,11 +61,12 @@ export default {
       this.chart = echarts.init(this.$el, 'macarons')
       this.setOptions(this.chartData)
     },
-    setOptions({ expectedData, actualData } = {}) {
+    setOptions({ tp, tn, tss, chla, nh, cod } = {}) {
       this.chart.setOption({
         xAxis: {
-          data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+          // data: [1,2,3,4,5,6,7],
           boundaryGap: false,
+          type: 'time',
           axisTick: {
             show: false
           }
@@ -90,10 +91,10 @@ export default {
           }
         },
         legend: {
-          data: ['expected', 'actual']
+          data: ['总磷', '总氮', '总悬浮物', '叶绿素a','氨氮', '化学需氧量']
         },
         series: [{
-          name: 'expected', itemStyle: {
+          name: '总磷', itemStyle: {
             normal: {
               color: '#FF005A',
               lineStyle: {
@@ -104,12 +105,12 @@ export default {
           },
           smooth: true,
           type: 'line',
-          data: expectedData,
+          data: tp,
           animationDuration: 2800,
           animationEasing: 'cubicInOut'
         },
         {
-          name: 'actual',
+          name: '总氮',
           smooth: true,
           type: 'line',
           itemStyle: {
@@ -124,10 +125,91 @@ export default {
               }
             }
           },
-          data: actualData,
+          data: tn,
           animationDuration: 2800,
           animationEasing: 'quadraticOut'
-        }]
+        },
+        {
+          name: '总悬浮物',
+          smooth: true,
+          type: 'line',
+          itemStyle: {
+            normal: {
+              color: '#ff5511',
+              lineStyle: {
+                color: '#ff5511',
+                width: 2
+              },
+              areaStyle: {
+                color: '#ff5511'
+              }
+            }
+          },
+          data: tss,
+          animationDuration: 2800,
+          animationEasing: 'quadraticOut'
+        },
+        {
+          name: '叶绿素a',
+          smooth: true,
+          type: 'line',
+          itemStyle: {
+            normal: {
+              color: '#00ff99',
+              lineStyle: {
+                color: '#00ff99',
+                width: 2
+              },
+              areaStyle: {
+                color: '#00ff99'
+              }
+            }
+          },
+          data: chla,
+          animationDuration: 2800,
+          animationEasing: 'quadraticOut'
+        },
+        {
+          name: '氨氮',
+          smooth: true,
+          type: 'line',
+          itemStyle: {
+            normal: {
+              color: '#ff00ff',
+              lineStyle: {
+                color: '#ff00ff',
+                width: 2
+              },
+              areaStyle: {
+                color: '#ff00ff'
+              }
+            }
+          },
+          data: nh,
+          animationDuration: 2800,
+          animationEasing: 'quadraticOut'
+        },
+        {
+          name: '化学需氧量',
+          smooth: true,
+          type: 'line',
+          itemStyle: {
+            normal: {
+              color: '#ffff00',
+              lineStyle: {
+                color: '#ffff00',
+                width: 2
+              },
+              areaStyle: {
+                color: '#ffff00'
+              }
+            }
+          },
+          data: cod,
+          animationDuration: 2800,
+          animationEasing: 'cubicOut'
+        }
+        ]
       })
     }
   }

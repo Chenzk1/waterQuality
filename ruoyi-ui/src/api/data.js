@@ -27,14 +27,13 @@ export function fetchResult(query) {
     url: '/data/list/result',
     method: 'get',
     params: query
-
   })
 }
 
 export function fetchRetrieval(query) {
   return request({
     url: '/data/list/retrieval',
-    method: 'get',
+    method: 'put',
     params: query
 
   })
@@ -70,5 +69,13 @@ export function delWaterId(waterId) {
   return request({
     url: '/data/list/' + waterId,
     method: 'delete'
+  })
+}
+
+export function fetchResultList(query){
+  return request({
+    url: '/data/list/listResult',
+    method: 'get',
+    params: query
   })
 }

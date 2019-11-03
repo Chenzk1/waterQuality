@@ -169,15 +169,19 @@
             <el-image :src="temp.rgbPath" />
           </div>
         </el-form-item>
-        <el-form-item label="上传">
+        <el-form-item label="文件路径">
+          <el-input v-model="temp.filePath" />
+          <div slot="tip" class="el-upload__tip">只能上传一个文件</div>
+          </el-upload>
+        </el-form-item>
+        <!-- <el-form-item label="上传">
           <el-upload :show-file-list="True" :before-upload="beforeUpload" 
           :file-list="fileList" :on-remove="handleRemove" :auto-upload="false"
           ref="upload" limit=1>
             <el-button slot="trigger" size="medium" type="primary">选取文件</el-button>
-            <!-- <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传到服务器</el-button> -->
             <div slot="tip" class="el-upload__tip">只能上传一个文件</div>
           </el-upload>
-        </el-form-item>
+        </el-form-item> -->
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">
@@ -224,14 +228,8 @@ for (var k in o)
 if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
 return fmt;
 }
-let TypeOptions = [
-  { key: 'MODIS', display_name: 'MODIS' },
-  { key: 'GF-1', display_name: '高分一号' },
-  { key: 'GF-2', display_name: '高分二号' },
-  { key: 'GF-3', display_name: '高分三号' },
-  { key: 'LANDSAT-5', display_name: 'LANDSAT-5' },
-  { key: 'LANDSAT-8', display_name: 'LANDSAT-8' }
-]
+const TypeOptions = ['MODIS', 'GF-1', 'GF-2', 'GF-3', 'LANDSAT-5', 'LANDSAT-8']
+
 let nameOptions = []
 let provinceOptions = [
   '北京市', '广东省', '山东省', '江苏省', '河南省', '上海市', '河北省', '浙江省', '香港特别行政区', '陕西省', '湖南省', '重庆市',
@@ -277,7 +275,7 @@ export default {
       },
       // 日期范围
       dateRange: [],
-      TypeOptions: [],
+      TypeOptions,
       provinceOptions: [],
       sortOptions: [{ label: 'ID Ascending', key: '+id' }, { label: 'ID Descending', key: '-id' }],
       nameOptions: [],
@@ -324,9 +322,9 @@ export default {
   created() {
     this.getList();
     this.getUser();
-    this.getUnique("type").then(response => {
-      this.TypeOptions = response.data;
-    });
+    // this.getUnique("type").then(response => {
+    //   this.TypeOptions = response.data;
+    // });
     this.getUnique("province").then(response => {
       this.provinceOptions = response.data;
     });
@@ -347,6 +345,9 @@ export default {
       this.listLoading = true
       fetchList(this.addDateRange(this.listQuery, this.dateRange)).then(response => {
         this.list = response.rows;
+        this.list.forEach(function(element){
+          element.rgbPath = process.env.VUE_APP_BASE_API + '/profile' + element.rgbPath
+        })
         this.total = response.total;
         // Just to simulate the time of the request
         this.listLoading = false;
@@ -435,6 +436,7 @@ export default {
     },
     handleUpdate(row) {
       this.temp = Object.assign({}, row) // copy obj
+      console.log(row)
       if (this.temp.filePath!=null){
         this.fileList.push({name:this.temp.fileName, url:this.temp.filePath})
       }

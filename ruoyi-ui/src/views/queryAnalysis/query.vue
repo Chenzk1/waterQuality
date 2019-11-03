@@ -1,15 +1,19 @@
 <template>
   <div class="app-container">
+    <!-- <panel-group @handleSetLineChartData="handleSetLineChartData" /> -->
     <div class="filter-container">
-      <el-input v-model="listQuery.name" placeholder="水体搜索" style="width: 180px;" class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-select v-model="listQuery.name" placeholder="水体选择" clearable style="width: 180px" class="filter-item">
+      <el-input v-model="listQuery.watername" placeholder="水体搜索" style="width: 180px;" class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-select v-model="listQuery.watername" placeholder="水体选择" clearable style="width: 180px" class="filter-item">
         <el-option v-for="item in nameOptions" :key="item" :label="item" :value="item" />
       </el-select>
       <el-select v-model="listQuery.province" placeholder="省份" clearable style="width: 90px" class="filter-item">
         <el-option v-for="item in provinceOptions" :key="item" :label="item" :value="item" />
       </el-select>
+      <el-select v-model="listQuery.city" placeholder="城市" clearable style="width: 90px" class="filter-item">
+        <el-option v-for="item in cityOptions" :key="item" :label="item" :value="item" />
+      </el-select>
       <el-select v-model="listQuery.type" placeholder="数据源" clearable class="filter-item" style="width: 90px">
-        <el-option v-for="item in TypeOptions" :key="item" :label="item" :value="item" />
+        <el-option v-for="item in typeOptions" :key="item" :label="item" :value="item" />
       </el-select>
       <el-date-picker
         v-model="listQuery.dateRange"
@@ -25,7 +29,7 @@
       <el-col class="line" :span="2">-</el-col>
       <el-time-picker placeholder="选择日期" v-model="listQuery.endDate" style="width: 100%;"></el-time-picker> -->
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
-        搜索
+        检索
       </el-button>
     </div>
 
@@ -41,20 +45,21 @@
     >
       <el-table-column label="ID" prop="id" sortable="custom" align="center" width="80" :class-name="getSortClass('id')">
         <template slot-scope="scope">
-          <span>{{ scope.row.id }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="拍摄日期" width="150px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.timestamp | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+          <span>{{ scope.row.waterId }}</span>
         </template>
       </el-table-column>
       <el-table-column label="水体" min-width="80px">
         <template slot-scope="scope">
-          <span>{{ scope.row.name }}</span>
+          <span>{{ scope.row.waterName }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="省份" width="80px">
+      <el-table-column label="拍摄日期" width="150px" align="center">
+        <template slot-scope="scope">
+          <span>{{ parseTime(scope.row.photoTime) }}</span>
+        </template>
+      </el-table-column>
+      
+      <!-- <el-table-column label="省份" width="80px">
         <template slot-scope="scope">
           <span>{{ scope.row.province }}</span>
         </template>
@@ -63,13 +68,13 @@
         <template slot-scope="scope">
           <span>{{ scope.row.city }}</span>
         </template>
-      </el-table-column>
-      <el-table-column label="类型" class-name="status-col" width="100">
+      </el-table-column> -->
+      <el-table-column label="数据源" class-name="status-col" width="100">
         <template slot-scope="scope">
           <span>{{ scope.row.type }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="反演结果图" class-name="status-col" width="300">
+      <!-- <el-table-column label="反演结果图" class-name="status-col" width="300">
         <template slot-scope="scope">
           <img :src="scope.row.tp.resultPicture" style="width:200px;height:200px;display:block,margin-top:auto;margin-bottom:auto;">
         </template>
@@ -155,69 +160,26 @@
             <template slot-scope="scope">
               <span>{{ scope.row.nh.max }}</span>
             </template>
-          </el-table-column>
+          </el-table-column> 
         </el-table-column>
-      </el-table-column>
+      </el-table-column>-->
     </el-table>
 
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
-
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="90px" style="width: 400px; margin-left:50px;">
-        <el-form-item label="数据源" prop="type">
-          <el-select v-model="temp.type" class="filter-item" placeholder="请选择">
-            <el-option v-for="item in TypeOptions" :key="item.key" :label="item.display_name" :value="item.key" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="拍摄日期" prop="timestamp">
-          <el-date-picker v-model="temp.timestamp" type="datetime" placeholder="请选择日期" />
-        </el-form-item>
-        <el-form-item label="水体" prop="name">
-          <el-input v-model="temp.name" />
-        </el-form-item>
-        <el-form-item label="备注">
-          <el-input v-model="temp.remark" :autosize="{ minRows: 2, maxRows: 4}" type="textarea" placeholder="请输入" />
-        </el-form-item>
-        <el-form-item v-show="dialogStatus!='create'" label="图片">
-          <div class="block">
-            <span class="demonstration">加载中</span>
-            <el-image :src="temp.rgb" />
-          </div>
-        </el-form-item>
-        <el-form-item v-show="dialogStatus==='create'" label="上传">
-          <el-input v-model="temp.remark" :autosize="{ minRows: 2, maxRows: 4}" type="textarea" placeholder="请输入" />
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">
-          Cancel
-        </el-button>
-        <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">
-          Confirm
-        </el-button>
-      </div>
-    </el-dialog>
-
-    <el-dialog :visible.sync="dialogPvVisible" title="Reading statistics">
-      <el-table :data="pvData" border fit highlight-current-row style="width: 100%">
-        <el-table-column prop="key" label="Channel" />
-        <el-table-column prop="pv" label="Pv" />
-      </el-table>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="dialogPvVisible = false">Confirm</el-button>
-      </span>
-    </el-dialog>
   </div>
 </template>
 
+    
+
 <script>
-import { fetchList, createData, updateData, fetchResult, fetchLevel } from '@/api/data'
+import { fetchResultList, fetchResult, fetchLevel } from '@/api/data'
 
 import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
+import PanelGroup from './PanelGroup'
 
-const TypeOptions = [
+const typeOptions = [
   { key: 'MODIS', display_name: 'MODIS' },
   { key: 'GF-1', display_name: '高分一号' },
   { key: 'GF-2', display_name: '高分二号' },
@@ -232,7 +194,7 @@ const provinceOptions = [
   '黑龙江', '内蒙古自治区', '澳门特别行政区', '贵州省', '甘肃省', '青海省', '新疆维吾尔自治区', '西藏自治区', '吉林省', '宁夏回族自治区'
 ]
 // arr to obj, such as { CN : "China", US : "USA" }
-const calendarTypeKeyValue = TypeOptions.reduce((acc, cur) => {
+const calendarTypeKeyValue = typeOptions.reduce((acc, cur) => {
   acc[cur.key] = cur.display_name
   return acc
 }, {})
@@ -277,80 +239,50 @@ export default {
         dateRange: undefined,
         city: undefined
       },
-      TypeOptions,
+      typeOptions,
       provinceOptions,
       provinceNunique: 0,
       nameOptions,
       sortOptions: [{ label: 'ID Ascending', key: '+id' }, { label: 'ID Descending', key: '-id' }],
-      showReviewer: false,
-      temp: {
-        id: undefined,
-        timestamp: new Date(),
-        name: '',
-        type: '',
-        province: '浙江省',
-        rgb: ''
-      },
-      dialogFormVisible: false,
-      dialogStatus: '',
-      textMap: {
-        update: 'Edit',
-        create: 'Create',
-        view: 'View',
-        export: 'Export'
-      },
-      dialogPvVisible: false,
-      pvData: [],
-      rules: {
-        type: [{ required: true, message: 'type is required', trigger: 'change' }],
-        timestamp: [{ type: 'date', required: true, message: 'timestamp is required', trigger: 'change' }],
-        title: [{ required: true, message: 'title is required', trigger: 'blur' }]
-      },
       downloadLoading: false
     }
   },
   created() {
-    this.getList()
+    this.getResultList();
+    // this.getUser();
+    this.getUnique("city").then(response => {
+      this.cityOptions = response.data;
+    });
+    this.getUnique("province").then(response => {
+      this.provinceOptions = response.data;
+    });
+    this.getUnique("name").then(response => {
+      this.nameOptions = response.data;
+    });
     // this.getUnique()
   },
   methods: {
-    getList() {
-      this.listLoading = true
-
-      fetchList(this.listQuery).then(response => {
-        this.list = response.data.items
-        this.total = response.data.total
-
-        // Just to simulate the time of the request
-        setTimeout(() => {
-          this.listLoading = false
-        }, 1.5 * 1000)
-      })
+    getUser() {
+      getUserProfile().then(response => {
+        this.user = response.data;
+        this.roleGroup = response.roleGroup;
+        this.postGroup = response.postGroup;
+      });
     },
-    getUnique() {
+    getResultList() {
       this.listLoading = true
-      fetchUnique(this.uniqueQuery).then(response => {
-        this.provinceOptions = response.data.provinceUnique
-        this.provinceNunique = response.data.provinceNunique
-        this.nameOptions = response.data.nameUnique
-        this.TypeOptions = response.data.typeUnique
-        // Just to simulate the time of the request
-        setTimeout(() => {
-          this.listLoading = false
-        }, 1.5 * 1000)
+      fetchResultList(this.addDateRange(this.listQuery, this.dateRange)).then(response => {
+        // this.list = response.rows;
+        this.total = response.total;
+        this.list = response.rows
       })
+      this.listLoading = false;
     },
     handleFilter() {
       this.listQuery.page = 1
       this.getList()
     },
-    handleModifyStatus(row, status) {
-      this.$message({
-        message: '操作Success',
-        type: 'success'
-      })
-      row.status = status
-    },
+    
     sortChange(data) {
       const { prop, order } = data
       if (prop === 'id') {
@@ -385,81 +317,7 @@ export default {
         path: `/monitorEvaluation/monitor/${row.id}`
       })
     },
-    handleCreate() {
-      this.resetTemp()
-      this.dialogStatus = 'create'
-      this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
-    },
-    createData() {
-      this.$refs['dataForm'].validate((valid) => {
-        if (valid) {
-          this.temp.id = parseInt(Math.random() * 100) + 1024 // mock a id
-          this.temp.author = 'vue-element-admin'
-          createArticle(this.temp).then(() => {
-            this.list.unshift(this.temp)
-            this.dialogFormVisible = false
-            this.$notify({
-              title: 'Success',
-              message: 'Created Successfully',
-              type: 'success',
-              duration: 2000
-            })
-          })
-        }
-      })
-    },
-    handleUpdate(row) {
-      this.temp = Object.assign({}, row) // copy obj
-      this.temp.timestamp = new Date(this.temp.timestamp)
-      this.dialogStatus = 'update'
-      this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
-    },
-    updateData() {
-      this.$refs['dataForm'].validate((valid) => {
-        if (valid) {
-          const tempData = Object.assign({}, this.temp)
-          tempData.timestamp = +new Date(tempData.timestamp) // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
-          updateArticle(tempData).then(() => {
-            for (const v of this.list) {
-              if (v.id === this.temp.id) {
-                const index = this.list.indexOf(v)
-                this.list.splice(index, 1, this.temp)
-                break
-              }
-            }
-            this.dialogFormVisible = false
-            this.$notify({
-              title: 'Success',
-              message: 'Update Successfully',
-              type: 'success',
-              duration: 2000
-            })
-          })
-        }
-      })
-    },
-    handleDelete(row) {
-      this.$notify({
-        title: 'Success',
-        message: 'Delete Successfully',
-        type: 'success',
-        duration: 2000
-      })
-      const index = this.list.indexOf(row)
-      this.list.splice(index, 1)
-    },
-    handleFetchPv(pv) {
-      fetchPv(pv).then(response => {
-        this.pvData = response.data.pvData
-        this.dialogPvVisible = true
-      })
-    },
+    
     handleDownload() {
       this.downloadLoading = true
       import('@/vendor/Export2Excel').then(excel => {

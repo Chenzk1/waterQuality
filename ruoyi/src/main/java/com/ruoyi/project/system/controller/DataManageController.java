@@ -21,6 +21,7 @@ import com.ruoyi.framework.web.controller.BaseController;
 import com.ruoyi.framework.web.domain.AjaxResult;
 import com.ruoyi.framework.web.page.TableDataInfo;
 import com.ruoyi.project.system.domain.DataManage;
+import com.ruoyi.project.system.domain.ListResult;
 import com.ruoyi.project.system.service.IDataManageService;
 
 
@@ -68,6 +69,14 @@ public class DataManageController extends BaseController{
         return getDataTable(retrievalResults);
     }
 
+    @PutMapping(value = "/retrieval")
+    public TableDataInfo retrievalByDictCode(RetrievalResult dataQuery)
+    {
+//        需要通过参数反演结果 以及利用参数改变表内容 然后返回新结果
+        List<RetrievalResult> retrievalResults = dataService.selectResultByDictCode(dataQuery);
+        return getDataTable(retrievalResults);
+    }
+
     /**
      * 修改保存角色
      */
@@ -98,6 +107,14 @@ public class DataManageController extends BaseController{
     {
         //dataService.checkUserAllowed(new DataManage(waterId));
         return toAjax(dataService.deleteWaterById(waterId));
+    }
+
+    @GetMapping(value = "/listResult")
+    public TableDataInfo listResult(RetrievalResult dataQuery)
+    {
+        startPage();
+        List<ListResult> list = dataService.selectListResult(dataQuery);
+        return getDataTable(list);
     }
 //    /**
 //     * 根据角色编号获取详细信息

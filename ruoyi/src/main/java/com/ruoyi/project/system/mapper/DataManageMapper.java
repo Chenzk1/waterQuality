@@ -3,12 +3,13 @@ package com.ruoyi.project.system.mapper;
 import java.util.List;
 import com.ruoyi.project.system.domain.DataManage;
 import com.ruoyi.project.system.domain.RetrievalResult;
+import com.ruoyi.project.system.domain.ListResult;
 import org.apache.ibatis.annotations.Param;
 
 
 public interface DataManageMapper {
     public List<DataManage> selectDataList(DataManage dataQuery);
-
+    public List<ListResult> selectListResult(RetrievalResult dataQuery);
     public List<DataManage> selectUniqueByDictCode(DataManage dataQuery);
 
     public List<String> selectUniqueType();

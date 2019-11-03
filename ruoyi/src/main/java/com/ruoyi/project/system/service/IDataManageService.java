@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.ruoyi.project.system.domain.DataManage;
 import com.ruoyi.project.system.domain.RetrievalResult;
+import com.ruoyi.project.system.domain.ListResult;
 
 /**
  * 角色业务层
@@ -19,6 +20,10 @@ public interface IDataManageService
      * @return 角色数据集合信息
      */
     public List<DataManage> selectDataList(DataManage dataQuery);
+
+//    public List<RetrievalResult> selectRetrievalResult(RetrievalResult dataQuery);
+
+    public List<ListResult> selectListResult(RetrievalResult dataQuery);
 
     public List<String> selectUniqueByDictCode(String dictCode);
 

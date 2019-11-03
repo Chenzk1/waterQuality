@@ -97,6 +97,13 @@ public class RuoYiConfig
     {
         return getProfile() + "/avatar";
     }
+    /**
+     * 获取头像上传路径
+     */
+    public static String getWaterPath()
+    {
+        return getProfile() + "/waterData";
+    }
 
     /**
      * 获取下载路径

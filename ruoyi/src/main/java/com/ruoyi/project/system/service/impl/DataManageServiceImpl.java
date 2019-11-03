@@ -15,6 +15,7 @@ import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.framework.aspectj.lang.annotation.DataScope;
 import com.ruoyi.project.system.domain.DataManage;
 import com.ruoyi.project.system.domain.RetrievalResult;
+import com.ruoyi.project.system.domain.ListResult;
 import com.ruoyi.project.system.mapper.DataManageMapper;
 import com.ruoyi.project.system.service.IDataManageService;
 
@@ -39,6 +40,12 @@ public class DataManageServiceImpl implements IDataManageService {
     public List<DataManage> selectDataList(DataManage dataQuery)
     {
         return dataManageMapper.selectDataList(dataQuery);
+    }
+
+    @Override
+    public List<ListResult> selectListResult(RetrievalResult dataQuery)
+    {
+        return dataManageMapper.selectListResult(dataQuery);
     }
 
     @Override

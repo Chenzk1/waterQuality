@@ -11,9 +11,9 @@ public class RetrievalResult extends BaseEntity{
     private Long waterId;
 
     /** 水体名称 */
-    private Date updateTime;
 
     private String rgbPath;
+    private String waterName;
 
     private Float para1;
     private Float para2;
@@ -24,6 +24,19 @@ public class RetrievalResult extends BaseEntity{
     private Float mean;
 
     private String retrievalParams;
+
+    private Date photoTime;
+
+    public Date getPhotoTime()
+    {
+        return photoTime;
+    }
+
+    public void setPhotoTime(Date photoTime)
+    {
+        this.photoTime = photoTime;
+    }
+
     public RetrievalResult()
     {
     }
@@ -43,15 +56,15 @@ public class RetrievalResult extends BaseEntity{
         this.waterId = waterId;
     }
 
-    public Date getUpdateTime()
-    {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Date updateTime)
-    {
-        this.updateTime = updateTime;
-    }
+//    public Date getUpdateTime()
+//    {
+//        return updateTime;
+//    }
+//
+//    public void setUpdateTime(Date updateTime)
+//    {
+//        this.updateTime = updateTime;
+//    }
 
     public String getRgbPath()
     {
@@ -61,6 +74,16 @@ public class RetrievalResult extends BaseEntity{
     public void setRgbPath(String rgbPath)
     {
         this.rgbPath = rgbPath;
+    }
+
+    public String getWaterName()
+    {
+        return waterName;
+    }
+
+    public void setWaterName(String waterName)
+    {
+        this.waterName= waterName;
     }
 
     public Float getPara1() {return para1;}

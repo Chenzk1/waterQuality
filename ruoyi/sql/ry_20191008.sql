@@ -29,13 +29,12 @@ create table water_info (
   primary key (water_id)
 ) engine=innodb auto_increment=200 comment = '水体表';
 
-insert into water_info values(1000,'滇池', '2018-07-31', '中国','云南省','昆明市', 'LANDSAT-8',6,'czk','2019-10-06 11-33-00',
-'czk','2019-10-19 11-33-00','','20180731Dianchi.img','waterData/origin/20180731Dianchi.img','waterData/origin/rgb/20180731Dianchi.ipg','0',1,'','','','','' );
-insert into water_info values(1001,'西湖', '2018-07-31', '中国','浙江省','杭州市', 'LANDSAT-5',5,'czk','2019-10-16 11-33-00',
-'czk','2019-10-29 11-33-00','','20180731Dianchi.img','waterData/origin/20180731Dianchi.img','waterData/origin/rgb/20180731Dianchi.ipg','0',1,'','','','','' );
-insert into water_info values(1002,'太湖', '2018-07-31', '中国','江苏省','苏州市', 'MODIS',1234,'czk','2019-10-13 11-33-00',
-'czk','2019-10-27 11-33-00','','20180731Dianchi.img','waterData/origin/20180731Dianchi.img','waterData/origin/rgb/20180731Dianchi.ipg','0',1,'','','','','' );
-
+insert into water_info values(1000,'滇池', '2018-08-31', '中国','云南省','昆明市', 'LANDSAT-8',6,'czk','2019-10-06 11-33-00',
+'czk','2019-10-19 11-33-00','','dianchi20191101','/waterData/origin/1001.img','/waterData/origin/rgb/1001.jpg','0',1,'','','','','' );
+insert into water_info values(1001,'西湖', '2018-12-31', '中国','浙江省','杭州市', 'LANDSAT-5',5,'czk','2019-10-16 11-33-00',
+'czk','2019-10-29 11-33-00','','xihu20191101','/waterData/origin/1001.img','/waterData/origin/rgb/1002.jpg','0',1,'','','','','' );
+insert into water_info values(1002,'太湖', '2018-10-31', '中国','江苏省','苏州市', 'MODIS',1234,'czk','2019-10-13 11-33-00',
+'czk','2019-10-27 11-33-00','','taihu20191101','/waterData/origin/1001.img','/waterData/origin/rgb/1003.jpg','0',1,'','','','','' );
 
 -- ----------------------------
 -- 01、TP
@@ -51,9 +50,13 @@ create table tp (
   min               float(32)       default 0                  comment 'min',
   max               float(32)       default 0                  comment 'max',
   mean              float(32)       default 0                  comment 'mean',
+  params            varchar(20)    default 'tp'                comment '参数flag',
   primary key (water_id)
 ) engine=innodb auto_increment=200 comment = '总磷表';
-insert into tp values(1000,'2019-10-30 11-33-00','waterData/tp/rgb/20180731Dianchi.ipg',5,5,5,0,0,0 );
+insert into tp values(1000,'2019-10-30 11-33-00','/waterData/tp/rgb/1001.jpg',5,5,5,0,0,0,'tp' );
+insert into tp values(1001,'2019-10-30 11-33-00','/waterData/tp/rgb/1002.jpg',5,5,5,1,2,3,'tp' );
+insert into tp values(1002,'2019-10-30 11-33-00','/waterData/tp/rgb/1003.jpg',5,5,5,3,2,4,'tp' );
+
 -- ----------------------------
 -- 02、nh
 -- ----------------------------
@@ -68,9 +71,12 @@ create table nh (
   min               float(32)       default 0                  comment 'min',
   max               float(32)       default 0                  comment 'max',
   mean              float(32)       default 0                  comment 'mean',
+  params            varchar(20)    default 'nh'                comment '参数flag',
   primary key (water_id)
 ) engine=innodb auto_increment=200 comment = '氨氮表';
-insert into nh values(1000,'2019-10-30 11-33-00','waterData/nh/rgb/20180731Dianchi.ipg',5,5,5,0,0,0 );
+insert into nh values(1000,'2019-10-30 11-33-00','/waterData/nh/rgb/1001.jpg',5,5,5,3,2,4,'nh');
+insert into nh values(1001,'2019-10-30 11-33-00','/waterData/nh/rgb/1002.jpg',5,5,5,3,2,4,'nh' );
+insert into nh values(1002,'2019-10-30 11-33-00','/waterData/nh/rgb/1003.jpg',5,5,5,5,6,7,'nh' );
 -- 03、TN
 -- ----------------------------
 drop table if exists tn;
@@ -84,10 +90,12 @@ create table tn (
   min               float(32)       default 0                  comment 'min',
   max               float(32)       default 0                  comment 'max',
   mean              float(32)       default 0                  comment 'mean',
+  params            varchar(20)    default 'tn'                comment '参数flag',
   primary key (water_id)
 ) engine=innodb auto_increment=200 comment = '总氮表';
-insert into tn values(1000,'2019-10-30 11-33-00','waterData/tn/rgb/20180731Dianchi.ipg',5,5,5,0,0,0 );
-
+insert into tn values(1000,'2019-10-30 11-33-00','/waterData/tn/rgb/1001.jpg',5,5,5,5,6,7,'tn' );
+insert into tn values(1001,'2019-10-30 11-33-00','/waterData/tn/rgb/1002.jpg',5,5,5,6,7,8,'tn' );
+insert into tn values(1002,'2019-10-30 11-33-00','/waterData/tn/rgb/1003.jpg',5,5,5,8,9,10,'tn' );
 -- ----------------------------
 -- 04、TSS
 -- ----------------------------
@@ -102,9 +110,12 @@ create table tss (
   min               float(32)       default 0                  comment 'min',
   max               float(32)       default 0                  comment 'max',
   mean              float(32)       default 0                  comment 'mean',
+  params            varchar(20)    default 'tss'               comment '参数flag',
   primary key (water_id)
 ) engine=innodb auto_increment=200 comment = '总悬浮物表';
-insert into tss values(1000,'2019-10-30 11-33-00','waterData/tss/rgb/20180731Dianchi.ipg',5,5,5,0,0,0 );
+insert into tss values(1000,'2019-10-30 11-33-00','/waterData/tss/rgb/1001.jpg',5,5,5,4,3,5,'tss' );
+insert into tss values(1001,'2019-10-30 11-33-00','/waterData/tss/rgb/1002.jpg',5,5,5,4,3,5,'tss');
+insert into tss values(1002,'2019-10-30 11-33-00','/waterData/tss/rgb/1003.jpg',5,5,5,4,3,5,'tss' );
 -- ----------------------------
 -- 05、COD
 -- ----------------------------
@@ -119,10 +130,12 @@ create table cod (
   min               float(32)       default 0                  comment 'min',
   max               float(32)       default 0                  comment 'max',
   mean              float(32)       default 0                  comment 'mean',
+  params            varchar(20)    default 'cod'                comment '参数flag',
   primary key (water_id)
 ) engine=innodb auto_increment=200 comment = 'COD表';
-insert into cod values(1000,'2019-10-30 11-33-00','waterData/cod/rgb/20180731Dianchi.ipg',5,5,5,0,0,0 );
-
+insert into cod values(1000,'2019-10-30 11-33-00','/waterData/cod/rgb/1001.jpg',5,5,5,0,0,0,'cod' );
+insert into cod values(1001,'2019-10-30 11-33-00','/waterData/cod/rgb/1002.jpg',5,5,5,0,0,0,'cod' );
+insert into cod values(1002,'2019-10-30 11-33-00','/waterData/cod/rgb/1003.jpg',5,5,5,0,0,0,'cod' );
 -- ----------------------------
 -- 06、Chla
 -- ----------------------------
@@ -137,10 +150,12 @@ create table chla (
   min               float(32)       default 0                  comment 'min',
   max               float(32)       default 0                  comment 'max',
   mean              float(32)       default 0                  comment 'mean',
+  params            varchar(20)     default 'chla'             comment '参数flag',
   primary key (water_id)
 ) engine=innodb auto_increment=200 comment = '叶绿素a表';
-insert into chla values(1000,'2019-10-30 11-33-00','waterData/chla/rgb/20180731Dianchi.ipg',5,5,5,0,0,0 );
-
+insert into chla values(1000,'2019-10-30 11-33-00','/waterData/chla/rgb/1001.jpg',5,5,5,0,0,0,'chla' );
+insert into chla values(1001,'2019-10-30 11-33-00','/waterData/chla/rgb/1002.jpg',5,5,5,0,0,0,'chla' );
+insert into chla values(1002,'2019-10-30 11-33-00','/waterData/chla/rgb/1003.jpg',5,5,5,0,0,0,'chla' );
 -- ----------------------------
 -- 1、部门表
 -- ----------------------------

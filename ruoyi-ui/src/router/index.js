@@ -59,18 +59,35 @@ export const constantRoutes = [
     hidden: true
   },
   {
-    path: '',
+    path: '/queryAnalysis/',
     component: Layout,
     redirect: 'index',
-    children: [
+    children: [    
       {
-        path: 'index',
-        component: () => import('@/views/index'),
-        name: '首页',
-        meta: { title: '首页', icon: 'dashboard', noCache: true, affix: true }
-      }
+        path: 'query',
+        component: () => import('@/views/queryAnalysis/query'),
+        name: '数据检索',
+        meta: {
+          title: '数据检索',
+          icon: 'search',
+          affix: true 
+        }
+      },
     ]
   },
+  // {
+  //   path: '',
+  //   component: Layout,
+  //   // redirect: 'index',
+  //   children: [
+  //     {
+  //       path: 'test',
+  //       component: () => import('@/views/index'),
+  //       name: '首页',
+  //       meta: { title: '首页', icon: 'dashboard', noCache: true, affix: true }
+  //     }
+  //   ]
+  // },
   {
     path: '/user',
     component: Layout,
@@ -118,72 +135,61 @@ export const constantRoutes = [
     redirect: '/MonitorEvaluation/monitor',
     hidden: false,
     name: 'MonitorEvaluation',
-    meta: {
-      title: '数据监测与评价',
-      icon: 'example'
-    },
     children: [
       {
         path: 'monitor/:id',
         component: () => import('@/views/monitorEvaluation/monitor'),
         name: 'Monitor',
         meta: {
-          title: '水质监测',
+          title: '水质反演',
           icon: 'example'
         }
       },
-      {
-        path: '',
-        component: Layout,
-        children: [
-          {
-            path: 'http://kjs.mee.gov.cn/hjbhbz/bzwb/shjbh/shjzlbz/200206/t20020601_66497.shtml',
-            meta: { title: '地表水标准', icon: 'link' }
-          }
-        ]
-      }
     ]
   },
+  // {
+  //   path: '/dashboard',
+  //   component: Layout,
+  //   hidden: false,
+  //   name: 'Dashboard',
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       component: () => import('@/views/queryAnalysis/index'),
+  //       name: '信息统计',
+  //       meta: { title: '信息统计', icon: 'dashboard' }
+  //     }
+  //   ]
+  // },
+  
   {
-    path: '/queryAnalysis',
+    path: '/queryAnalysis/',
     component: Layout,
-    redirect: '/queryAnalysis/index',
     hidden: false,
-    name: 'QueryAnalysis',
-    meta: {
-      title: '数据查询与分析',
-      icon: 'chart'
-    },
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/queryAnalysis/index'),
-        name: 'Info',
-        meta: {
-          title: '信息统计',
-          icon: 'example'
-        }
-      },
-      {
-        path: 'query',
-        component: () => import('@/views/queryAnalysis/query'),
-        name: 'Query',
-        meta: {
-          title: '数据查询',
-          icon: 'example'
-        }
-      },
+    name: 'analysis',
+    children: [    
       {
         path: 'analysis',
         component: () => import('@/views/queryAnalysis/analysis'),
         name: 'Analysis',
         meta: {
           title: '数据分析',
-          icon: 'example'
+          icon: 'chart'
         }
       }
     ]
-  }
+  },
+  {
+    path: '',
+    component: Layout,
+    children: [
+      {
+        path: 'http://kjs.mee.gov.cn/hjbhbz/bzwb/shjbh/shjzlbz/200206/t20020601_66497.shtml',
+        meta: { title: '地表水标准', icon: 'link' }
+      }
+    ]
+  },
+  
 ]
 
 export default new Router({

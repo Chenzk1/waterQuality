@@ -12,7 +12,7 @@
                 <el-input v-model="listQuery.waterId" />
               </el-form-item>
               <el-form-item style="float: right;">  
-                <el-button type="primary" style="float: right;" @click="getList">重新选择水体</el-button>
+                <el-button type="primary" style="float: right;" @click="changeWater">重新选择水体</el-button>
               </el-form-item>
             </el-form> 
             <el-divider></el-divider>    
@@ -62,7 +62,7 @@
                 <!-- <el-input v-model="listForm.bands" :disabled="true" /> -->
               </el-form-item>      
               <el-form-item label="RGB图片" prop="rgbPath">
-                <img v-if="listForm.rgbPath" :src="listForm.rgbPath" style="width:200px;height:200px;display:block">
+                <img v-if="listForm.rgbPath" :src="listForm.rgbPath" style="width:380px;height:380px;display:block">
               </el-form-item>
             </el-form>
           </div> 
@@ -83,11 +83,11 @@
                   <el-form-item label="参数2">
                     <el-input v-model="resultForm.tp.para2" placeholder="5" />
                   </el-form-item>
-                  <el-form-item size="medium" style="vertical-align:middle;text-align:center">
+                  <el-form-item style="vertical-align:middle;text-align:center" label='反演结果'>
                     <el-button type="primary" round="True" size="medium" @click="retrieval('tp')">总磷反演</el-button>
                   </el-form-item>
                   <el-form-item style="vertical-align:middle;text-align:center">
-                    <img v-if="resultForm.tp.rgbPath" :src="resultForm.tp.rgbPath" style="width:200px;height:200px;display:block,margin-top:auto;margin-bottom:auto;">
+                    <img v-if="resultForm.tp.rgbPath" :src="resultForm.tp.rgbPath" style="width:380px;height:380px;display:block,margin-top:auto;margin-bottom:auto;">
                   </el-form-item>
                 </el-form>
               </div>
@@ -101,11 +101,11 @@
                   <el-form-item label="参数2">
                     <el-input v-model="resultForm.tn.para2" placeholder="5" />
                   </el-form-item>
-                  <el-form-item size="medium" style="vertical-align:middle;text-align:center">
+                  <el-form-item style="vertical-align:middle;text-align:center" label='反演结果'>
                     <el-button type="primary" round="True" size="medium" @click="retrieval('tn')">总氮反演</el-button>
                   </el-form-item>
                   <el-form-item style="vertical-align:middle;text-align:center">
-                    <img v-if="resultForm.tn.rgbPath" :src="resultForm.tn.rgbPath" style="width:200px;height:200px;display:block,margin-top:auto;margin-bottom:auto;">
+                    <img v-if="resultForm.tn.rgbPath" :src="resultForm.tn.rgbPath" style="width:380px;height:380px;display:block,margin-top:auto;margin-bottom:auto;">
                   </el-form-item>
                 </el-form>
               </div>
@@ -123,7 +123,7 @@
                     <el-button type="primary" round="True" size="medium" @click="retrieval('chla')">叶绿素a反演</el-button>
                   </el-form-item>
                   <el-form-item style="vertical-align:middle;text-align:center">
-                    <img v-if="resultForm.chla.rgbPath" :src="resultForm.chla.rgbPath" style="width:200px;height:200px;display:block,margin-top:auto;margin-bottom:auto;">
+                    <img v-if="resultForm.chla.rgbPath" :src="resultForm.chla.rgbPath" style="width:380px;height:380px;display:block,margin-top:auto;margin-bottom:auto;">
                   </el-form-item>
                 </el-form>
               </div>
@@ -140,8 +140,8 @@
                   <el-form-item size="medium" style="vertical-align:middle;text-align:center">
                     <el-button type="primary" round="True" size="medium" @click="retrieval('nh')">氨氮反演</el-button>
                   </el-form-item>
-                  <el-form-item style="vertical-align:middle;text-align:center">
-                    <img v-if="resultForm.nh.rgbPath" :src="resultForm.nh.rgbPath" style="width:200px;height:200px;display:block,margin-top:auto;margin-bottom:auto;">
+                  <el-form-item style="vertical-align:middle;text-align:center" label='反演结果'>
+                    <img v-if="resultForm.nh.rgbPath" :src="resultForm.nh.rgbPath" style="width:380px;height:380px;display:block,margin-top:auto;margin-bottom:auto;">
                   </el-form-item>
                 </el-form>
               </div>
@@ -155,11 +155,11 @@
                   <el-form-item label="参数2">
                     <el-input v-model="resultForm.tss.para2" placeholder="5" />
                   </el-form-item>
-                  <el-form-item size="medium" style="vertical-align:middle;text-align:center">
+                  <el-form-item style="vertical-align:middle;text-align:center" label='反演结果'>
                     <el-button type="primary" round="True" size="medium" @click="retrieval('tss')">总悬浮物反演</el-button>
                   </el-form-item>
                   <el-form-item style="vertical-align:middle;text-align:center">
-                    <img v-if="resultForm.tss.rgbPath" :src="resultForm.tss.rgbPath" style="width:200px;height:200px;display:block,margin-top:auto;margin-bottom:auto;">
+                    <img v-if="resultForm.tss.rgbPath" :src="resultForm.tss.rgbPath" style="width:380px;height:380px;display:block,margin-top:auto;margin-bottom:auto;">
                   </el-form-item>
                 </el-form>
               </div>
@@ -167,7 +167,7 @@
             <el-collapse-item title="水质评价" name="6">
               <div class="form-wrapper">
                 <el-form ref="listForm.level" :model="listForm" prop="listForm.level" label-width="100px">
-                  <el-form-item label="水质评价方法">
+                  <!-- <el-form-item label="水质评价方法">
                     <el-select v-model="levelSelect" placeholder="请选择">
                       <el-option
                         v-for="item in evaluteMethodOptions"
@@ -178,9 +178,9 @@
                       />
                     </el-select>
                   </el-form-item>
-                  <el-form-item size="medium" style="vertical-align:middle;text-align:center">
+                  <el-form-item style="vertical-align:middle;text-align:center" label='反演结果'>
                     <el-button type="primary" round="True" size="medium" @click="displayLevel(levelSelect)">水质评价</el-button>
-                  </el-form-item>
+                  </el-form-item> -->
                   <el-form-item label="水质评价结果">
                     1
                   </el-form-item>
@@ -202,11 +202,9 @@
 </template>
 
 <script>
-
 import { fetchList, createData, updateData, fetchRetrieval, fetchLevel, fetchResult } from '@/api/data'
 import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils'
-
 const TypeOptions = [
   { key: 'MODIS', display_name: 'MODIS' },
   { key: 'GF-1', display_name: '高分一号' },
@@ -251,16 +249,19 @@ export default {
     return {
       tableKey: 0,
       list: null,
-      listForm: { waterId: this.$route.params.id },
+      listForm: { waterId: 1000 },
       resultForm: { 
-        waterId: this.$route.params.id,
-        tp:undefined,
-        tn:undefined,
-        tss:undefined,
-        nh:undefined,
-        chla:undefined,
+        waterId: 1000,
+        tp:{para1:undefined, para2:undefined, para3:undefined, min:undefined, max:undefined, mean:undefined, rgbPath:undefined},
+        tn:{para1:undefined, para2:undefined, para3:undefined, min:undefined, max:undefined, mean:undefined, rgbPath:undefined},
+        tss:{para1:undefined, para2:undefined, para3:undefined, min:undefined, max:undefined, mean:undefined, rgbPath:undefined},
+        nh:{para1:undefined, para2:undefined, para3:undefined, min:undefined, max:undefined, mean:undefined, rgbPath:undefined},
+        chla:{para1:undefined, para2:undefined, para3:undefined, min:undefined, max:undefined, mean:undefined, rgbPath:undefined},
+        cod:{para1:undefined, para2:undefined, para3:undefined, min:undefined, max:undefined, mean:undefined, rgbPath:undefined},
+
       },
       retrievalParams: {
+        waterId: undefined,
         retrievalParams: 'tp',
         para1: 0,
         para2: 0,
@@ -269,10 +270,10 @@ export default {
       total: 0,
       listLoading: true,
       listQuery: {
-        waterId: this.$route.params.id | 1000,
+        waterId: this.$route.params.id,
       },
       resultQuery: {
-        waterId: this.$route.params.id | 1000,
+        waterId: this.$route.params.id,
         retrievalParams: 'tp'
       },
       importanceOptions: [1, 2, 3],
@@ -310,16 +311,18 @@ export default {
     }
   },
   created() {
+    if(this.$route.params.id==':id'){
+        this.listQuery.waterId=1000
+        this.resultQuery.waterId=1000
+      }
+    console.log(this.$route.params.id)
     this.getList()
-    console.log(this.resultForm)
+    //this.getResult()
     this.getResult('tp')
-    console.log(this.resultForm)
-
     this.getResult('tn')
     this.getResult('tss')
     this.getResult('nh')
     this.getResult('chla')
-    console.log(this.result.tp)
     // console.log(this.list)
     // console.log(this.listForm)
   },
@@ -329,46 +332,129 @@ export default {
     },
     getList() {
       this.listLoading = true
+      
+      console.log(this.listQuery)
       fetchList(this.listQuery).then(response => {
+        if(response.total==0)
+        {
+          this.listQuery.waterId = this.listForm.waterId || 1000;
+          this.msgSuccess("数据库中不存在此水体");
+        }
+        else{
         this.listForm = response.rows[0];
+        this.listForm.rgbPath = process.env.VUE_APP_BASE_API + '/profile' + response.rows[0].rgbPath
+        console.log(this.listForm.rgbPath)
         this.total = response.total;
         // Just to simulate the time of the request
         setTimeout(() => {
           this.listLoading = false
         }, 1.5 * 1000)
+        }
+      })
+    },
+    changeWater() {
+      // this.listLoading = true
+      console.log('test:',this.listQuery.waterId)
+      fetchList(this.listQuery).then(response => {
+        console.log('total:',response.total)
+        if(response.total==0)
+        {
+          this.listQuery.waterId = this.listForm.waterId || 1000;
+          this.msgSuccess("数据库中不存在此水体");
+        }
+        else{
+          this.$router.push({
+            path: `/monitorEvaluation/monitor/${this.listQuery.waterId}`
+            })
+          // setTimeout(() => {
+          // this.listLoading = false
+          // }, 1.5 * 1000)
+        }
+      })
+    },
+    getResult(){
+      this.resultQuery.waterId = this.listForm.waterId
+
+      this.resultForm.tp = this.flushResult
+      var arr=['tp','tn','tss','chla','nh','cod']
+      arr.forEach(function(element){
+        this.resultQuery.retrievalParams = element;
+        fetchResult(this.resultQuery).then(response => {
+          // console.log(this.resultQuery)
+          // console.log(response)
+          switch (element){
+            case 'tp':
+              this.resultForm.tp = response.rows[0];
+              this.resultForm.tp.rgbPath = process.env.VUE_APP_BASE_API + '/profile' + response.rows[0].rgbPath
+              break;
+            case 'tn':
+              this.resultForm.tn = response.rows[0];
+              this.resultForm.tn.rgbPath = process.env.VUE_APP_BASE_API + '/profile' + response.rows[0].rgbPath
+              break;
+            case 'tss':
+              this.resultForm.tss = response.rows[0];
+              this.resultForm.tss.rgbPath = process.env.VUE_APP_BASE_API + '/profile' + response.rows[0].rgbPath
+              break;
+            case 'nh':
+              this.resultForm.nh = response.rows[0];
+              this.resultForm.nh.rgbPath = process.env.VUE_APP_BASE_API + '/profile' + response.rows[0].rgbPath
+              break;          
+            case 'chla':
+              this.resultForm.chla = response.rows[0];
+              this.resultForm.chla.rgbPath = process.env.VUE_APP_BASE_API + '/profile' + response.rows[0].rgbPath
+              break;
+            case 'cod':
+              this.resultForm.cod = response.rows[0];
+              this.resultForm.cod.rgbPath = process.env.VUE_APP_BASE_API + '/profile' + response.rows[0].rgbPath
+
+              break;
+            default:
+              alert('获取反演结果失败！')
+              break;
+          }
+        
+        })
       })
     },
     getResult(r) {
       this.listLoading = true;
-      this.resultQuery.waterId = this.$route.params.id | 1000;
-      this.resultQuery.retrievalParams = r;
-      fetchResult(this.resultQuery).then(response => {
-        console.log(this.resultQuery)
-        console.log(response)
+      let resultQuery ={}
+      resultQuery["waterId"] = this.listQuery.waterId
+      resultQuery["retrievalParams"] = r
+      console.log(resultQuery)
+      fetchResult(resultQuery).then(response => {
+        // console.log(this.resultQuery)
+        // console.log(response)
         switch (r){
           case 'tp':
             this.resultForm.tp = response.rows[0];
+            this.resultForm.tp.rgbPath = process.env.VUE_APP_BASE_API + '/profile' + response.rows[0].rgbPath
             break;
           case 'tn':
             this.resultForm.tn = response.rows[0];
+            this.resultForm.tn.rgbPath = process.env.VUE_APP_BASE_API + '/profile' + response.rows[0].rgbPath
             break;
           case 'tss':
             this.resultForm.tss = response.rows[0];
+            this.resultForm.tss.rgbPath = process.env.VUE_APP_BASE_API + '/profile' + response.rows[0].rgbPath
             break;
           case 'nh':
             this.resultForm.nh = response.rows[0];
+            this.resultForm.nh.rgbPath = process.env.VUE_APP_BASE_API + '/profile' + response.rows[0].rgbPath
             break;          
           case 'chla':
             this.resultForm.chla = response.rows[0];
+            this.resultForm.chla.rgbPath = process.env.VUE_APP_BASE_API + '/profile' + response.rows[0].rgbPath
             break;
           case 'cod':
             this.resultForm.cod = response.rows[0];
+            this.resultForm.cod.rgbPath = process.env.VUE_APP_BASE_API + '/profile' + response.rows[0].rgbPath
+
             break;
           default:
             alert('获取反演结果失败！')
             break;
         }
-
         // Just to simulate the time of the request
         setTimeout(() => {
           this.listLoading = false
@@ -376,6 +462,7 @@ export default {
       })
     },
     retrieval(param) {
+      this.retrievalParams.waterId = this.listQuery.waterId
       this.retrievalParams.retrievalParams = param
       switch (param){
         case 'tp':
@@ -399,39 +486,43 @@ export default {
             this.retrievalParams.para2 = this.resultForm.chla.para2;
             break;
           case 'cod':
-            this.retrievalParams.para1 = this.resultForm.chla.para1;
-            this.retrievalParams.para2 = this.resultForm.chla.para2;
+            this.retrievalParams.para1 = this.resultForm.cod.para1;
+            this.retrievalParams.para2 = this.resultForm.cod.para2;
             break;
           default:
             alert('反演失败！')
             break;
       }
-
       fetchRetrieval(this.retrievalParams).then(response => {
         switch (param){
           case 'tp':
             this.resultForm.tp = response.rows[0];
+            this.resultForm.tp.rgbPath = process.env.VUE_APP_BASE_API + '/profile' + response.rows[0].rgbPath
             break;
           case 'tn':
             this.resultForm.tn = response.rows[0];
+            this.resultForm.tn.rgbPath = process.env.VUE_APP_BASE_API + '/profile' + response.rows[0].rgbPath
             break;
           case 'tss':
             this.resultForm.tss = response.rows[0];
+            this.resultForm.tss.rgbPath = process.env.VUE_APP_BASE_API + '/profile' + response.rows[0].rgbPath
             break;
           case 'nh':
             this.resultForm.nh = response.rows[0];
+            this.resultForm.nh.rgbPath = process.env.VUE_APP_BASE_API + '/profile' + response.rows[0].rgbPath
             break;          
           case 'chla':
             this.resultForm.chla = response.rows[0];
+            this.resultForm.chla.rgbPath = process.env.VUE_APP_BASE_API + '/profile' + response.rows[0].rgbPath
             break;
           case 'cod':
             this.resultForm.cod = response.rows[0];
+            this.resultForm.cod.rgbPath = process.env.VUE_APP_BASE_API + '/profile' + response.rows[0].rgbPath
             break;
           default:
             alert('反演失败！')
             break;
         }
-
         // Just to simulate the time of the request
         setTimeout(() => {
           this.listLoading = false
@@ -571,7 +662,6 @@ export default {
           : ''
     },
     displayLevel: function(key) {
-      console.log(key)
       fetchLevel(key)
     }
   }
@@ -583,31 +673,24 @@ export default {
     padding: 32px;
     background-color: rgb(240, 242, 245);
     position: relative;
-
     .github-corner {
       position: absolute;
       top: 0px;
       border: 0;
       right: 0;
     }
-
     .form-wrapper {
       background: #fff;
       padding: 16px 16px 0;
       margin-bottom: 32px;
-
     }
-
   }
-
   .text {
     font-size: 14px;
   }
-
   .item {
     margin-bottom: 18px;
   }
-
   .clearfix:before,
   .clearfix:after {
     display: table;
@@ -616,7 +699,6 @@ export default {
   .clearfix:after {
     clear: both
   }
-
   .box-card {
     width: 480px;
   }

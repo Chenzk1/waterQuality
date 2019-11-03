@@ -38,7 +38,38 @@
         <result property="department"       column="department"         />
         <result property="contact"       column="contact"         />
         <result property="contactInformation"       column="contact_information"         />
+        <result property="photoTime"       column="photo_time"         />
+        <result property="retrievalParams"       column="params"         />
+    </resultMap>
 
+    <resultMap type="ListResult" id="listResult">
+        <id     property="waterId"       column="water_id"        />
+        <result     property="waterName"       column="water_name"        />
+        <result property="photoTime"       column="photo_time"         />
+        <result property="tpMin"       column="tp_min"         />
+        <result property="tpMax"       column="tp_max"         />
+        <result property="tpMean"       column="tp_mean"       />
+        <result property="tnMin"       column="tn_min"         />
+        <result property="tnMax"       column="tn_max"         />
+        <result property="tnMean"       column="tn_mean"       />
+        <result property="tssMin"       column="tss_min"         />
+        <result property="tssMax"       column="tss_max"         />
+        <result property="tssMean"       column="tss_mean"       />
+        <result property="chlaMin"       column="chla_min"         />
+        <result property="chlaMax"       column="chla_max"         />
+        <result property="chlaMean"       column="chla_mean"       />
+        <result property="codMin"       column="cod_min"         />
+        <result property="codMax"       column="cod_max"         />
+        <result property="codMean"       column="cod_mean"       />
+        <result property="nhMin"       column="nh_min"         />
+        <result property="nhMax"       column="nh_max"         />
+        <result property="nhMean"       column="nh_mean"       />
+        <result property="nhRgbPath"       column="nh_rgb_path"       />
+        <result property="tpRgbPath"       column="tp_rgb_path"       />
+        <result property="tssRgbPath"       column="tss_rgb_path"       />
+        <result property="codRgbPath"       column="cod_rgb_path"       />
+        <result property="chlaRgbPath"       column="chla_rgb_path"       />
+        <result property="tnRgbPath"       column="tn_rgb_path"       />
     </resultMap>
 
     <sql id="selectDataVo">
@@ -51,7 +82,6 @@
     <sql id="selectResultVo">
 	    select distinct r.water_id, r.update_time, r.rgb, r.para_1, r.para_2, r.para_3, r.min, r.max, r.mean
     </sql>
-
 
     <select id="selectUniqueType" resultType="String">
         select distinct r.type
@@ -146,7 +176,6 @@
         <if test="waterId != null and waterId != ''">
             AND r.water_id = #{waterId}
         </if>
-
         <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
             and date_format(r.photo_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
         </if>
@@ -155,6 +184,44 @@
         </if>
 <!--        &lt;!&ndash; 数据范围过滤 &ndash;&gt;-->
 <!--        ${dataScope}-->
+    </select>
+
+    <select id="selectListResult" parameterType="RetrievalResult" resultMap="listResult">
+        select wi.water_id water_id,
+            wi.water_name water_name,
+            wi.photo_time photo_time,
+            wi.province province,
+            wi.city city,
+            wi.type type,
+            wi.location location,
+            tp.min tp_min, tp.max tp_max, tp.mean tp_mean, tp.rgb as tp_rgb_path,
+            tn.min tn_min, tn.max tn_max, tn.mean tn_mean, tn.rgb as tn_rgb_path,
+            tss.min tss_min, tss.max tss_max, tss.mean tss_mean, tss.rgb as tss_rgb_path,
+            chla.min chla_min, chla.max chla_max, chla.mean chla_mean, chla.rgb as chla_rgb_path,
+            cod.min cod_min, cod.max cod_max, cod.mean cod_mean, cod.rgb as cod_rgb_path,
+            nh.min nh_min, nh.max nh_max, nh.mean nh_mean, nh.rgb as nh_rgb_path
+        from
+        (select
+            w.*
+        from water_info w
+        where w.del_flag='0'
+        <if test="waterName != null">
+            and w.water_name =#{waterName}
+        </if>
+        <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+            and date_format(w.photo_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+        </if>
+        <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+            and date_format(w.photo_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+        </if>
+        ) wi
+            left join tp tp on wi.water_id=tp.water_id
+            left join tn tn on wi.water_id=tn.water_id
+            left join tss tss on wi.water_id=tss.water_id
+            left join nh nh on wi.water_id=nh.water_id
+            left join cod cod on wi.water_id=cod.water_id
+            left join chla chla on wi.water_id=chla.water_id
+
     </select>
 
     <select id="selectUniqueByDictCode" parameterType="Long" resultMap="DataManageResult">
