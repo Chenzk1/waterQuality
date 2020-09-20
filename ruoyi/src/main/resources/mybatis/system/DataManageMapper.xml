@@ -70,6 +70,8 @@
         <result property="codRgbPath"       column="cod_rgb_path"       />
         <result property="chlaRgbPath"       column="chla_rgb_path"       />
         <result property="tnRgbPath"       column="tn_rgb_path"       />
+        <result property="rgbPath"       column="rgb_path"       />
+        <result property="contactInformation"       column="contact_information"       />
     </resultMap>
 
     <sql id="selectDataVo">
@@ -194,6 +196,11 @@
             wi.city city,
             wi.type type,
             wi.location location,
+
+            wi.bands bands,
+            wi.rgb_path rgb_path, wi.department department,
+            wi.contact contact, wi.contact_information contact_information,
+
             tp.min tp_min, tp.max tp_max, tp.mean tp_mean, tp.rgb as tp_rgb_path,
             tn.min tn_min, tn.max tn_max, tn.mean tn_mean, tn.rgb as tn_rgb_path,
             tss.min tss_min, tss.max tss_max, tss.mean tss_mean, tss.rgb as tss_rgb_path,

@@ -26,7 +26,7 @@ export default {
     },
     height: {
       type: String,
-      default: '300px'
+      default: '400px'
     },
     chartData: {
       type: Object,
@@ -76,7 +76,7 @@ export default {
           top: '10%',
           left: '2%',
           right: '2%',
-          bottom: '3%',
+          bottom: '5%',
           // containLabel: true
         },
         xAxis: [{

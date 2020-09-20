@@ -59,16 +59,16 @@ export const constantRoutes = [
     hidden: true
   },
   {
-    path: '/queryAnalysis/',
+    path: '/',
     component: Layout,
     redirect: 'index',
     children: [    
       {
-        path: 'query',
+        path: 'index',
         component: () => import('@/views/queryAnalysis/query'),
-        name: '数据检索',
+        name: '检索',
         meta: {
-          title: '数据检索',
+          title: '检索',
           icon: 'search',
           affix: true 
         }
@@ -184,7 +184,7 @@ export const constantRoutes = [
     component: Layout,
     children: [
       {
-        path: 'http://kjs.mee.gov.cn/hjbhbz/bzwb/shjbh/shjzlbz/200206/t20020601_66497.shtml',
+        path: 'https://www.mee.gov.cn/ywgz/fgbz/bz/bzwb/shjbh/shjzlbz/200206/W020061027509896672057.pdf',
         meta: { title: '地表水标准', icon: 'link' }
       }
     ]

@@ -113,12 +113,17 @@
             <el-collapse-item title="叶绿素a" name="3">
               <div class="form-wrapper">
                 <el-form ref="resultForm.chla" :model="resultForm" prop="resultForm.chla" label-width="100px">
-                  <el-form-item label="参数1">
+                  <el-form-item label="反演算法">
+                    <el-radio v-model="resultForm.chla.para1" label=5.0>2BDA</el-radio>
+                    <el-radio v-model="resultForm.chla.para1" label=6>3BDA</el-radio>
+                    <el-radio v-model="resultForm.chla.para1" label=7>BDCI</el-radio>
+                  </el-form-item>
+                  <!-- <el-form-item label="参数1">
                     <el-input v-model="resultForm.chla.para1" placeholder="5" />
                   </el-form-item>
                   <el-form-item label="参数2">
                     <el-input v-model="resultForm.chla.para2" placeholder="5" />
-                  </el-form-item>
+                  </el-form-item> -->
                   <el-form-item size="medium" style="vertical-align:middle;text-align:center">
                     <el-button type="primary" round="True" size="medium" @click="retrieval('chla')">叶绿素a反演</el-button>
                   </el-form-item>
@@ -256,7 +261,7 @@ export default {
         tn:{para1:undefined, para2:undefined, para3:undefined, min:undefined, max:undefined, mean:undefined, rgbPath:undefined},
         tss:{para1:undefined, para2:undefined, para3:undefined, min:undefined, max:undefined, mean:undefined, rgbPath:undefined},
         nh:{para1:undefined, para2:undefined, para3:undefined, min:undefined, max:undefined, mean:undefined, rgbPath:undefined},
-        chla:{para1:undefined, para2:undefined, para3:undefined, min:undefined, max:undefined, mean:undefined, rgbPath:undefined},
+        chla:{para1:5.0, para2:undefined, para3:undefined, min:undefined, max:undefined, mean:undefined, rgbPath:undefined},
         cod:{para1:undefined, para2:undefined, para3:undefined, min:undefined, max:undefined, mean:undefined, rgbPath:undefined},
 
       },

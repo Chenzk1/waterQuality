@@ -26,7 +26,7 @@ export default {
   },
   data() {
     return {
-      title: '水务管理系统',
+      title: '基于遥感图像水质反演的水务管理与监控系统',
       logo: logoImg
     }
   }
@@ -46,8 +46,8 @@ export default {
 .sidebar-logo-container {
   position: relative;
   width: 100%;
-  height: 50px;
-  line-height: 50px;
+  height: 100px;
+  line-height: 40px;
   background: #2b2f3a;
   text-align: center;
   overflow: hidden;
@@ -68,7 +68,7 @@ export default {
       margin: 0;
       color: #fff;
       font-weight: 600;
-      line-height: 50px;
+      line-height:30px;
       font-size: 14px;
       font-family: Avenir, Helvetica Neue, Arial, Helvetica, sans-serif;
       vertical-align: middle;

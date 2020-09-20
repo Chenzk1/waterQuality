@@ -48,7 +48,7 @@
             <el-radio-button v-for="param in displayOptions" :label="param.key" :key="param.key">{{param.display_name}}</el-radio-button>
           </el-radio-group>
         </el-row>
-        <el-row style="background:#fff;padding:16px 16px 0;margin-bottom:32px;" v-if="'fit' === activeTab">
+        <el-row style="background:#fff;padding:16px 16px 0;margin-bottom:40px;" v-if="'fit' === activeTab">
           <line-chart :chart-data="lineChartData" />
         </el-row>
       </el-tab-pane>
@@ -61,7 +61,7 @@
         <!-- <el-row style="background:#fff;padding:16px 16px 0;margin-bottom:32px;"  v-if="'hist' === activeTab">
           <line-chart :chart-data="lineChartData" />
         </el-row> -->
-        <el-row style="background:#fff;padding:16px 16px 0;margin-bottom:32px;"  v-if="'hist' === activeTab">
+        <el-row style="background:#fff;padding:16px 16px 0;margin-bottom:40px;"  v-if="'hist' === activeTab">
           <div class="chart-wrapper">
             <bar-chart :chart-data="barChartData"/>
           </div>

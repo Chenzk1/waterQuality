@@ -53,11 +53,51 @@ public class ListResult extends BaseEntity{
 
     private Date photoTime;
 
+    private String bands;
+    private String department;
+    private String contact;
+    private String contactInformation;
+
+    public String getBands()
+    {
+        return bands;
+    }
+    public void setBands(String bands)
+    {
+        this.bands = bands;
+    }
+
+    public void setDepartment(String department)
+    {
+        this.department = department;
+    }
+    public String getDepartment()
+    {
+        return department;
+    }
+
+    public void setContact(String contact)
+    {
+        this.contact = contact;
+    }
+    public String getContact()
+    {
+        return contact;
+    }
+
+    public void setContactInformation(String contactInformation)
+    {
+        this.contactInformation = contactInformation;
+    }
+    public String getContactInformation()
+    {
+        return contactInformation;
+    }
+
     public Date getPhotoTime()
     {
         return photoTime;
     }
-
     public void setPhotoTime(Date photoTime)
     {
         this.photoTime = photoTime;

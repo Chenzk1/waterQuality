@@ -41,16 +41,10 @@
       fit
       highlight-current-row
       style="width: 100%;"
-      @sort-change="sortChange"
     >
-      <el-table-column label="ID" prop="id" sortable="custom" align="center" width="80" :class-name="getSortClass('id')">
+      <el-table-column label="ID" prop="id" fixed align="center" width="80">
         <template slot-scope="scope">
           <span>{{ scope.row.waterId }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="水体" min-width="80px">
-        <template slot-scope="scope">
-          <span>{{ scope.row.waterName }}</span>
         </template>
       </el-table-column>
       <el-table-column label="拍摄日期" width="150px" align="center">
@@ -58,8 +52,12 @@
           <span>{{ parseTime(scope.row.photoTime) }}</span>
         </template>
       </el-table-column>
-      
-      <!-- <el-table-column label="省份" width="80px">
+      <el-table-column label="水体" min-width="50px">
+        <template slot-scope="scope">
+          <span>{{ scope.row.waterName }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="省份" width="80px">
         <template slot-scope="scope">
           <span>{{ scope.row.province }}</span>
         </template>
@@ -68,101 +66,177 @@
         <template slot-scope="scope">
           <span>{{ scope.row.city }}</span>
         </template>
-      </el-table-column> -->
+      </el-table-column>
+      <el-table-column label="区县" width="80px">
+        <template slot-scope="scope">
+          <span>{{ scope.row.county }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="位置" width="80px">
+        <template slot-scope="scope">
+          <span>{{ scope.row.location }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="主管部门" width="80px">
+        <template slot-scope="scope">
+          <span>{{ scope.row.department }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="联系人" width="80px">
+        <template slot-scope="scope">
+          <span>{{ scope.row.contact }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="联系方式" width="80px">
+        <template slot-scope="scope">
+          <span>{{ scope.row.contactInformation }}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="数据源" class-name="status-col" width="100">
         <template slot-scope="scope">
           <span>{{ scope.row.type }}</span>
         </template>
       </el-table-column>
-      <!-- <el-table-column label="反演结果图" class-name="status-col" width="300">
+      <el-table-column label="RGB图片" class-name="status-col" width="110">
         <template slot-scope="scope">
-          <img :src="scope.row.tp.resultPicture" style="width:200px;height:200px;display:block,margin-top:auto;margin-bottom:auto;">
+          <el-popover
+            placement="left"
+            title=""
+            trigger="click">
+            <el-image
+            slot="reference" 
+            style="width: 100px; height: 100px"
+            :src="scope.row.rgbPath"
+            :fit="fit"
+            ></el-image>
+            <el-image :src="scope.row.rgbPath"></el-image>
+          </el-popover>
         </template>
       </el-table-column>
-      <el-table-column label="统计值" align="center" width="230" class-name="small-padding fixed-width">
-        <el-table-column label="均值" class-name="status-col" width="100">
-          <el-table-column label="总磷" class-name="status-col" width="100">
-            <template slot-scope="scope">
-              <span>{{ scope.row.tp.mean }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="总氮" class-name="status-col" width="100">
-            <template slot-scope="scope">
-              <span>{{ scope.row.tn.mean }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="总悬浮物" class-name="status-col" width="100">
-            <template slot-scope="scope">
-              <span>{{ scope.row.tss.mean }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="叶绿素a" class-name="status-col" width="100">
-            <template slot-scope="scope">
-              <span>{{ scope.row.chla.mean }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="氨氮" class-name="status-col" width="100">
-            <template slot-scope="scope">
-              <span>{{ scope.row.nh.mean }}</span>
-            </template>
-          </el-table-column>
-        </el-table-column>
-
-        <el-table-column label="最小值" class-name="status-col" width="100">
-          <el-table-column label="总磷" class-name="status-col" width="100">
-            <template slot-scope="scope">
-              <span>{{ scope.row.tp.min }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="总氮" class-name="status-col" width="100">
-            <template slot-scope="scope">
-              <span>{{ scope.row.tn.min }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="总悬浮物" class-name="status-col" width="100">
-            <template slot-scope="scope">
-              <span>{{ scope.row.tss.min }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="叶绿素a" class-name="status-col" width="100">
-            <template slot-scope="scope">
-              <span>{{ scope.row.chla.min }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="氨氮" class-name="status-col" width="100">
-            <template slot-scope="scope">
-              <span>{{ scope.row.nh.min }}</span>
-            </template>
-          </el-table-column>
-        </el-table-column>
-        <el-table-column label="最大值" class-name="status-col" width="100">
-          <el-table-column label="总磷" class-name="status-col" width="100">
-            <template slot-scope="scope">
-              <span>{{ scope.row.tp.max }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="总氮" class-name="status-col" width="100">
-            <template slot-scope="scope">
-              <span>{{ scope.row.tn.max }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="总悬浮物" class-name="status-col" width="100">
-            <template slot-scope="scope">
-              <span>{{ scope.row.tss.max }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="叶绿素a" class-name="status-col" width="100">
-            <template slot-scope="scope">
-              <span>{{ scope.row.chla.max }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="氨氮" class-name="status-col" width="100">
-            <template slot-scope="scope">
-              <span>{{ scope.row.nh.max }}</span>
-            </template>
-          </el-table-column> 
-        </el-table-column>
-      </el-table-column>-->
+      <el-table-column label="反演结果" class-name="status-col" width="250">
+        <template slot-scope="scope">
+          <el-popover
+            placement="right"
+            width="250"
+            trigger="click"
+            >
+            <el-button slot="reference" type="primary" size="small" round>总磷</el-button>
+            <el-form label-position="left" width="250" inline>
+              <el-form-item label="结果" width="20">
+                <el-image
+                  style="width: 200px; height: 200px"
+                  :src="scope.row.tpRgbPath"
+                  :fit="fit"></el-image>
+              </el-form-item>
+              <el-form-item label="最小值" width="20">
+                <span>{{ scope.row.tpMin }}</span>
+              </el-form-item>
+              <el-form-item label="平均值" width="20">
+                <span>{{ scope.row.tpMean }}</span>
+              </el-form-item>
+              <el-form-item label="最大值" width="20">
+                <span>{{ scope.row.tpMax }}</span>
+              </el-form-item>
+            </el-form>
+          </el-popover>
+          <el-popover
+            placement="right"
+            width="250"
+            trigger="click"
+            >
+            <el-button slot="reference" type="primary" size="small" round>总氮</el-button>
+            <el-form label-position="left" width="250"  inline>
+              <el-form-item label="结果" width="20">
+                <el-image
+                  style="width: 200px; height: 200px"
+                  :src="scope.row.tnRgbPath"
+                  :fit="fit"></el-image>
+              </el-form-item>
+              <el-form-item label="最小值" width="20">
+                <span>{{ scope.row.tnMin }}</span>
+              </el-form-item>
+              <el-form-item label="平均值" width="20">
+                <span>{{ scope.row.tnMean }}</span>
+              </el-form-item>
+              <el-form-item label="最大值" width="20">
+                <span>{{ scope.row.tnMax }}</span>
+              </el-form-item>
+            </el-form>
+          </el-popover>
+          <el-popover
+            placement="right"
+            width="250"
+            trigger="click"
+            >
+            <el-button slot="reference" type="primary" size="small" round>总悬浮物</el-button>
+            <el-form label-position="left" width="250" inline>
+              <el-form-item label="反演结果图片" width="20">
+                <el-image
+                  style="width: 200px; height: 200px"
+                  :src="scope.row.tssRgbPath"
+                  :fit="fit"></el-image>
+              </el-form-item>
+              <el-form-item label="最小值" width="20">
+                <span>{{ scope.row.tssMin }}</span>
+              </el-form-item>
+              <el-form-item label="平均值" width="20">
+                <span>{{ scope.row.tssMean }}</span>
+              </el-form-item>
+              <el-form-item label="最大值" width="20">
+                <span>{{ scope.row.tssMax }}</span>
+              </el-form-item>
+            </el-form>
+          </el-popover>
+          <el-popover
+            placement="right"
+            width="250"
+            trigger="click"
+            >
+            <el-button slot="reference" type="primary" size="small" round>叶绿素a</el-button>
+            <el-form label-position="left" width="250" inline>
+              <el-form-item label="反演结果图片" width="20">
+                <el-image
+                  style="width: 200px; height: 200px"
+                  :src="scope.row.chlaRgbPath"
+                  :fit="fit"></el-image>
+              </el-form-item>
+              <el-form-item label="最小值" width="20">
+                <span>{{ scope.row.chlaMin }}</span>
+              </el-form-item>
+              <el-form-item label="平均值" width="20">
+                <span>{{ scope.row.chlaMean }}</span>
+              </el-form-item>
+              <el-form-item label="最大值" width="20">
+                <span>{{ scope.row.chlaMax }}</span>
+              </el-form-item>
+            </el-form>
+          </el-popover>
+          <el-popover
+            placement="right"
+            width="250"
+            trigger="click"
+            >
+            <el-button slot="reference" type="primary" size="small" round>氨氮</el-button>
+            <el-form label-position="left" width="250" inline>
+              <el-form-item label="反演结果图片" width="20">
+                <el-image
+                  style="width: 200px; height: 200px"
+                  :src="scope.row.nhRgbPath"
+                  :fit="fit"></el-image>
+              </el-form-item>
+              <el-form-item label="最小值" width="20">
+                <span>{{ scope.row.nhMin }}</span>
+              </el-form-item>
+              <el-form-item label="平均值" width="20">
+                <span>{{ scope.row.nhMean }}</span>
+              </el-form-item>
+              <el-form-item label="最大值" width="20">
+                <span>{{ scope.row.nhMax }}</span>
+              </el-form-item>
+            </el-form>
+          </el-popover>
+        </template>
+      </el-table-column>
     </el-table>
 
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
@@ -179,14 +253,6 @@ import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import PanelGroup from './PanelGroup'
 
-const typeOptions = [
-  { key: 'MODIS', display_name: 'MODIS' },
-  { key: 'GF-1', display_name: '高分一号' },
-  { key: 'GF-2', display_name: '高分二号' },
-  { key: 'GF-3', display_name: '高分三号' },
-  { key: 'LANDSAT-5', display_name: 'LANDSAT-5' },
-  { key: 'LANDSAT-8', display_name: 'LANDSAT-8' }
-]
 const nameOptions = []
 const provinceOptions = [
   '北京市', '广东省', '山东省', '江苏省', '河南省', '上海市', '河北省', '浙江省', '香港特别行政区', '陕西省', '湖南省', '重庆市',
@@ -194,10 +260,10 @@ const provinceOptions = [
   '黑龙江', '内蒙古自治区', '澳门特别行政区', '贵州省', '甘肃省', '青海省', '新疆维吾尔自治区', '西藏自治区', '吉林省', '宁夏回族自治区'
 ]
 // arr to obj, such as { CN : "China", US : "USA" }
-const calendarTypeKeyValue = typeOptions.reduce((acc, cur) => {
-  acc[cur.key] = cur.display_name
-  return acc
-}, {})
+// const calendarTypeKeyValue = typeOptions.reduce((acc, cur) => {
+//   acc[cur.key] = cur.display_name
+//   return acc
+// }, {})
 
 export default {
   name: 'Query',
@@ -239,7 +305,7 @@ export default {
         dateRange: undefined,
         city: undefined
       },
-      typeOptions,
+      typeOptions: [],
       provinceOptions,
       provinceNunique: 0,
       nameOptions,
@@ -259,6 +325,9 @@ export default {
     this.getUnique("name").then(response => {
       this.nameOptions = response.data;
     });
+    this.getUnique("type").then(response => {
+      this.typeOptions = response.data;
+    });
     // this.getUnique()
   },
   methods: {
@@ -274,7 +343,17 @@ export default {
       fetchResultList(this.addDateRange(this.listQuery, this.dateRange)).then(response => {
         // this.list = response.rows;
         this.total = response.total;
-        this.list = response.rows
+        this.list = response.rows;
+        this.list.forEach(function(element){
+          element.rgbPath = process.env.VUE_APP_BASE_API + '/profile' + element.rgbPath
+          element.tpRgbPath = process.env.VUE_APP_BASE_API + '/profile' + element.tpRgbPath
+          element.tnRgbPath = process.env.VUE_APP_BASE_API + '/profile' + element.tnRgbPath
+          element.tssRgbPath = process.env.VUE_APP_BASE_API + '/profile' + element.tssRgbPath
+          element.chlaRgbPath = process.env.VUE_APP_BASE_API + '/profile' + element.chlaRgbPath
+          element.nhRgbPath = process.env.VUE_APP_BASE_API + '/profile' + element.nhRgbPath
+          element.codRgbPath = process.env.VUE_APP_BASE_API + '/profile' + element.codRgbPath
+        })
+
       })
       this.listLoading = false;
     },
