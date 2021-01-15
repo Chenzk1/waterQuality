@@ -15,6 +15,7 @@ public class ListResult extends BaseEntity{
     private String city;
     private String location;
     private String type;
+    private Integer dataType;
 
     private String rgbPath;
     private String waterName;
@@ -22,32 +23,38 @@ public class ListResult extends BaseEntity{
     private Float tpMin;
     private Float tpMax;
     private Float tpMean;
-    private String tpRgbPath;
+    private String tpResultPath;
+    private String tpSaveMethod;
 
     private Float tnMin;
     private Float tnMax;
     private Float tnMean;
-    private String tnRgbPath;
+    private String tnResultPath;
+    private String tnSaveMethod;
 
     private Float tssMin;
     private Float tssMax;
     private Float tssMean;
-    private String tssRgbPath;
+    private String tssResultPath;
+    private String tssSaveMethod;
 
-    private String chlaRgbPath;
+    private String chlaResultPath;
     private Float chlaMin;
     private Float chlaMax;
     private Float chlaMean;
+    private String chlaSaveMethod;
 
     private Float nhMin;
     private Float nhMax;
     private Float nhMean;
-    private String nhRgbPath;
+    private String nhResultPath;
+    private String nhSaveMethod;
 
     private Float codMin;
     private Float codMax;
     private Float codMean;
-    private String codRgbPath;
+    private String codResultPath;
+    private String codSaveMethod;
 
     private String retrievalParams;
 
@@ -56,7 +63,7 @@ public class ListResult extends BaseEntity{
     private String bands;
     private String department;
     private String contact;
-    private String contactInformation;
+    private String phonenumber;
 
     public String getBands()
     {
@@ -85,13 +92,13 @@ public class ListResult extends BaseEntity{
         return contact;
     }
 
-    public void setContactInformation(String contactInformation)
+    public void setPhonenumber(String phonenumber)
     {
-        this.contactInformation = contactInformation;
+        this.phonenumber = phonenumber;
     }
-    public String getContactInformation()
+    public String getPhonenumber()
     {
-        return contactInformation;
+        return phonenumber;
     }
 
     public Date getPhotoTime()
@@ -181,6 +188,16 @@ public class ListResult extends BaseEntity{
         this.type = type;
     }
 
+    public Integer getDataType()
+    {
+        return dataType;
+    }
+
+    public void setDataType(Integer dataType)
+    {
+        this.dataType = dataType;
+    }
+
     public String getWaterName()
     {
         return waterName;
@@ -255,63 +272,117 @@ public class ListResult extends BaseEntity{
         this.retrievalParams = retrievalParams;
     }
 
-    public String getTpRgbPath()
+    public String getTpResultPath()
     {
-        return tpRgbPath;
+        return tpResultPath;
     }
 
-    public void setTpRgbPath(String tpRgbPath)
+    public void setTpResultPath(String tpResultPath)
     {
-        this.tpRgbPath = tpRgbPath;
+        this.tpResultPath = tpResultPath;
     }
 
-    public String getTnRgbPath()
+    public String getTnResultPath()
     {
-        return tnRgbPath;
+        return tnResultPath;
     }
 
-    public void setTnRgbPath(String tnRgbPath)
+    public void setTnResultPath(String tnResultPath)
     {
-        this.tnRgbPath = tnRgbPath;
+        this.tnResultPath = tnResultPath;
     }
 
-    public String getTssRgbPath()
+    public String getTssResultPath()
     {
-        return tssRgbPath;
+        return tssResultPath;
     }
 
-    public void setTssRgbPath(String tssRgbPath)
+    public void setTssResultPath(String tssResultPath)
     {
-        this.tssRgbPath = tssRgbPath;
+        this.tssResultPath = tssResultPath;
     }
 
-    public String getChlaRgbPath()
+    public String getChlaResultPath()
     {
-        return chlaRgbPath;
+        return chlaResultPath;
     }
 
-    public void setChlaRgbPath(String chlaRgbPath)
+    public void setChlaResultPath(String chlaResultPath)
     {
-        this.chlaRgbPath = chlaRgbPath;
+        this.chlaResultPath = chlaResultPath;
     }
 
-    public String getCodRgbPath()
+    public String getCodResultPath()
     {
-        return codRgbPath;
+        return codResultPath;
     }
 
-    public void setCodRgbPath(String codRgbPath)
+    public void setCodResultPath(String codResultPath)
     {
-        this.codRgbPath = codRgbPath;
+        this.codResultPath = codResultPath;
     }
 
-    public String getNhRgbPath()
+    public String getNhResultPath()
     {
-        return nhRgbPath;
+        return nhResultPath;
     }
 
-    public void setNhRgbPath(String nhRgbPath)
+    public void setNhResultPath(String nhResultPath)
     {
-        this.nhRgbPath = nhRgbPath;
+        this.nhResultPath = nhResultPath;
+    }
+
+    public String getTpSaveMethod()
+    {
+        return tpSaveMethod;
+    }
+    public void setTpSaveMethod(String tpSaveMethod)
+    {
+        this.tpSaveMethod = tpSaveMethod;
+    }
+
+    public String getTnSaveMethod()
+    {
+        return tnSaveMethod;
+    }
+    public void setTnSaveMethod(String tnSaveMethod)
+    {
+        this.tnSaveMethod = tnSaveMethod;
+    }
+
+    public String getTssSaveMethod()
+    {
+        return tssSaveMethod;
+    }
+    public void setTssSaveMethod(String tssSaveMethod)
+    {
+        this.tssSaveMethod = tssSaveMethod;
+    }
+
+    public String getCodSaveMethod()
+    {
+        return codSaveMethod;
+    }
+    public void setCodSaveMethod(String codSaveMethod)
+    {
+        this.codSaveMethod = codSaveMethod;
+    }
+
+    public String getNhSaveMethod()
+    {
+        return nhSaveMethod;
+    }
+    public void setNhSaveMethod(String nhSaveMethod)
+    {
+        this.nhSaveMethod = nhSaveMethod;
+    }
+
+    public String getChlaSaveMethod()
+    {
+        return chlaSaveMethod;
+    }
+    public void setChlaSaveMethod(String chlaSaveMethod)
+    {
+        this.chlaSaveMethod = chlaSaveMethod;
     }
 }

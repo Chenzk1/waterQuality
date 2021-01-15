@@ -24,6 +24,7 @@ import { getDicts } from "@/api/system/dict/data";
 import { getNUnique, getUnique } from "@/api/data";
 import { getConfigKey } from "@/api/system/config";
 import { parseTime, resetForm, addDateRange, selectDictLabel } from "@/utils/ruoyi";
+import { isAssetTypeAnImage } from "@/utils/wq";
 import Pagination from "@/components/Pagination";
 
 // 全局方法挂载
@@ -35,6 +36,7 @@ Vue.prototype.parseTime = parseTime
 Vue.prototype.resetForm = resetForm
 Vue.prototype.addDateRange = addDateRange
 Vue.prototype.selectDictLabel = selectDictLabel
+Vue.prototype.isAssetTypeAnImage = isAssetTypeAnImage
 
 Vue.prototype.msgSuccess = function (msg) {
   this.$message({ showClose: true, message: msg, type: "success" });

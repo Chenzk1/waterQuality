@@ -1,8 +1,8 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input v-model="listQuery.waterName" placeholder="水体搜索" style="width: 160px;" class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-select v-model="listQuery.waterName" placeholder="水体选择" clearable style="width: 160px" class="filter-item">
+      <el-input v-model="listQuery.waterName" placeholder="水体搜索" style="width: 120px;" class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-select v-model="listQuery.waterName" placeholder="水体选择" clearable style="width: 120px" class="filter-item">
         <el-option v-for="item in nameOptions" :key="item" :label="item" :value="item" />
       </el-select>
       <el-select v-model="listQuery.province" placeholder="省份" clearable style="width: 90px" class="filter-item">
@@ -11,6 +11,9 @@
       <el-select v-model="listQuery.type" placeholder="数据源" clearable class="filter-item" style="width: 90px">
         <el-option v-for="item in TypeOptions" :key="item" :label="item" :value="item" />
       </el-select>
+      <el-select v-model="listQuery.dataType" placeholder="数据类型" clearable class="filter-item" style="width: 120px">
+        <el-option v-for="item in dataTypeOptions" :key="item.value" :label="item.label" :value="item.value" />
+      </el-select>
       <el-date-picker
         v-model="dateRange"
         type="daterange"
@@ -18,7 +21,7 @@
         start-placeholder="开始日期"
         end-placeholder="结束日期"
         class="filter-item"
-        style="width: 400px"
+        style="width: 360px"
       />
       <el-select v-model="listQuery.sort" style="width: 140px" class="filter-item" @change="handleFilter">
         <el-option v-for="item in sortOptions" :key="item.key" :label="item.label" :value="item.key" />
@@ -29,9 +32,9 @@
       <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">
         添加
       </el-button>
-      <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">
+      <!-- <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">
         导出
-      </el-button>
+      </el-button> -->
     </div>
 
     <el-table
@@ -49,7 +52,7 @@
           <span>{{ scope.row.waterId }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="拍摄日期" width="150px" align="center">
+      <el-table-column label="数据生成时间" width="150px" align="center">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.photoTime) }}</span>
         </template>
@@ -91,7 +94,7 @@
       </el-table-column>
       <el-table-column label="联系方式" width="80px">
         <template slot-scope="scope">
-          <span>{{ scope.row.contactInformation }}</span>
+          <span>{{ scope.row.phonenumber }}</span>
         </template>
       </el-table-column>
       <el-table-column label="数据源" class-name="status-col" width="100">
@@ -99,9 +102,24 @@
           <span>{{ scope.row.type }}</span>
         </template>
       </el-table-column>
+      <el-table-column label="数据类型" class-name="status-col" width="100">
+        <template slot-scope="scope">
+          <span>{{ scope.row.dataType }}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="波段数" class-name="status-col" width="100">
         <template slot-scope="scope">
           <span>{{ scope.row.bands }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="波段文件" class-name="status-col" width="100" v-if="false">
+        <template slot-scope="scope">
+          <span>{{ scope.row.bandWavelengthFilePath }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="列表文件" class-name="status-col" width="100" v-if="false">
+        <template slot-scope="scope">
+          <span>{{ scope.row.filePath }}</span>
         </template>
       </el-table-column>
       <el-table-column fixed='right' label="Actions" align="center" width="230" class-name="small-padding fixed-width">
@@ -133,9 +151,14 @@
             <el-option v-for="item in TypeOptions" :key="item" :label="item" :value="item" />
           </el-select>
         </el-form-item>
-        <!-- <el-form-item label="拍摄日期" prop="photoTime">
+        <el-form-item label="数据类型" prop="dataType">
+          <el-select v-model="temp.dataType" placeholder="数据类型" clearable class="filter-item">
+            <el-option v-for="item in dataTypeOptions" :key="item.value" :label="item.label" :value="item.value" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="数据日期" prop="photoTime">
           <el-date-picker v-model="temp.photoTime" type="datetime" placeholder="请选择日期" />
-        </el-form-item> -->
+        </el-form-item>
         <el-form-item label="水体" prop="waterName">
           <el-input v-model="temp.waterName" />
         </el-form-item>
@@ -158,20 +181,40 @@
           <el-input v-model="temp.contact" />
         </el-form-item>
         <el-form-item label="联系方式" width="80px">
-          <el-input v-model="temp.contactInformation" />
+          <el-input v-model="temp.phonenumber" />
         </el-form-item>
         <el-form-item label="备注">
           <el-input v-model="temp.remark" :autosize="{ minRows: 2, maxRows: 4}" type="textarea" placeholder="请输入" />
         </el-form-item>
-        <el-form-item v-show="dialogStatus!='create' && temp.rgbPath!=''" label="图片">
+        <!-- <el-form-item v-show="dialogStatus!='create' && temp.rgbPath!=''" label="图片">
           <div class="block">
             <span class="demonstration">加载中</span>
             <el-image :src="temp.rgbPath" />
           </div>
-        </el-form-item>
-        <el-form-item label="文件路径">
+        </el-form-item> -->
+        <el-form-item label="遥感影像文件路径" v-if="temp.dataType === 0">
           <el-input v-model="temp.filePath" />
-          <div slot="tip" class="el-upload__tip">只能上传一个文件</div>
+        </el-form-item>
+        <el-form-item label="遥感列表文件上传" v-if="temp.dataType === 1">
+          <el-upload :show-file-list="true" :before-upload="beforeCsvUpload"
+                     accept=".xls,.xlsx,.csv" action="" :headers="uploadCsv.headers"
+                     :file-list="uploadCsv.fileList" :on-remove="handleCsvRemove" :auto-upload="false"
+                     :on-change="handleCsvChange" :on-exceed="handleCsvExceed"
+                     :on-progress="handleCsvProgress" :on-success="handleCsvSuccess"
+                     :http-request="httpCsvRequest" ref="uploadCsv" :limit="1">
+            <el-button slot="trigger" size="medium" type="primary">选取文件</el-button>
+            <div slot="tip" class="el-upload__tip">只能上传一个csv/xls/xlsx格式的文件，且不超过100MB</div>
+          </el-upload>
+        </el-form-item>
+        <el-form-item label="波段文件" v-if="temp.type === '自定义'">
+          <el-upload :show-file-list="true" :before-upload="beforeBandUpload"
+                     accept=".txt"  action="" :headers="uploadBand.headers"
+                     :file-list="uploadBand.fileList" :on-remove="handleBandRemove" :auto-upload="false"
+                     :on-change="handleBandChange" :on-exceed="handleBandExceed" 
+                     :on-progress="handleBandProgress" :on-success="handleBandSuccess"
+                     :http-request="httpBandRequest" ref="uploadBand" :limit="1">
+            <el-button slot="trigger" size="medium" type="primary">选取文件</el-button>
+            <div slot="tip" class="el-upload__tip">只能上传一个txt格式的文件</div>
           </el-upload>
         </el-form-item>
         <!-- <el-form-item label="上传">
@@ -206,12 +249,13 @@
 </template>
 
 <script>
-import { fetchList, fetchCreate, fetchUpdate, delWaterId } from '@/api/data'
+import { fetchList, fetchCreateList, fetchUpdateList, delWaterId } from '@/api/data'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import { parseTime } from "@/utils/ruoyi";
 import { isNull } from 'util';
 import { getUserProfile } from "@/api/system/user";
+import { getToken } from "@/utils/auth";
 
 Date.prototype.Format = function (fmt) { //author: meizz
 var o = {
@@ -228,7 +272,10 @@ for (var k in o)
 if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
 return fmt;
 }
-const TypeOptions = ['MODIS', 'GF-1', 'GF-2', 'GF-3', 'LANDSAT-5', 'LANDSAT-8']
+const TypeOptions = ['MODIS', 'GF-1', 'GF-2', 'GF-3', 'LANDSAT-5', 'LANDSAT-8', '自定义']
+const dataTypeOptions = [{'label':'影像数据', 'value':0}, 
+                         {'label':'列表数据', 'value':1}]
+const dataTypeMap = {0:'影像数据', 1:'列表数据'}
 
 let nameOptions = []
 let provinceOptions = [
@@ -276,6 +323,8 @@ export default {
       // 日期范围
       dateRange: [],
       TypeOptions,
+      dataTypeOptions,
+      dataTypeMap,
       provinceOptions: [],
       sortOptions: [{ label: 'ID Ascending', key: '+id' }, { label: 'ID Descending', key: '-id' }],
       nameOptions: [],
@@ -285,6 +334,7 @@ export default {
         photoTime: new Date(),
         waterName: '',
         type: '',
+        dataType: '',
         province: '浙江省',
         rgbPath: '',
         filePath: '',
@@ -293,9 +343,9 @@ export default {
         location:'',
         department:'',
         contact:'',
-        contactInformation:'',
+        phonenumber:'',
         remark:""
-      },
+      }, // 用来upadte和create的，别瞎用
       dialogFormVisible: false,
       dialogStatus: '',
       textMap: {
@@ -308,14 +358,24 @@ export default {
       pvData: [],
       rules: {
         type: [{ required: true, message: '请输入数据源', trigger: 'blur' }],
-        photoTime: [{ type: 'date', required: true, message: '请输入拍摄时间', trigger: 'blur' }],
+        dataType: [{ required: true, message: '请输入数据类型', trigger: 'blur' }],
+        photoTime: [{ type: 'date', required: true, message: '请输入数据生成时间', trigger: 'blur' }],
         waterName: [{ required: true, message: '请输入水体', trigger: 'blur' }],
         province: [{ required: true, message: '请输入省份', trigger: 'blur' }],
         city: [{ required: true, message: '请输入城市', trigger: 'blur' }],
         filePath: [{ required: true, message: '请上传文件', trigger: 'blur' }]
       },
       downloadLoading: false,
-      fileList: [],
+      uploadCsv: {fileList: [],
+                  headers: { Authorization: "Bearer " + getToken() },
+                  isUploading: false,
+                  url: process.env.VUE_APP_BASE_API + '/profile/' + 'remoteTableFile/'
+      },
+      uploadBand: {fileList: [],
+                   headers: { Authorization: "Bearer " + getToken() },
+                   isUploading: false,
+                   url: process.env.VUE_APP_BASE_API + '/profile/' + 'bandWavelengthFile/'
+      },
       user: {},
     }
   },
@@ -343,17 +403,21 @@ export default {
     },
     getList() {
       this.listLoading = true
-      fetchList(this.addDateRange(this.listQuery, this.dateRange)).then(response => {
+      this.temp = Object.assign({}, this.listQuery) // copy obj
+      if(this.temp.type == '自定义') this.temp.type = 'custom';
+      fetchList(this.addDateRange(this.temp, this.dateRange)).then(response => {
         this.list = response.rows;
         this.list.forEach(function(element){
-          element.rgbPath = process.env.VUE_APP_BASE_API + '/profile' + element.rgbPath
+          element.rgbPath = process.env.VUE_APP_BASE_API + '/profile/' + element.rgbPath
+          const dataTypeMap = {0:'影像数据', 1:'列表数据'}
+          element.dataType = dataTypeMap[element.dataType]
+          if(!element.bandWavelengthFilePath) {
+            element.bandWavelengthFilePath = 'bandWavelengthFile/' + element.type + ".txt"
+          }
         })
         this.total = response.total;
         // Just to simulate the time of the request
         this.listLoading = false;
-        // setTimeout(() => {
-        //   this.listLoading = false
-        // }, 1.5 * 1000)
       })
     },
     handleFilter() {
@@ -387,6 +451,7 @@ export default {
         photoTime: new Date(),
         waterName: '',
         type: '',
+        dataType: '',
         province: '浙江省',
         rgbPath: '',
         filePath: '',
@@ -395,7 +460,7 @@ export default {
         location:'',
         department:'',
         contact:'',
-        contactInformation:'',
+        phonenumber:'',
         remark:""
       }
     },
@@ -420,7 +485,7 @@ export default {
       // this.temp.fileName = this.fileList[0].name
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          fetchCreate(this.temp).then(() => {
+          fetchCreateList(this.temp).then(() => {
             this.list.unshift(this.temp)
             this.dialogFormVisible = false
             this.$notify({
@@ -436,10 +501,33 @@ export default {
     },
     handleUpdate(row) {
       this.temp = Object.assign({}, row) // copy obj
-      console.log(row)
-      if (this.temp.filePath!=null){
-        this.fileList.push({name:this.temp.fileName, url:this.temp.filePath})
-      }
+
+      const dataTypeMap = {'影像数据':0, '列表数据': 1}
+      this.temp.dataType = dataTypeMap[row.dataType]
+      // if (this.temp.filePath!=null){
+      //   this.fileList.push({name:this.temp.fileName, url:this.temp.filePath})
+      // }
+      const bandWavelengthFilePath = [this.temp.bandWavelengthFilePath]
+      let bandFile = bandWavelengthFilePath.map(item => {
+        let pos = item.lastIndexOf('/')
+        let lastName = item.substring(pos+1, item.length)
+        return {
+          name: lastName,
+          url: process.env.VUE_APP_BASE_API + '/profile/' + item
+        }
+      })
+      this.uploadBand.fileList = bandFile
+
+      const filePath = [this.temp.filePath]
+      let csvFile = filePath.map(item => {
+        let pos = item.lastIndexOf('/')
+        let lastName = item.substring(pos+1, item.length)
+        return {
+          name: lastName,
+          url: process.env.VUE_APP_BASE_API + '/profile/' + item
+        }
+      })
+      this.uploadCsv.fileList = csvFile
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
       this.$nextTick(() => {
@@ -447,36 +535,115 @@ export default {
       })
     },
     updateData() {
-      console.log(this.fileList)
-      this.temp.fileName = this.fileList[0].name
-      this.$refs['dataForm'].validate((valid) => {
-        if (valid) {
-          const tempData = Object.assign({}, this.temp)
-          fetchUpdate(tempData).then(() => {
-            for (const v of this.list) {
-              if (v.waterId === this.temp.waterId) {
-                const index = this.list.indexOf(v)
-                this.list.splice(index, 1, this.temp)
-                break
-              }
-            }
-            this.dialogFormVisible = false
-            this.$notify({
-              title: 'Success',
-              message: '更新成功',
-              type: 'success',
-              duration: 2000
-            })
-          })
+      console.log('test')
+      let upFormData = new FormData();
+      if (this.temp.type==='自定义' && this.uploadBand.fileList.length>=1) {
+        this.temp.bandWavelengthFilePath = 'bandWavelengthFile/' + this.uploadBand.fileList[0].name
+        this.$refs.uploadBand.submit()
+        if(!this.uploadBand.file) {this.uploadBand.file = this.uploadBand.fileList[0].raw}
+        upFormData.append('bandWavelengthFile', this.uploadBand.file)
+      }
+      if (this.temp.dataType===1 && this.uploadCsv.fileList.length>=1) {
+        this.temp.filePath = 'remoteTableFile/' + this.uploadCsv.fileList[0].name
+        this.temp.fileName = this.uploadCsv.fileList[0].name
+        console.log("uploadCsv: ", this.uploadCsv.file)
+        this.$refs.uploadCsv.submit()
+        console.log("uploadCsv: ", this.uploadCsv.file)
+        if(!this.uploadCsv.file) {this.uploadCsv.file = this.uploadCsv.fileList[0].raw}
+        upFormData.append('remoteTableFile', this.uploadCsv.file)
+      }
+      
+      upFormData.append('body', JSON.stringify(this.temp))
+      // const tempData = Object.assign({}, this.temp);
+      // this.$refs.uploadCsv.submit();
+      // this.$refs.uploadBand.submit();
+      fetchUpdateList(upFormData).then(() => {
+        for (const v of this.list) {
+          if (v.waterId === this.temp.waterId) {
+            const index = this.list.indexOf(v)
+            this.list.splice(index, 1, this.temp)
+            break
+          }
         }
+        this.dialogFormVisible = false
+        this.$notify({
+          title: 'Success',
+          message: '更新成功',
+          type: 'success',
+          duration: 2000
+        })
       })
     },
-    beforeUpload(file){
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => {
-        this.temp.fileName = reader.result.fileName;
-      };
+
+    handleCsvExceed(files, fileList) {
+        // if(fileList.length >= 1) this.uploadCsv.fileList = [fileList[fileList.length-1]]
+        this.$message.warning(`当前限制选择 1 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
+    },
+    beforeCsvUpload(file) {
+      let fileName = file.name
+      let pos = fileName.lastIndexOf('.')
+      let lastName = fileName.substring(pos, fileName.length)
+      const fileType = lastName.toLowerCase() !== ".csv" && lastName.toLowerCase() !== ".xls" && lastName.toLowerCase() !== ".xlsx";
+      const fileLimit = file.size / 1024 / 1024 < 100;
+      if (fileType) {
+        this.msgError("文件格式错误，请上传csv/xls/xlsx后缀的文件。");
+      } else if (!fileLimit) {
+        this.msgError("文件大小不超过100M！");
+      }
+      return fileType && fileLimit;
+    },
+    handleCsvChange(file, fileList) {
+      if(fileList.length >= 1) this.uploadCsv.fileList = [fileList[fileList.length-1]]
+    },
+    handleCsvRemove(file, fileList) {
+      if(fileList.length < 1) this.csvUploadDisabled = true
+    },
+    handleCsvProgress(event, file, fileList) {
+      this.uploadCsv.isUploading = true;
+    },
+    handleCsvSuccess(response, file, fileList) {
+      this.uploadCsv.isUploading = false;
+      // this.form.filePath = response.url;
+      this.msgSuccess(response.msg);
+    },
+    httpCsvRequest(param) {
+      console.log('param:', param)
+      this.uploadCsv.file = param.file
+    },
+
+    handleBandExceed(files, fileList) {
+        // if(fileList.length >= 1) this.uploadBand.fileList = [fileList[fileList.length-1]]
+        this.$message.warning(`当前限制选择 1 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
+    },
+    beforeBandUpload(file) {
+      let fileName = file.name
+      let pos = fileName.lastIndexOf('.')
+      let lastName = fileName.subsring(pos, fileName.length)
+      const fileType = lastName.toLowerCase() !== ".txt";
+      const fileLimit = file.size / 1024 / 1024 < 100;
+      if (fileType) {
+        this.msgError("文件格式错误，请上传txt后缀的文件。");
+      } else if (!fileLimit) {
+        this.msgError("文件大小不超过100M！");
+      }
+      return fileType && fileLimit;
+    },
+    handleBandChange(file, fileList) {
+      if(fileList.length >= 1) this.uploadBand.fileList = [fileList[fileList.length-1]]
+    },
+    handleBandRemove(file, fileList) {
+      if(fileList.length < 1) this.bandUploadDisabled = true
+    },
+    handleBandProgress(event, file, fileList) {
+      this.uploadBand.isUploading = true;
+    },
+    handleBandSuccess(response, file, fileList) {
+      this.uploadBand.isUploading = false;
+      // this.form.filePath = response.url;
+      this.msgSuccess(response.msg);
+    },
+    httpBandRequest(param) {
+      this.uploadBand.file = param.file
     },
     // handleRemove(file, fileList) {
     //     this.temp.fileName;

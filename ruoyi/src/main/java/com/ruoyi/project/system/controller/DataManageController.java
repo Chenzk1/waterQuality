@@ -5,14 +5,7 @@ import java.util.List;
 import com.ruoyi.project.system.domain.RetrievalResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import com.ruoyi.common.constant.UserConstants;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.framework.aspectj.lang.annotation.Log;
@@ -23,6 +16,7 @@ import com.ruoyi.framework.web.page.TableDataInfo;
 import com.ruoyi.project.system.domain.DataManage;
 import com.ruoyi.project.system.domain.ListResult;
 import com.ruoyi.project.system.service.IDataManageService;
+import org.springframework.web.multipart.MultipartFile;
 
 
 /**
@@ -83,7 +77,9 @@ public class DataManageController extends BaseController{
 //    @PreAuthorize("@ss.hasPermi('system:role:edit')")
     @Log(title = "数据管理", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult edit(@RequestBody DataManage dataManage)
+    public AjaxResult editWater(DataManage dataManage,
+                           @RequestParam(value = "", required = false) MultipartFile bandWavelengthFile,
+                           @RequestParam(value = "", required = false) MultipartFile remoteTableFile)
     {
         dataManage.setUpdateBy(SecurityUtils.getUsername());
         return toAjax(dataService.updateWater(dataManage));
@@ -94,7 +90,7 @@ public class DataManageController extends BaseController{
      */
     @Log(title = "数据管理", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@RequestBody DataManage dataManage)
+    public AjaxResult addWater(@RequestBody DataManage dataManage)
     {
         dataManage.setCreateBy(SecurityUtils.getUsername());
         return toAjax(dataService.insertWater(dataManage));

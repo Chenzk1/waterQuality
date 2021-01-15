@@ -2,8 +2,8 @@
   <div class="app-container">
     <!-- <panel-group @handleSetLineChartData="handleSetLineChartData" /> -->
     <div class="filter-container">
-      <el-input v-model="listQuery.watername" placeholder="水体搜索" style="width: 180px;" class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-select v-model="listQuery.watername" placeholder="水体选择" clearable style="width: 180px" class="filter-item">
+      <el-input v-model="listQuery.waterName" placeholder="水体搜索" style="width: 150px;" class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-select v-model="listQuery.waterName" placeholder="水体选择" clearable style="width: 150px" class="filter-item">
         <el-option v-for="item in nameOptions" :key="item" :label="item" :value="item" />
       </el-select>
       <el-select v-model="listQuery.province" placeholder="省份" clearable style="width: 90px" class="filter-item">
@@ -15,6 +15,9 @@
       <el-select v-model="listQuery.type" placeholder="数据源" clearable class="filter-item" style="width: 90px">
         <el-option v-for="item in typeOptions" :key="item" :label="item" :value="item" />
       </el-select>
+      <el-select v-model="listQuery.dataType" placeholder="数据类型" clearable class="filter-item" style="width: 120px">
+        <el-option v-for="item in dataTypeOptions" :key="item.value" :label="item.label" :value="item.value" />
+      </el-select>
       <el-date-picker
         v-model="listQuery.dateRange"
         type="daterange"
@@ -23,13 +26,16 @@
         end-placeholder="结束日期"
         value-format="timestamp"
         class="filter-item"
-        style="width: 500px"
+        style="width: 350px"
       />
       <!-- <el-date-picker type="date" placeholder="选择日期" v-model="listQuery.startDate" style="width: 100%;"></el-date-picker>
       <el-col class="line" :span="2">-</el-col>
       <el-time-picker placeholder="选择日期" v-model="listQuery.endDate" style="width: 100%;"></el-time-picker> -->
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         检索
+      </el-button>
+      <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">
+        导出
       </el-button>
     </div>
 
@@ -47,7 +53,7 @@
           <span>{{ scope.row.waterId }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="拍摄日期" width="150px" align="center">
+      <el-table-column label="日期" width="150px" align="center">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.photoTime) }}</span>
         </template>
@@ -89,7 +95,7 @@
       </el-table-column>
       <el-table-column label="联系方式" width="80px">
         <template slot-scope="scope">
-          <span>{{ scope.row.contactInformation }}</span>
+          <span>{{ scope.row.phonenumber }}</span>
         </template>
       </el-table-column>
       <el-table-column label="数据源" class-name="status-col" width="100">
@@ -97,7 +103,12 @@
           <span>{{ scope.row.type }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="RGB图片" class-name="status-col" width="110">
+      <el-table-column label="数据类型" class-name="status-col" width="100">
+        <template slot-scope="scope">
+          <span>{{ scope.row.dataType }}</span>
+        </template>
+      </el-table-column>
+      <!-- <el-table-column label="RGB图片" class-name="status-col" width="110">
         <template slot-scope="scope">
           <el-popover
             placement="left"
@@ -112,7 +123,7 @@
             <el-image :src="scope.row.rgbPath"></el-image>
           </el-popover>
         </template>
-      </el-table-column>
+      </el-table-column> -->
       <el-table-column label="反演结果" class-name="status-col" width="250">
         <template slot-scope="scope">
           <el-popover
@@ -120,24 +131,52 @@
             width="250"
             trigger="click"
             >
-            <el-button slot="reference" type="primary" size="small" round>总磷</el-button>
-            <el-form label-position="left" width="250" inline>
+            <el-button slot="reference" type="primary" size="small" round>总悬浮物</el-button>
+            <el-form label-position="left" width="250"  inline v-if="scope.row.tssSaveMethod != null">
               <el-form-item label="结果" width="20">
                 <el-image
-                  style="width: 200px; height: 200px"
-                  :src="scope.row.tpRgbPath"
-                  :fit="fit"></el-image>
+                  style="object-fit: contain"
+                  :src="scope.row.tssResultPath"
+                  v-if="isAssetTypeAnImage(scope.row.tssResultPath.substr(scope.row.tssResultPath.lastIndexOf('.')+1))"></el-image>
               </el-form-item>
-              <el-form-item label="最小值" width="20">
-                <span>{{ scope.row.tpMin }}</span>
+              <el-form-item label="统计量" width="20">
+                <span>最小值：{{ scope.row.tssMin }}</span>
+                <span>最大值：{{ scope.row.tssMax }}</span>
+                <span>平均值：{{ scope.row.tssMax }}</span>
               </el-form-item>
-              <el-form-item label="平均值" width="20">
-                <span>{{ scope.row.tpMean }}</span>
-              </el-form-item>
-              <el-form-item label="最大值" width="20">
-                <span>{{ scope.row.tpMax }}</span>
+              <el-form-item>
+                <el-button type="text" size="middle" icon="el-icon-view" @click="handleView(scope.row)">
+                  详细结果
+                </el-button>
               </el-form-item>
             </el-form>
+            <h3 v-if="scope.row.tssSaveMethod === null"> 该指标还未进行反演 </h3>
+          </el-popover>
+          <el-popover
+            placement="right"
+            width="250"
+            trigger="click"
+            >
+            <el-button slot="reference" type="primary" size="small" round>叶绿素</el-button>
+            <el-form label-position="left" width="250"  inline v-if="scope.row.chlaSaveMethod != null">
+              <el-form-item label="结果" width="20">
+                <el-image
+                  style="object-fit: contain"
+                  :src="scope.row.chlaResultPath"
+                  v-if="isAssetTypeAnImage(scope.row.chlaResultPath.substr(scope.row.chlaResultPath.lastIndexOf('.')+1))"></el-image>
+              </el-form-item>
+              <el-form-item label="统计量" width="20">
+                <span>最小值：{{ scope.row.chlaMin }}</span>
+                <span>最大值：{{ scope.row.chlaMax }}</span>
+                <span>平均值：{{ scope.row.chlaMax }}</span>
+              </el-form-item>
+              <el-form-item>
+                <el-button type="text" size="middle" icon="el-icon-view" @click="handleView(scope.row)">
+                  详细结果
+                </el-button>
+              </el-form-item>
+            </el-form>
+            <h3 v-if="scope.row.chlaSaveMethod === null"> 该指标还未进行反演 </h3>
           </el-popover>
           <el-popover
             placement="right"
@@ -145,95 +184,79 @@
             trigger="click"
             >
             <el-button slot="reference" type="primary" size="small" round>总氮</el-button>
-            <el-form label-position="left" width="250"  inline>
+            <el-form label-position="left" width="250"  inline v-if="scope.row.tnSaveMethod != null">
               <el-form-item label="结果" width="20">
                 <el-image
-                  style="width: 200px; height: 200px"
-                  :src="scope.row.tnRgbPath"
-                  :fit="fit"></el-image>
+                  style="object-fit: contain"
+                  :src="scope.row.tnResultPath"
+                  v-if="isAssetTypeAnImage(scope.row.tnResultPath.substr(scope.row.tnResultPath.lastIndexOf('.')+1))"></el-image>
               </el-form-item>
-              <el-form-item label="最小值" width="20">
-                <span>{{ scope.row.tnMin }}</span>
+              <el-form-item label="统计量" width="20">
+                <span>最小值：{{ scope.row.tnMin }}</span>
+                <span>最大值：{{ scope.row.tnMax }}</span>
+                <span>平均值：{{ scope.row.tnMax }}</span>
               </el-form-item>
-              <el-form-item label="平均值" width="20">
-                <span>{{ scope.row.tnMean }}</span>
-              </el-form-item>
-              <el-form-item label="最大值" width="20">
-                <span>{{ scope.row.tnMax }}</span>
+              <el-form-item>
+                <el-button type="text" size="middle" icon="el-icon-view" @click="handleView(scope.row)">
+                  详细结果
+                </el-button>
               </el-form-item>
             </el-form>
+            <h3 v-if="scope.row.tnSaveMethod === null"> 该指标还未进行反演 </h3>
           </el-popover>
+
           <el-popover
             placement="right"
             width="250"
             trigger="click"
             >
-            <el-button slot="reference" type="primary" size="small" round>总悬浮物</el-button>
-            <el-form label-position="left" width="250" inline>
-              <el-form-item label="反演结果图片" width="20">
+            <el-button slot="reference" type="primary" size="small" round>总磷</el-button>
+            <el-form label-position="left" width="250"  inline v-if="scope.row.tpSaveMethod != null">
+              <el-form-item label="结果" width="20">
                 <el-image
-                  style="width: 200px; height: 200px"
-                  :src="scope.row.tssRgbPath"
-                  :fit="fit"></el-image>
+                  style="object-fit: contain"
+                  :src="scope.row.tpResultPath"
+                  v-if="isAssetTypeAnImage(scope.row.tpResultPath.substr(scope.row.tpResultPath.lastIndexOf('.')+1))"></el-image>
               </el-form-item>
-              <el-form-item label="最小值" width="20">
-                <span>{{ scope.row.tssMin }}</span>
+              <el-form-item label="统计量" width="20">
+                <span>最小值：{{ scope.row.tpMin }}</span>
+                <span>最大值：{{ scope.row.tpMax }}</span>
+                <span>平均值：{{ scope.row.tpMax }}</span>
               </el-form-item>
-              <el-form-item label="平均值" width="20">
-                <span>{{ scope.row.tssMean }}</span>
-              </el-form-item>
-              <el-form-item label="最大值" width="20">
-                <span>{{ scope.row.tssMax }}</span>
+              <el-form-item>
+                <el-button type="text" size="middle" icon="el-icon-view" @click="handleView(scope.row)">
+                  详细结果
+                </el-button>
               </el-form-item>
             </el-form>
+            <h3 v-if="scope.row.tpSaveMethod === null"> 该指标还未进行反演 </h3>
           </el-popover>
-          <el-popover
-            placement="right"
-            width="250"
-            trigger="click"
-            >
-            <el-button slot="reference" type="primary" size="small" round>叶绿素a</el-button>
-            <el-form label-position="left" width="250" inline>
-              <el-form-item label="反演结果图片" width="20">
-                <el-image
-                  style="width: 200px; height: 200px"
-                  :src="scope.row.chlaRgbPath"
-                  :fit="fit"></el-image>
-              </el-form-item>
-              <el-form-item label="最小值" width="20">
-                <span>{{ scope.row.chlaMin }}</span>
-              </el-form-item>
-              <el-form-item label="平均值" width="20">
-                <span>{{ scope.row.chlaMean }}</span>
-              </el-form-item>
-              <el-form-item label="最大值" width="20">
-                <span>{{ scope.row.chlaMax }}</span>
-              </el-form-item>
-            </el-form>
-          </el-popover>
+
           <el-popover
             placement="right"
             width="250"
             trigger="click"
             >
             <el-button slot="reference" type="primary" size="small" round>氨氮</el-button>
-            <el-form label-position="left" width="250" inline>
-              <el-form-item label="反演结果图片" width="20">
+            <el-form label-position="left" width="250"  inline v-if="scope.row.nhSaveMethod != null">
+              <el-form-item label="结果" width="20">
                 <el-image
-                  style="width: 200px; height: 200px"
-                  :src="scope.row.nhRgbPath"
-                  :fit="fit"></el-image>
+                  style="object-fit: contain"
+                  :src="scope.row.nhResultPath"
+                  v-if="isAssetTypeAnImage(scope.row.nhResultPath.substr(scope.row.nhResultPath.lastIndexOf('.')+1))"></el-image>
               </el-form-item>
-              <el-form-item label="最小值" width="20">
-                <span>{{ scope.row.nhMin }}</span>
+              <el-form-item label="统计量" width="20">
+                <span>最小值：{{ scope.row.nhMin }}</span>
+                <span>最大值：{{ scope.row.nhMax }}</span>
+                <span>平均值：{{ scope.row.nhMax }}</span>
               </el-form-item>
-              <el-form-item label="平均值" width="20">
-                <span>{{ scope.row.nhMean }}</span>
-              </el-form-item>
-              <el-form-item label="最大值" width="20">
-                <span>{{ scope.row.nhMax }}</span>
+              <el-form-item>
+                <el-button type="text" size="middle" icon="el-icon-view" @click="handleView(scope.row)">
+                  详细结果
+                </el-button>
               </el-form-item>
             </el-form>
+            <h3 v-if="scope.row.nhSaveMethod === null"> 该指标还未进行反演 </h3>
           </el-popover>
         </template>
       </el-table-column>
@@ -243,13 +266,11 @@
   </div>
 </template>
 
-    
-
 <script>
 import { fetchResultList, fetchResult, fetchLevel } from '@/api/data'
 
 import waves from '@/directive/waves' // waves directive
-import { parseTime } from '@/utils'
+import { parseTime, isAssetTypeAnImage } from '@/utils'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import PanelGroup from './PanelGroup'
 
@@ -259,6 +280,9 @@ const provinceOptions = [
   '福建省', '天津市', '云南省', '四川省', '广西壮族自治区', '安徽省', '海南省', '江西省', '湖北省', '山西省', '辽宁省', '台湾省',
   '黑龙江', '内蒙古自治区', '澳门特别行政区', '贵州省', '甘肃省', '青海省', '新疆维吾尔自治区', '西藏自治区', '吉林省', '宁夏回族自治区'
 ]
+const dataTypeOptions = [{'label':'影像数据', 'value':0}, 
+                         {'label':'列表数据', 'value':1}]
+const dataTypeMap = {0:'影像数据', 1:'列表数据'}
 // arr to obj, such as { CN : "China", US : "USA" }
 // const calendarTypeKeyValue = typeOptions.reduce((acc, cur) => {
 //   acc[cur.key] = cur.display_name
@@ -294,6 +318,7 @@ export default {
         province: undefined,
         name: undefined,
         type: undefined,
+        dataType: undefined,
         sort: '+id',
         dateRange: undefined
       },
@@ -306,7 +331,9 @@ export default {
         city: undefined
       },
       typeOptions: [],
+      dataTypeOptions,
       provinceOptions,
+      dataTypeMap,
       provinceNunique: 0,
       nameOptions,
       sortOptions: [{ label: 'ID Ascending', key: '+id' }, { label: 'ID Descending', key: '-id' }],
@@ -345,23 +372,29 @@ export default {
         this.total = response.total;
         this.list = response.rows;
         this.list.forEach(function(element){
-          element.rgbPath = process.env.VUE_APP_BASE_API + '/profile' + element.rgbPath
-          element.tpRgbPath = process.env.VUE_APP_BASE_API + '/profile' + element.tpRgbPath
-          element.tnRgbPath = process.env.VUE_APP_BASE_API + '/profile' + element.tnRgbPath
-          element.tssRgbPath = process.env.VUE_APP_BASE_API + '/profile' + element.tssRgbPath
-          element.chlaRgbPath = process.env.VUE_APP_BASE_API + '/profile' + element.chlaRgbPath
-          element.nhRgbPath = process.env.VUE_APP_BASE_API + '/profile' + element.nhRgbPath
-          element.codRgbPath = process.env.VUE_APP_BASE_API + '/profile' + element.codRgbPath
+          const dataTypeMap = {0:'影像数据', 1:'列表数据'}
+          if(element.rgbPath!=null) element.rgbPath=process.env.VUE_APP_BASE_API + '/profile/' + element.rgbPath
+          if(element.tpResultPath!=null) element.tpResultPath = process.env.VUE_APP_BASE_API + '/profile/' + element.tpResultPath
+          if(element.tnResultPath!=null) element.tnResultPath = process.env.VUE_APP_BASE_API + '/profile/' + element.tnResultPath
+          if(element.tssResultPath!=null) element.tssResultPath = process.env.VUE_APP_BASE_API + '/profile/' + element.tssResultPath
+          if(element.chlaResultPath!=null) element.chlaResultPath = process.env.VUE_APP_BASE_API + '/profile/' + element.chlaResultPath
+          if(element.nhResultPath!=null) element.nhResultPath = process.env.VUE_APP_BASE_API + '/profile/' + element.nhResultPath
+          if(element.codResultPath!=null) element.codResultPath = process.env.VUE_APP_BASE_API + '/profile/' + element.codResultPath
+          element.dataType = dataTypeMap[element.dataType]
         })
 
       })
       this.listLoading = false;
     },
     handleFilter() {
-      this.listQuery.page = 1
-      this.getList()
+      this.listQuery.page = 1;
+      this.getResultList();
     },
-    
+    handleView(row) {
+      this.$router.push({
+        path: `/monitorEvaluation/monitor/${row.waterId}`
+      })
+    },
     sortChange(data) {
       const { prop, order } = data
       if (prop === 'id') {
@@ -387,21 +420,14 @@ export default {
         type: ''
       }
     },
-    handleView(row) {
-      // this.temp = Object.assign({}, row) // copy obj
-      // this.temp.timestamp = new Date(this.temp.timestamp)
-      // this.dialogStatus = 'view'
-      // this.dialogFormVisible = true
-      this.$router.push({
-        path: `/monitorEvaluation/monitor/${row.id}`
-      })
-    },
-    
     handleDownload() {
       this.downloadLoading = true
-      import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['timestamp', 'title', 'type', 'importance', 'status']
-        const filterVal = ['timestamp', 'title', 'type', 'importance', 'status']
+        import('@/vendor/Export2Excel').then(excel => {
+        const tHeader = ['waterId', 'waterName', 'photoTime', 'province', 'city', 'location', 'type', 'dataType',
+                         'tssMin', 'tssMax', 'tssMean', 'chlaMin', 'chlaMax', 'chlaMean', 'tnMin', 'tnMax', 'tnMean', 
+                         'codMin', 'codMax', 'codMean', 'nhMin', 'nhMax', 'nhMean', 'tpMin', 'tpMax', 'tpMean', 
+                         'department', 'contact', "phonenumber", 'creatyBy', 'creatyTime', 'updateBy', 'updateTime', 'remark']
+        const filterVal = tHeader
         const data = this.formatJson(filterVal, this.list)
         excel.export_json_to_excel({
           header: tHeader,

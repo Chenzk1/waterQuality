@@ -1,6 +1,9 @@
 <template>
   <div class="chart-container">
     <div class="filter-container">
+      <panel-group :displayData="displayData" />
+    </div>
+    <div class="filter-container">
       <el-form :inline="true" v-model="listQuery">
         <!-- <el-form-item>
           <el-checkbox-group v-model="listQuery.retrievalParams" size="small" style="inline">
@@ -42,17 +45,17 @@
       </el-form>
     </div>
     <el-tabs v-model="activeTab" @tab-click="handleTabClick" type="border-card">
-      <el-tab-pane label="拟合效果" name="fit">
+      <el-tab-pane label="水质统计量变化趋势图" name="fit">
         <el-row justify="end">
           <el-radio-group v-model="displayParams" size="small" @change="toggleParam">
             <el-radio-button v-for="param in displayOptions" :label="param.key" :key="param.key">{{param.display_name}}</el-radio-button>
           </el-radio-group>
         </el-row>
-        <el-row style="background:#fff;padding:16px 16px 0;margin-bottom:40px;" v-if="'fit' === activeTab">
+        <el-row style="background:#fff;padding:16px 16px 5;margin-bottom:40px;" v-if="'fit' === activeTab">
           <line-chart :chart-data="lineChartData" />
         </el-row>
       </el-tab-pane>
-      <el-tab-pane label="条形图" name="hist">
+      <el-tab-pane label="水质统计量堆积柱形图" name="hist">
         <el-row justify="end">
           <el-radio-group v-model="displayParams1" size="small" @change="toggleParam1">
             <el-radio-button v-for="param in displayOptions1" :label="param.key" :key="param.key">{{param.display_name}}</el-radio-button>
@@ -64,6 +67,21 @@
         <el-row style="background:#fff;padding:16px 16px 0;margin-bottom:40px;"  v-if="'hist' === activeTab">
           <div class="chart-wrapper">
             <bar-chart :chart-data="barChartData"/>
+          </div>
+        </el-row>
+      </el-tab-pane>
+      <el-tab-pane label="不达标水质指标饼状图" name="pie">
+        <!-- <el-row justify="end">
+          <el-radio-group v-model="displayParams1" size="small" @change="toggleParam1">
+            <el-radio-button v-for="param in displayOptions1" :label="param.key" :key="param.key">{{param.display_name}}</el-radio-button>
+          </el-radio-group>
+        </el-row> -->
+        <!-- <el-row style="background:#fff;padding:16px 16px 0;margin-bottom:32px;"  v-if="'hist' === activeTab">
+          <line-chart :chart-data="lineChartData" />
+        </el-row> -->
+        <el-row style="background:#fff;padding:16px 16px 0;margin-bottom:40px;"  v-if="'pie' === activeTab">
+          <div class="chart-wrapper">
+            <pie-chart :chart-data="barChartData"/>
           </div>
         </el-row>
       </el-tab-pane>
@@ -80,6 +98,8 @@ import { isNull } from 'util';
 import { getUserProfile } from "@/api/system/user";
 import LineChart from './LineChart'
 import BarChart from './BarChart'
+import PanelGroup from './PanelGroup'
+import PieChart from "./PieChart"
 
 Date.prototype.Format = function (fmt) { //author: meizz
   var o = {
@@ -122,6 +142,13 @@ const calendarTypeKeyValue = typeOptions.reduce((acc, cur) => {
   return acc
 }, {})
 
+const displayData = {
+  idNumber: 7,
+  waterNumber: 4,
+  provinceNumber: 4,
+  typeNumber: 5
+}
+
 let lineDisplay = {mean:{tp:[],tn:[],tss:[],chla:[],nh:[],cod:[]}, 
           min:{tp:[],tn:[],tss:[],chla:[],nh:[],cod:[]}, 
           max:{tp:[],tn:[],tss:[],chla:[],nh:[],cod:[]}}
@@ -136,7 +163,7 @@ let barDisplay = {
 
 export default {
   name: 'Analysis',
-  components: { LineChart,BarChart },
+  components: { LineChart,BarChart,PanelGroup,PieChart },
   directives: { waves },
   filters: {
     statusFilter(status) {
@@ -153,6 +180,7 @@ export default {
   },
   data() {
     return {
+      displayData: displayData,
       activeTab: 'fit',
       lineChartData:null,
       barChartData:null,

@@ -12,40 +12,36 @@
         <result property="province"      column="province"      />
         <result property="city"          column="city"     />
         <result property="type"          column="type"         />
-        <result property="bands"        column="bands"       />
-        <result property="createBy"     column="create_by"      />
-        <result property="createTime"   column="create_time"    />
-        <result property="updateBy"     column="update_by"      />
-        <result property="updateTime"   column="update_time"    />
-        <result property="filePath"       column="file_path"         />
+        <result property="dataType"      column="datatype"         />
+        <result property="bands"         column="bands"       />
+        <result property="createBy"      column="create_by"      />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"      column="update_by"      />
+        <result property="updateTime"    column="update_time"    />
+        <result property="filePath"      column="file_path"         />
         <result property="rgbPath"       column="rgb_path"         />
-        <!--        <result property="fileName"       column="file_name"         />-->
-<!--        <result property="rgbPath"       column="rgb_path"         />-->
+        <result property="bandWavelengthFilePath"       column="band_wavelength_file_path"         />
     </resultMap>
 
     <resultMap type="RetrievalResult" id="RetrievalResult">
         <id     property="waterId"       column="water_id"        />
-        <result property="updateTime"   column="update_time"    />
-        <result property="rgbPath"       column="rgb"         />
-        <result property="para1"       column="para_1"         />
-        <result property="para2"       column="para_2"         />
-        <result property="para3"       column="para_3"         />
-        <result property="min"       column="min"         />
-        <result property="max"       column="max"         />
-        <result property="mean"       column="mean"         />
-        <result property="county"       column="county"         />
-        <result property="location"       column="location"         />
-        <result property="department"       column="department"         />
-        <result property="contact"       column="contact"         />
-        <result property="contactInformation"       column="contact_information"         />
-        <result property="photoTime"       column="photo_time"         />
-        <result property="retrievalParams"       column="params"         />
+        <result property="updateTime"    column="update_time"    />
+        <result property="rgbPath"       column="rgb_path"         />
+        <result property="dataType"      column="dataType"         />
+        <result property="ndwiParam"     column="ndwi_param"         />
+        <result property="closeParam"    column="close_param"         />
+        <result property="openParam"     column="open_param"         />
+        <result property="min"           column="min"         />
+        <result property="max"           column="max"         />
+        <result property="mean"          column="mean"         />
+        <result property="retrievalParams"    column="params"         />
     </resultMap>
 
     <resultMap type="ListResult" id="listResult">
         <id     property="waterId"       column="water_id"        />
-        <result     property="waterName"       column="water_name"        />
+        <result property="waterName"       column="water_name"        />
         <result property="photoTime"       column="photo_time"         />
+        <result property="dataType"          column="datatype"         />
         <result property="tpMin"       column="tp_min"         />
         <result property="tpMax"       column="tp_max"         />
         <result property="tpMean"       column="tp_mean"       />
@@ -64,25 +60,32 @@
         <result property="nhMin"       column="nh_min"         />
         <result property="nhMax"       column="nh_max"         />
         <result property="nhMean"       column="nh_mean"       />
-        <result property="nhRgbPath"       column="nh_rgb_path"       />
-        <result property="tpRgbPath"       column="tp_rgb_path"       />
-        <result property="tssRgbPath"       column="tss_rgb_path"       />
-        <result property="codRgbPath"       column="cod_rgb_path"       />
-        <result property="chlaRgbPath"       column="chla_rgb_path"       />
-        <result property="tnRgbPath"       column="tn_rgb_path"       />
+        <result property="nhResultPath"       column="nh_result_path"       />
+        <result property="tpResultPath"       column="tp_result_path"       />
+        <result property="tssResultPath"       column="tss_result_path"       />
+        <result property="codResultPath"       column="cod_result_path"       />
+        <result property="chlaResultPath"       column="chla_result_path"       />
+        <result property="tnResultPath"       column="tn_result_path"       />
         <result property="rgbPath"       column="rgb_path"       />
-        <result property="contactInformation"       column="contact_information"       />
+        <result property="phonenumber"       column="phonenumber"       />
+        <result property="nhSaveMethod"       column="nh_save_method"       />
+        <result property="tpSaveMethod"       column="tp_save_method"       />
+        <result property="tssSaveMethod"       column="tss_save_method"       />
+        <result property="codSaveMethod"       column="cod_save_method"       />
+        <result property="chlaSaveMethod"       column="chla_save_method"       />
+        <result property="tnSaveMethod"       column="tn_save_method"       />
     </resultMap>
 
     <sql id="selectDataVo">
-	    select distinct r.water_id, r.water_name, r.photo_time, r.country, r.province,
-            r.city, r.type, r.bands, r.create_by, r.create_time, r.update_by, r.update_time,
-            r.file_path, r.rgb_path, r.county, r.location, r.department, r.contact, r.contact_information
+	    select distinct r.water_id, r.water_name, r.photo_time, r.country, r.province, r.band_wavelength_file_path,
+            r.city, r.type, r.datatype, r.bands, r.create_by, r.create_time, r.update_by, r.update_time,
+            r.file_path, r.rgb_path, r.county, r.location, r.department, r.contact, r.phonenumber
         from water_info r
     </sql>
 
     <sql id="selectResultVo">
-	    select distinct r.water_id, r.update_time, r.rgb, r.para_1, r.para_2, r.para_3, r.min, r.max, r.mean
+	    select distinct r.water_id, r.update_time, r.ndwi_param, r.close_param,
+	    r.open_param, r.min, r.max, r.mean, r.params, r.water_land_path, r.remark
     </sql>
 
     <select id="selectUniqueType" resultType="String">
@@ -137,40 +140,106 @@
 
     <select id="selectTp" parameterType="Long" resultMap="RetrievalResult">
         <include refid="selectResultVo"/>
-        from tp r
-        where r.water_id = #{waterId}
+        from (
+            select wi.*, tp.min, tp.max, tp.mean, tp.params,
+                   wl.ndwi_param, wl.open_param, wl.close_param, wl.water_land_path 
+            from (
+                select w.*
+                from water_info w
+                where w.water_id = #{waterId}
+            ) wi
+            left join tp tp on wi.water_id=tp.water_id
+            left join water_land wl on wi.water_id=wl.water_id
+        ) r
     </select>
     <select id="selectTn" parameterType="Long" resultMap="RetrievalResult">
         <include refid="selectResultVo"/>
-        from tn r
-        where r.water_id = #{waterId}
+        from (
+        select wi.*, tn.min, tn.max, tn.mean, tn.params,
+               wl.ndwi_param, wl.open_param, wl.close_param, wl.water_land_path 
+        from (
+        select w.*
+        from water_info w
+        where w.water_id = #{waterId}
+        ) wi
+        left join tn tn on wi.water_id=tn.water_id
+        left join water_land wl on wi.water_id=wl.water_id
+        ) r
     </select>
     <select id="selectTss" parameterType="Long" resultMap="RetrievalResult">
         <include refid="selectResultVo"/>
-        from tss r
-        where r.water_id = #{waterId}
+        from (
+        select wi.*, tss.min, tss.max, tss.mean, tss.params,
+               wl.ndwi_param, wl.open_param, wl.close_param, wl.water_land_path 
+        from (
+        select w.*
+        from water_info w
+        where w.water_id = #{waterId}
+        ) wi
+        left join tss tss on wi.water_id=tss.water_id
+        left join water_land wl on wi.water_id=wl.water_id
+        ) r
     </select>
     <select id="selectChla" parameterType="Long" resultMap="RetrievalResult">
         <include refid="selectResultVo"/>
-        from chla r
-        where r.water_id = #{waterId}
+        from (
+        select wi.*, tp.min, tp.max, tp.mean, tp.params,
+               wl.ndwi_param, wl.open_param, wl.close_param, wl.water_land_path 
+        from (
+        select w.*
+        from water_info w
+        where w.water_id = #{waterId}
+        ) wi
+        left join chla tp on wi.water_id=tp.water_id
+        left join water_land wl on wi.water_id=wl.water_id
+        ) r
     </select>
     <select id="selectCod" parameterType="Long" resultMap="RetrievalResult">
         <include refid="selectResultVo"/>
-        from cod r
-        where r.water_id = #{waterId}
+        from (
+        select wi.*, tp.min, tp.max, tp.mean, tp.params,
+               wl.ndwi_param, wl.open_param, wl.close_param, wl.water_land_path 
+        from (
+        select w.*
+        from water_info w
+        where w.water_id = #{waterId}
+        ) wi
+        left join cod tp on wi.water_id=tp.water_id
+        left join water_land wl on wi.water_id=wl.water_id
+        ) r
     </select>
     <select id="selectNh" parameterType="Long" resultMap="RetrievalResult">
         <include refid="selectResultVo"/>
-        from nh r
-        where r.water_id = #{waterId}
+        from (
+        select wi.*, tp.min, tp.max, tp.mean, tp.params,
+               wl.ndwi_param, wl.open_param, wl.close_param, wl.water_land_path 
+        from (
+        select w.*
+        from water_info w
+        where w.water_id = #{waterId}
+        ) wi
+        left join nh tp on wi.water_id=tp.water_id
+        left join water_land wl on wi.water_id=wl.water_id
+        ) r
     </select>
 
     <select id="selectDataList" parameterType="DataManage" resultMap="DataManageResult">
         <include refid="selectDataVo"/>
         where r.del_flag = '0'
+        <if test="province != null and province != ''">
+            and r.province =#{province}
+        </if>
+        <if test="city != null and city != ''">
+            and r.city =#{city}
+        </if>
         <if test="type != null and type != ''">
-            AND r.type = #{type}
+            and r.type like concat('%', #{type}, '%')
+        </if>
+        <if test="dataType != null and dataType != '' and dataType == 0 ">
+            and r.datatype = 0
+        </if>
+        <if test="dataType != null and dataType != '' and dataType == 1 ">
+            and r.datatype = 1
         </if>
         <if test="waterName != null and waterName != ''">
             AND r.water_name like concat('%', #{waterName}, '%')
@@ -184,8 +253,6 @@
         <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
             and date_format(r.photo_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
         </if>
-<!--        &lt;!&ndash; 数据范围过滤 &ndash;&gt;-->
-<!--        ${dataScope}-->
     </select>
 
     <select id="selectListResult" parameterType="RetrievalResult" resultMap="listResult">
@@ -195,18 +262,24 @@
             wi.province province,
             wi.city city,
             wi.type type,
+            wi.datatype datatype,
             wi.location location,
-
             wi.bands bands,
             wi.rgb_path rgb_path, wi.department department,
-            wi.contact contact, wi.contact_information contact_information,
+            wi.contact contact, wi.phonenumber phonenumber,
 
-            tp.min tp_min, tp.max tp_max, tp.mean tp_mean, tp.rgb as tp_rgb_path,
-            tn.min tn_min, tn.max tn_max, tn.mean tn_mean, tn.rgb as tn_rgb_path,
-            tss.min tss_min, tss.max tss_max, tss.mean tss_mean, tss.rgb as tss_rgb_path,
-            chla.min chla_min, chla.max chla_max, chla.mean chla_mean, chla.rgb as chla_rgb_path,
-            cod.min cod_min, cod.max cod_max, cod.mean cod_mean, cod.rgb as cod_rgb_path,
-            nh.min nh_min, nh.max nh_max, nh.mean nh_mean, nh.rgb as nh_rgb_path
+            tp.min tp_min, tp.max tp_max, tp.mean tp_mean,
+            tp.result_path tp_result_path, tp.save_method tp_save_method,
+            tn.min tn_min, tn.max tn_max, tn.mean tn_mean,
+            tn.result_path tn_result_path, tn.save_method tn_save_method,
+            tss.min tss_min, tss.max tss_max, tss.mean tss_mean,
+            tss.result_path tss_result_path, tss.save_method tss_save_method,
+            chla.min chla_min, chla.max chla_max, chla.mean chla_mean,
+            chla.result_path chla_result_path, chla.save_method chla_save_method,
+            cod.min cod_min, cod.max cod_max, cod.mean cod_mean,
+            cod.result_path cod_result_path, cod.save_method cod_save_method,
+            nh.min nh_min, nh.max nh_max, nh.mean nh_mean,
+            nh.result_path nh_result_path, nh.save_method nh_save_method
         from
         (select
             w.*
@@ -214,6 +287,21 @@
         where w.del_flag='0'
         <if test="waterName != null">
             and w.water_name =#{waterName}
+        </if>
+        <if test="province != null">
+            and w.province =#{province}
+        </if>
+        <if test="city != null">
+            and w.city =#{city}
+        </if>
+        <if test="type != null">
+            and w.type =#{type}
+        </if>
+        <if test="dataType != null and dataType == 0 ">
+            and w.datatype = 0
+        </if>
+        <if test="dataType != null and dataType == 1 ">
+            and w.datatype = 1
         </if>
         <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
             and date_format(w.photo_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
@@ -228,7 +316,6 @@
             left join nh nh on wi.water_id=nh.water_id
             left join cod cod on wi.water_id=cod.water_id
             left join chla chla on wi.water_id=chla.water_id
-
     </select>
 
     <select id="selectUniqueByDictCode" parameterType="Long" resultMap="DataManageResult">
@@ -271,7 +358,7 @@
             <if test="location != null and location != ''">location = #{location},</if>
             <if test="department != null and department != ''">department = #{department},</if>
             <if test="contact != null and contact != ''">contact = #{contact},</if>
-            <if test="contactInformation != null and contactInformation != ''">contact_information = #{contactInformation},</if>
+            <if test="phonenumber != null and phonenumber != ''">phonenumber = #{phonenumber},</if>
             <if test="updateTime != null">update_time= #{updateTime},</if>
             <if test="updateBy != null">update_by= #{updateBy},</if>
         </set>
@@ -294,7 +381,7 @@
         <if test="location != null and location != ''">location,</if>
         <if test="department != null and department != ''">department,</if>
         <if test="contact != null and contact != ''">contact,</if>
-        <if test="contactInformation != null and contactInformation != ''">contact_information,</if>
+        <if test="phonenumber != null and phonenumber != ''">phonenumber,</if>
         <if test="createBy != null and createBy != ''">create_by,</if>
         <if test="remark != null and remark != ''">remark,</if>
         create_time
@@ -313,7 +400,7 @@
         <if test="location != null and location != ''">#{location},</if>
         <if test="department != null and department != ''">#{department},</if>
         <if test="contact != null and contact != ''">#{contact},</if>
-        <if test="contactInformation != null and contactInformation != ''">#{contactInformation},</if>
+        <if test="phonenumber != null and phonenumber != ''">#{phonenumber},</if>
         <if test="createBy != null and createBy != ''">#{createBy},</if>
         <if test="remark != null and remark != ''">#{remark},</if>
         sysdate()

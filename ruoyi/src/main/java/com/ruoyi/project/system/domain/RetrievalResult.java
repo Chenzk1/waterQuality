@@ -1,9 +1,15 @@
 package com.ruoyi.project.system.domain;
 
 import com.ruoyi.framework.web.domain.BaseEntity;
+import org.omg.PortableInterceptor.INACTIVE;
+
 import java.util.Date;
 import java.util.Map;
 
+/**
+ * 获取某个水体某种水质指标的统计性结果
+ *
+ */
 public class RetrievalResult extends BaseEntity{
     private static final long serialVersionUID = 1L;
 
@@ -12,12 +18,15 @@ public class RetrievalResult extends BaseEntity{
 
     /** 水体名称 */
 
-    private String rgbPath;
     private String waterName;
+    private String province;
+    private String city;
+    private String type;
+    private String dataType;
 
-    private Float para1;
-    private Float para2;
-    private Float para3;
+    private Float ndwiParam;
+    private Float closeParam;
+    private Float openParam;
 
     private Float min;
     private Float max;
@@ -25,17 +34,6 @@ public class RetrievalResult extends BaseEntity{
 
     private String retrievalParams;
 
-    private Date photoTime;
-
-    public Date getPhotoTime()
-    {
-        return photoTime;
-    }
-
-    public void setPhotoTime(Date photoTime)
-    {
-        this.photoTime = photoTime;
-    }
 
     public RetrievalResult()
     {
@@ -66,16 +64,6 @@ public class RetrievalResult extends BaseEntity{
 //        this.updateTime = updateTime;
 //    }
 
-    public String getRgbPath()
-    {
-        return rgbPath;
-    }
-
-    public void setRgbPath(String rgbPath)
-    {
-        this.rgbPath = rgbPath;
-    }
-
     public String getWaterName()
     {
         return waterName;
@@ -86,17 +74,41 @@ public class RetrievalResult extends BaseEntity{
         this.waterName= waterName;
     }
 
-    public Float getPara1() {return para1;}
+    public String getProvince() {return province; }
+    public void setProvince(String province)
+    {
+        this.province= province;
+    }
 
-    public void setPara1(Float para1) {this.para1 = para1;}
+    public String getCity() {return city; }
+    public void setCity(String city)
+    {
+        this.city = city;
+    }
 
-    public Float getPara2() {return para2;}
+    public String getType() {return type; }
+    public void setType(String type)
+    {
+        this.type= type;
+    }
 
-    public void setPara2(Float para2) {this.para2 = para2;}
+    public String getDataType() {return dataType; }
+    public void setDataType(String dataType)
+    {
+        this.dataType= dataType;
+    }
 
-    public Float getPara3() {return para3;}
+    public Float getNdwiParam() {return ndwiParam;}
 
-    public void setPara3(Float para3) {this.para3 = para3;}
+    public void setNdwiParam(Float ndwiParam) {this.ndwiParam = ndwiParam;}
+
+    public Float getCloseParam() {return closeParam;}
+
+    public void setCloseParam(Float closeParam) {this.closeParam = closeParam;}
+
+    public Float getOpenParam() {return openParam;}
+
+    public void setOpenParam(Float openParam) {this.openParam = openParam;}
 
     public Float getMin() {return min;}
 

@@ -21,10 +21,10 @@ public class DataManage extends BaseEntity
 
     /** 数据源 */
     private String type;
-
+    private Integer dataType;
     /** 文件路径 */
     private String filePath;
-
+    private String bandWavelengthFilePath;
     /** 文件名称 */
     private String fileName;
 
@@ -39,7 +39,7 @@ public class DataManage extends BaseEntity
     private String location;
     private String department;
     private String contact;
-    private String contactInformation;
+    private String phonenumber;
 
     public DataManage()
     {
@@ -88,6 +88,16 @@ public class DataManage extends BaseEntity
     public void setType(String type)
     {
         this.type = type;
+    }
+
+    public Integer getDataType()
+    {
+        return dataType;
+    }
+
+    public void setDataType(Integer dataType)
+    {
+        this.dataType = dataType;
     }
 
     public String getCountry()
@@ -150,6 +160,16 @@ public class DataManage extends BaseEntity
         this.filePath = filePath;
     }
 
+    public String getBandWavelengthFilePath()
+    {
+        return bandWavelengthFilePath;
+    }
+
+    public void setBandWavelengthFilePath(String bandWavelengthFilePath)
+    {
+        this.bandWavelengthFilePath = bandWavelengthFilePath;
+    }
+
     public String getFileName()
     {
         return fileName;
@@ -210,14 +230,14 @@ public class DataManage extends BaseEntity
     return contact;
 }
 
-    public void setContactInformation(String contactInformation)
+    public void setPhonenumber(String phonenumber)
     {
-        this.contactInformation = contactInformation;
+        this.phonenumber = phonenumber;
     }
 
-    public String getContactInformation()
+    public String getPhonenumber()
 {
-    return contactInformation;
+    return phonenumber;
 }
 
 }

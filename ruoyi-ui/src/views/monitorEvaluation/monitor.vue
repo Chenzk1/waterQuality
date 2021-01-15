@@ -1,7 +1,7 @@
 <template>
   <div class="monitor-container">
-    <el-row :gutter="12" style="margin:10px">
-      <el-col :xs="24" :sm="24" :lg="12" >
+    <el-row :gutter="6" style="margin:2px">
+      <el-col :xs="24" :sm="24" :md="12" :lg="12" >
         <el-card class="box-card">
           <div slot="header" class="clearfix">
             <h3>水体信息</h3>              
@@ -25,7 +25,11 @@
                 <span>{{listForm.type}}</span>
                 <!-- <el-input v-model="listForm.type" :disabled="true" /> -->
               </el-form-item>
-              <el-form-item label="拍摄时间" name="photoTime">
+              <el-form-item label="数据类型" prop="dataType">
+                <span>{{listForm.dataType}}</span>
+                <!-- <el-input v-model="listForm.type" :disabled="true" /> -->
+              </el-form-item>
+              <el-form-item label="数据生成时间" name="photoTime">
                 <span>{{parseTime(listForm.photoTime)}}</span>
                 <!-- <el-date-picker v-model="listForm.photoTime" :disabled="true" align="right" type="date" placeholder="日期" /> -->
               </el-form-item>
@@ -57,143 +61,199 @@
                 <span>{{listForm.contactInformation}}</span>
                 <!-- <el-input v-model="listForm.contactInformation" /> -->
               </el-form-item>
-              <el-form-item label="波段数" prop="bands">
+              <!-- <el-form-item label="波段数" prop="bands">
                 <span>{{listForm.bands}}</span>
                 <!-- <el-input v-model="listForm.bands" :disabled="true" /> -->
-              </el-form-item>      
-              <el-form-item label="RGB图片" prop="rgbPath">
-                <img v-if="listForm.rgbPath" :src="listForm.rgbPath" style="width:380px;height:380px;display:block">
+              <!-- </el-form-item>       -->
+              <el-form-item label="RGB图片" prop="rgbPath" v-if="listForm.dataType == '影像数据'">
+                <el-image v-if="listForm.rgbPath" :src="listForm.rgbPath" :alt="listForm.rgbPath" :fit='fit'
+                  style="width:380px;height:80px;display:block" :preview-src-list="listForm.previewSrcList">
+                </el-image>
               </el-form-item>
             </el-form>
           </div> 
         </el-card>
       </el-col>
-      <el-col :xs="24" :sm="24" :lg="12">
-        <el-card class="box-card">
-          <div slot="header" class="clearfix">
-            <h3>指标反演及水质评价</h3>              
-          </div>
-          <el-collapse v-model="activeNames" >
-            <el-collapse-item title="总磷" name="1">
-              <div class="form-wrapper">
-                <el-form ref="resultForm.tp" :model="resultForm" prop="result.tp" label-width="100px">
-                  <el-form-item label="参数1">
-                    <el-input v-model="resultForm.tp.para1" placeholder="5" />
-                  </el-form-item>
-                  <el-form-item label="参数2">
-                    <el-input v-model="resultForm.tp.para2" placeholder="5" />
-                  </el-form-item>
-                  <el-form-item style="vertical-align:middle;text-align:center" label='反演结果'>
-                    <el-button type="primary" round="True" size="medium" @click="retrieval('tp')">总磷反演</el-button>
-                  </el-form-item>
-                  <el-form-item style="vertical-align:middle;text-align:center">
-                    <img v-if="resultForm.tp.rgbPath" :src="resultForm.tp.rgbPath" style="width:380px;height:380px;display:block,margin-top:auto;margin-bottom:auto;">
-                  </el-form-item>
-                </el-form>
-              </div>
-            </el-collapse-item>
-            <el-collapse-item title="总氮" name="2">
-              <div class="form-wrapper">
-                <el-form ref="resultForm.tn" :model="resultForm" prop="result.tn" label-width="100px">
-                  <el-form-item label="参数1">
-                    <el-input v-model="resultForm.tn.para1" placeholder="5" />
-                  </el-form-item>
-                  <el-form-item label="参数2">
-                    <el-input v-model="resultForm.tn.para2" placeholder="5" />
-                  </el-form-item>
-                  <el-form-item style="vertical-align:middle;text-align:center" label='反演结果'>
-                    <el-button type="primary" round="True" size="medium" @click="retrieval('tn')">总氮反演</el-button>
-                  </el-form-item>
-                  <el-form-item style="vertical-align:middle;text-align:center">
-                    <img v-if="resultForm.tn.rgbPath" :src="resultForm.tn.rgbPath" style="width:380px;height:380px;display:block,margin-top:auto;margin-bottom:auto;">
-                  </el-form-item>
-                </el-form>
-              </div>
-            </el-collapse-item>
-            <el-collapse-item title="叶绿素a" name="3">
-              <div class="form-wrapper">
-                <el-form ref="resultForm.chla" :model="resultForm" prop="resultForm.chla" label-width="100px">
-                  <el-form-item label="反演算法">
-                    <el-radio v-model="resultForm.chla.para1" label=5.0>2BDA</el-radio>
-                    <el-radio v-model="resultForm.chla.para1" label=6>3BDA</el-radio>
-                    <el-radio v-model="resultForm.chla.para1" label=7>BDCI</el-radio>
-                  </el-form-item>
-                  <!-- <el-form-item label="参数1">
-                    <el-input v-model="resultForm.chla.para1" placeholder="5" />
-                  </el-form-item>
-                  <el-form-item label="参数2">
-                    <el-input v-model="resultForm.chla.para2" placeholder="5" />
-                  </el-form-item> -->
-                  <el-form-item size="medium" style="vertical-align:middle;text-align:center">
-                    <el-button type="primary" round="True" size="medium" @click="retrieval('chla')">叶绿素a反演</el-button>
-                  </el-form-item>
-                  <el-form-item style="vertical-align:middle;text-align:center">
-                    <img v-if="resultForm.chla.rgbPath" :src="resultForm.chla.rgbPath" style="width:380px;height:380px;display:block,margin-top:auto;margin-bottom:auto;">
-                  </el-form-item>
-                </el-form>
-              </div>
-            </el-collapse-item>
-            <el-collapse-item title="氨氮" name="4">
-              <div class="form-wrapper">
-                <el-form ref="resultForm.nh" :model="resultForm" prop="resultForm.nh" label-width="100px">
-                  <el-form-item label="参数1">
-                    <el-input v-model="resultForm.nh.para1" placeholder="5" />
-                  </el-form-item>
-                  <el-form-item label="参数2">
-                    <el-input v-model="resultForm.nh.para2" placeholder="5" />
-                  </el-form-item>
-                  <el-form-item size="medium" style="vertical-align:middle;text-align:center">
-                    <el-button type="primary" round="True" size="medium" @click="retrieval('nh')">氨氮反演</el-button>
-                  </el-form-item>
-                  <el-form-item style="vertical-align:middle;text-align:center" label='反演结果'>
-                    <img v-if="resultForm.nh.rgbPath" :src="resultForm.nh.rgbPath" style="width:380px;height:380px;display:block,margin-top:auto;margin-bottom:auto;">
-                  </el-form-item>
-                </el-form>
-              </div>
-            </el-collapse-item>
-            <el-collapse-item title="总悬浮物" name="5">
-              <div class="form-wrapper">
-                <el-form ref="resultForm.tss" :model="resultForm" prop="resultForm.tss" label-width="100px">
-                  <el-form-item label="参数1">
-                    <el-input v-model="resultForm.tss.para1" placeholder="5" />
-                  </el-form-item>
-                  <el-form-item label="参数2">
-                    <el-input v-model="resultForm.tss.para2" placeholder="5" />
-                  </el-form-item>
-                  <el-form-item style="vertical-align:middle;text-align:center" label='反演结果'>
-                    <el-button type="primary" round="True" size="medium" @click="retrieval('tss')">总悬浮物反演</el-button>
-                  </el-form-item>
-                  <el-form-item style="vertical-align:middle;text-align:center">
-                    <img v-if="resultForm.tss.rgbPath" :src="resultForm.tss.rgbPath" style="width:380px;height:380px;display:block,margin-top:auto;margin-bottom:auto;">
-                  </el-form-item>
-                </el-form>
-              </div>
-            </el-collapse-item>
-            <el-collapse-item title="水质评价" name="6">
-              <div class="form-wrapper">
-                <el-form ref="listForm.level" :model="listForm" prop="listForm.level" label-width="100px">
-                  <!-- <el-form-item label="水质评价方法">
-                    <el-select v-model="levelSelect" placeholder="请选择">
-                      <el-option
-                        v-for="item in evaluteMethodOptions"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value"
-                        :disabled="item.disabled"
-                      />
-                    </el-select>
-                  </el-form-item>
-                  <el-form-item style="vertical-align:middle;text-align:center" label='反演结果'>
-                    <el-button type="primary" round="True" size="medium" @click="displayLevel(levelSelect)">水质评价</el-button>
-                  </el-form-item> -->
-                  <el-form-item label="水质评价结果">
-                    1
-                  </el-form-item>
-                </el-form>
-              </div>
-            </el-collapse-item>
-          </el-collapse>
-        </el-card>
+      <el-col :xs="24" :sm="24" :md="12" :lg="12">
+        <el-row :gutter="12" style="margin:10px">
+          <el-card class="box-card">
+            <div slot="header" class="clearfix">
+              <h3>水体提取</h3>              
+            </div>
+            <div class="form-wrapper">
+              <el-form ref="waterLandForm" :model="waterLandForm" prop="waterLandForm" label-width="100px">
+                <el-form-item label="NDWI阈值">
+                  <el-slider v-model="waterLandForm.ndwiPara" show-input step=0.1
+                    min=-100 max=100 :format-tooltip="formatTooltip"></el-slider>
+                </el-form-item>
+                <el-form-item label="闭运算核大小">
+                  <el-slider v-model="waterLandForm.closePara" show-input
+                    max=20></el-slider>
+                </el-form-item>
+                <el-form-item label="开运算核大小">
+                  <el-slider v-model="waterLandForm.openPara" show-input
+                    max=20></el-slider>
+                </el-form-item>
+                <el-form-item style="vertical-align:middle;text-align:center" label=''>
+                  <el-button type="primary" round="True" size="medium" @click="waterLandSegment()">水体提取</el-button>
+                </el-form-item>
+                <el-form-item v-if="waterLandForm.waterLandPath!=''" 
+                  style="vertical-align:middle;text-align:center" label='提取结果'>
+                  <el-image :src="waterLandForm.waterLandPath" v-if="waterLandForm.waterLandPath!=''" :alt="waterLandForm.waterLandPath"
+                  :preview-src-list="waterLandForm.previewSrcList" style="width:380px;height:80px;display:block">
+                  </el-image>
+                </el-form-item>
+                <el-form-item v-if="waterLandForm.waterLandPath!=''" style="vertical-align:middle;text-align:center" label=''>
+                  <el-button v-if="waterLandForm.waterLandPath!=''"
+                   type="primary" round="True" size="medium" @click="saveWaterLandResult()">保存</el-button>
+                </el-form-item>
+              </el-form>
+            </div>
+          </el-card>
+        </el-row>
+        <el-row :gutter="12" style="margin:10px">
+          <el-card class="box-card">
+            <div slot="header" class="clearfix">
+              <h3>指标反演</h3>              
+            </div>
+            <el-collapse v-model="activeNames" >
+              <el-collapse-item title="总悬浮物" name="5">
+                <div class="form-wrapper">
+                  <el-form ref="resultForm.tss" :model="resultForm" prop="resultForm.tss" label-width="100px">
+                    <el-form-item style="vertical-align:middle;text-align:center;margin-top:20px" label='反演算法选择'>
+                      <el-select v-model="resultForm.tss.method" placeholder="Modified QAA">
+                        <el-option
+                          v-for="item in retrieveMethodOptions"
+                          :key="item.value"
+                          :label="item.label"
+                          :value="item.value">
+                        </el-option>
+                      </el-select>
+                    </el-form-item>
+                    <el-form-item style="vertical-align:middle;text-align:center" label=''>
+                      <el-button type="primary" round="True" size="medium" @click="retrieval('tss')">总悬浮物反演</el-button>
+                    </el-form-item>
+                    <el-form-item 
+                      style="vertical-align:middle;text-align:center" label='反演结果'>
+                      <el-image :src="tssResultPath" :alt="tssResultPath"
+                      :preview-src-list="tssPreviewSrcList" style="width:380px;height:80px;display:block,margin-top:auto;margin-bottom:auto;">
+                      </el-image>
+                    </el-form-item>
+                    <el-form-item 
+                      style="vertical-align:middle;text-align:center" label='反演统计量'>
+                      最小值：4.0，平均值：8.1，最大值：12.6
+                    </el-form-item>
+                    <el-form-item v-if="tssResultPath!=null" style="vertical-align:middle;text-align:center" label=''>
+                      <el-button v-if="tssResultPath!=null"
+                      type="primary" round="True" size="medium" @click="saveWaterLandResult()">保存</el-button>
+                    </el-form-item>
+                  </el-form>
+                </div>
+              </el-collapse-item>
+              <el-collapse-item title="总磷" name="1">
+                <div class="form-wrapper">
+                  <el-form ref="resultForm.tp" :model="resultForm" prop="result.tp" label-width="100px">
+                    <el-form-item label="参数1">
+                      <el-input v-model="resultForm.tp.para1" placeholder="5" />
+                    </el-form-item>
+                    <el-form-item label="参数2">
+                      <el-input v-model="resultForm.tp.para2" placeholder="5" />
+                    </el-form-item>
+                    <el-form-item style="vertical-align:middle;text-align:center" label='反演结果'>
+                      <el-button type="primary" round="True" size="medium" @click="retrieval('tp')">总磷反演</el-button>
+                    </el-form-item>
+                    <el-form-item style="vertical-align:middle;text-align:center">
+                      <img v-if="resultForm.tp.rgbPath" :src="resultForm.tp.rgbPath" style="width:380px;height:380px;display:block,margin-top:auto;margin-bottom:auto;">
+                    </el-form-item>
+                  </el-form>
+                </div>
+              </el-collapse-item>
+              <el-collapse-item title="总氮" name="2">
+                <div class="form-wrapper">
+                  <el-form ref="resultForm.tn" :model="resultForm" prop="result.tn" label-width="100px">
+                    <el-form-item label="参数1">
+                      <el-input v-model="resultForm.tn.para1" placeholder="5" />
+                    </el-form-item>
+                    <el-form-item label="参数2">
+                      <el-input v-model="resultForm.tn.para2" placeholder="5" />
+                    </el-form-item>
+                    <el-form-item style="vertical-align:middle;text-align:center" label='反演结果'>
+                      <el-button type="primary" round="True" size="medium" @click="retrieval('tn')">总氮反演</el-button>
+                    </el-form-item>
+                    <el-form-item style="vertical-align:middle;text-align:center">
+                      <img v-if="resultForm.tn.rgbPath" :src="resultForm.tn.rgbPath" style="width:380px;height:380px;display:block,margin-top:auto;margin-bottom:auto;">
+                    </el-form-item>
+                  </el-form>
+                </div>
+              </el-collapse-item>
+              <el-collapse-item title="叶绿素a" name="3">
+                <div class="form-wrapper">
+                  <el-form ref="resultForm.chla" :model="resultForm" prop="resultForm.chla" label-width="100px">
+                    <el-form-item label="反演算法">
+                      <el-radio v-model="resultForm.chla.para1" label=5.0>2BDA</el-radio>
+                      <el-radio v-model="resultForm.chla.para1" label=6>3BDA</el-radio>
+                      <el-radio v-model="resultForm.chla.para1" label=7>BDCI</el-radio>
+                    </el-form-item>
+                    <!-- <el-form-item label="参数1">
+                      <el-input v-model="resultForm.chla.para1" placeholder="5" />
+                    </el-form-item>
+                    <el-form-item label="参数2">
+                      <el-input v-model="resultForm.chla.para2" placeholder="5" />
+                    </el-form-item> -->
+                    <el-form-item size="medium" style="vertical-align:middle;text-align:center">
+                      <el-button type="primary" round="True" size="medium" @click="retrieval('chla')">叶绿素a反演</el-button>
+                    </el-form-item>
+                    <el-form-item style="vertical-align:middle;text-align:center">
+                      <img v-if="resultForm.chla.rgbPath" :src="resultForm.chla.rgbPath" style="width:380px;height:380px;display:block,margin-top:auto;margin-bottom:auto;">
+                    </el-form-item>
+                  </el-form>
+                </div>
+              </el-collapse-item>
+              <el-collapse-item title="氨氮" name="4">
+                <div class="form-wrapper">
+                  <el-form ref="resultForm.nh" :model="resultForm" prop="resultForm.nh" label-width="100px">
+                    <el-form-item label="参数1">
+                      <el-input v-model="resultForm.nh.para1" placeholder="5" />
+                    </el-form-item>
+                    <el-form-item label="参数2">
+                      <el-input v-model="resultForm.nh.para2" placeholder="5" />
+                    </el-form-item>
+                    <el-form-item size="medium" style="vertical-align:middle;text-align:center">
+                      <el-button type="primary" round="True" size="medium" @click="retrieval('nh')">氨氮反演</el-button>
+                    </el-form-item>
+                    <el-form-item style="vertical-align:middle;text-align:center" label='反演结果'>
+                      <img v-if="resultForm.nh.rgbPath" :src="resultForm.nh.rgbPath" style="width:380px;height:380px;display:block,margin-top:auto;margin-bottom:auto;">
+                    </el-form-item>
+                  </el-form>
+                </div>
+              </el-collapse-item>
+
+              <el-collapse-item title="水质评价" name="6">
+                <div class="form-wrapper">
+                  <el-form ref="listForm.level" :model="listForm" prop="listForm.level" label-width="100px">
+                    <!-- <el-form-item label="水质评价方法">
+                      <el-select v-model="levelSelect" placeholder="请选择">
+                        <el-option
+                          v-for="item in evaluteMethodOptions"
+                          :key="item.value"
+                          :label="item.label"
+                          :value="item.value"
+                          :disabled="item.disabled"
+                        />
+                      </el-select>
+                    </el-form-item>
+                    <el-form-item style="vertical-align:middle;text-align:center" label='反演结果'>
+                      <el-button type="primary" round="True" size="medium" @click="displayLevel(levelSelect)">水质评价</el-button>
+                    </el-form-item> -->
+                    <el-form-item label="水质评价结果">
+                      1
+                    </el-form-item>
+                  </el-form>
+                </div>
+              </el-collapse-item>
+            </el-collapse>
+          </el-card>
+        </el-row>
       </el-col>
     </el-row>
 
@@ -218,6 +278,11 @@ const TypeOptions = [
   { key: 'LANDSAT-5', display_name: 'LANDSAT-5' },
   { key: 'LANDSAT-8', display_name: 'LANDSAT-8' }
 ]
+const retrieveMethodOptions = [{label: 'Modified QAA', value: 0},
+                  {label: 'PNN-L1-RF', value: 1},
+                  {label: 'PNN-L1-NN', value: 2},
+                  {label: 'PNN-L2-RF', value: 3},
+                  {label: 'PNN-L2-NN', value: 4},]
 const evaluteMethodOptions = [
   { key: '1', label: '单因子', value: 'single', disabled: false },
   { key: '2', label: '多因子', value: 'multi', disabled: false },
@@ -252,9 +317,12 @@ export default {
   },
   data() {
     return {
+      tssResultPath: '/dev-api/profile/retrievalResultFile/TSMResultFile/maozhouhe0311.png',
+      tssPreviewSrcList: ['/dev-api/profile/retrievalResultFile/TSMResultFile/maozhouhe0311.png',],
       tableKey: 0,
       list: null,
       listForm: { waterId: 1000 },
+      waterLandForm: {},
       resultForm: { 
         waterId: 1000,
         tp:{para1:undefined, para2:undefined, para3:undefined, min:undefined, max:undefined, mean:undefined, rgbPath:undefined},
@@ -285,6 +353,7 @@ export default {
       TypeOptions,
       provinceOptions,
       evaluteMethodOptions,
+      retrieveMethodOptions,
       sortOptions: [{ label: 'ID Ascending', key: '+id' }, { label: 'ID Descending', key: '-id' }],
       showReviewer: false,
       temp: {
@@ -322,6 +391,7 @@ export default {
       }
     console.log(this.$route.params.id)
     this.getList()
+    this.getWaterLandForm()
     //this.getResult()
     this.getResult('tp')
     this.getResult('tn')
@@ -335,6 +405,12 @@ export default {
     handleSelectionChange(val) {
       this.multipleSelection = val
     },
+    formatTooltip(val) {
+      return val / 10;
+    },
+    disableWaterLandFn() {
+
+    },
     getList() {
       this.listLoading = true
       
@@ -347,8 +423,12 @@ export default {
         }
         else{
         this.listForm = response.rows[0];
-        this.listForm.rgbPath = process.env.VUE_APP_BASE_API + '/profile' + response.rows[0].rgbPath
+        const dataTypeMap = {0:'影像数据', 1:'列表数据'}
+        this.listForm.dataType = dataTypeMap[this.listForm.dataType]
+        this.listForm.rgbPath = process.env.VUE_APP_BASE_API + response.rows[0].rgbPath // need to modify
+        this.listForm.previewSrcList = [this.listForm.rgbPath, ]
         console.log(this.listForm.rgbPath)
+        // need to add 表格预览
         this.total = response.total;
         // Just to simulate the time of the request
         setTimeout(() => {
@@ -357,6 +437,14 @@ export default {
         }
       })
     },
+    getWaterLandForm() {
+      this.waterLandForm = {ndwiPara:0.0,
+                            closePara: 5,
+                            openPara: 5,
+                            waterLandPath: process.env.VUE_APP_BASE_API + '/profile/waterLandFile/maozhouhe0311.png',
+                            previewSrcList: [process.env.VUE_APP_BASE_API + '/profile/waterLandFile/maozhouhe0311.png']}
+    },
+    saveWaterLandResult() {},
     changeWater() {
       // this.listLoading = true
       console.log('test:',this.listQuery.waterId)
@@ -399,6 +487,10 @@ export default {
             case 'tss':
               this.resultForm.tss = response.rows[0];
               this.resultForm.tss.rgbPath = process.env.VUE_APP_BASE_API + '/profile' + response.rows[0].rgbPath
+              this.resultForm.tss.resultPath = process.env.VUE_APP_BASE_API + '/profile' + '/retrievalResultFile/TSMResultFile/maozhouhe0311.png'
+              console.log(this.resultForm.tss.resultPath)
+              console.log('testing')
+              this.resultForm.tss.previewSrcList = [process.env.VUE_APP_BASE_API + '/profile' + '/retrievalResultFile/TSMResultFile/maozhouhe0311.png']
               break;
             case 'nh':
               this.resultForm.nh = response.rows[0];

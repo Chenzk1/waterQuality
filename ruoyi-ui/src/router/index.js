@@ -66,9 +66,9 @@ export const constantRoutes = [
       {
         path: 'index',
         component: () => import('@/views/queryAnalysis/query'),
-        name: '检索',
+        name: '水体检索',
         meta: {
-          title: '检索',
+          title: '水体检索',
           icon: 'search',
           affix: true 
         }
@@ -147,6 +147,16 @@ export const constantRoutes = [
       },
     ]
   },
+  {
+    path: '',
+    component: Layout,
+    children: [
+      {
+        path: 'https://www.mee.gov.cn/ywgz/fgbz/bz/bzwb/shjbh/shjzlbz/200206/W020061027509896672057.pdf',
+        meta: { title: '地表水标准', icon: 'link' }
+      }
+    ]
+  },
   // {
   //   path: '/dashboard',
   //   component: Layout,
@@ -173,23 +183,78 @@ export const constantRoutes = [
         component: () => import('@/views/queryAnalysis/analysis'),
         name: 'Analysis',
         meta: {
-          title: '数据分析',
+          title: '水质数据分析',
           icon: 'chart'
         }
       }
     ]
   },
+  // {
+  //   path: '/waterMatterManage',
+  //   component: Layout,
+  //   // redirect: '/waterMatter/index',
+  //   hidden: false,
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       component: () => import('@/views/dataManage/index'),
+  //       name: 'DataManage',
+  //       meta: { title: '数据管理', icon: 'table', noCache: true }
+  //     }
+  //   ]
+  // },
   {
-    path: '',
+    path: '/waterMatterDruid',
     component: Layout,
+    hidden: false,
+    name: 'waterMatterDruid',
+    children: [   
+      {
+        path: 'druid',
+        component: () => import('@/views/monitor/deviceManage/index'),
+        name: 'Druid',
+        meta: {
+          title: '水务监控与报警',
+          icon: 'druid'
+        }
+      },
+    ]
+  },
+  {
+    path: '/waterMatterDruid',
+    component: Layout,
+    // redirect: '/MonitorEvaluation/monitor',
+    hidden: true,
+    name: '/waterMatterDruid',
     children: [
       {
-        path: 'https://www.mee.gov.cn/ywgz/fgbz/bz/bzwb/shjbh/shjzlbz/200206/W020061027509896672057.pdf',
-        meta: { title: '地表水标准', icon: 'link' }
+        path: 'device/:id',
+        component: () => import('@/views/monitor/deviceManage/device'),
+        name: 'Device',
+        meta: {
+          title: '设备历史数据',
+          icon: 'example'
+        }
+      },
+    ]
+  },
+  {
+    path: '/waterMatterNotice',
+    component: Layout,
+    hidden: false,
+    name: 'waterMatterNotice',
+    children: [   
+      {
+        path: 'notice',
+        component: () => import('@/views/system/notice/index'),
+        name: 'Notice',
+        meta: {
+          title: '通知公告',
+          icon: 'message'
+        }
       }
     ]
   },
-  
 ]
 
 export default new Router({

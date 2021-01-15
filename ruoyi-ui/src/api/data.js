@@ -40,7 +40,7 @@ export function fetchRetrieval(query) {
 }
 
 
-export function fetchCreate(data) {
+export function fetchCreateList(data) {
   return request({
     url: '/data/list',
     method: 'post',
@@ -48,7 +48,7 @@ export function fetchCreate(data) {
   })
 }
 
-export function fetchUpdate(data) {
+export function fetchUpdateList(data) {
   return request({
     url: '/data/list',
     method: 'put',

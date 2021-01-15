@@ -1,1 +1,3 @@
 ./ruoyi/target/
+.vscode
+./tmp
