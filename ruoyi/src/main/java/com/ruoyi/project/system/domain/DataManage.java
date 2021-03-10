@@ -4,7 +4,7 @@ import com.ruoyi.framework.web.domain.BaseEntity;
 import java.util.Date;
 /**
  * 水体数据表
- *
+ * 有基础的水体信息以及用于query的水质参数
  */
 public class DataManage extends BaseEntity
 {
@@ -31,7 +31,7 @@ public class DataManage extends BaseEntity
     private String country;
     private String province;
     private String city;
-    private String bands;
+    private Integer bands;
     private String rgbPath;
     private String remark;
 
@@ -40,6 +40,7 @@ public class DataManage extends BaseEntity
     private String department;
     private String contact;
     private String phonenumber;
+    private String waterQualityStandard;
 
     public DataManage()
     {
@@ -130,12 +131,12 @@ public class DataManage extends BaseEntity
         this.city = city;
     }
 
-    public String getBands()
+    public Integer getBands()
     {
         return bands;
     }
 
-    public void setBands(String bands)
+    public void setBands(Integer bands)
     {
         this.bands = bands;
     }
@@ -216,9 +217,9 @@ public class DataManage extends BaseEntity
     }
 
     public String getDepartment()
-{
-    return department;
-}
+    {
+        return department;
+    }
 
     public void setContact(String contact)
     {
@@ -240,4 +241,10 @@ public class DataManage extends BaseEntity
     return phonenumber;
 }
 
+    public void setWaterQualityStandard(String waterQualityStandard)
+    {
+        this.waterQualityStandard = waterQualityStandard;
+    }
+
+    public String getWaterQualityStandard() {return waterQualityStandard;}
 }

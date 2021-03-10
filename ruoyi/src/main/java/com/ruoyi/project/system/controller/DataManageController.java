@@ -1,8 +1,19 @@
 package com.ruoyi.project.system.controller;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.ruoyi.common.utils.ServletUtils;
+import com.ruoyi.common.utils.file.FileUploadUtils;
+import com.ruoyi.framework.config.RuoYiConfig;
+import com.ruoyi.framework.security.LoginUser;
+import com.ruoyi.framework.security.service.TokenService;
 import com.ruoyi.project.system.domain.RetrievalResult;
+import com.ruoyi.project.system.service.IRemoteCallService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -18,11 +29,13 @@ import com.ruoyi.project.system.domain.ListResult;
 import com.ruoyi.project.system.service.IDataManageService;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.xml.crypto.Data;
+
 
 /**
  * 角色信息
  *
- * @author ruoyi
+ * @author Kayden
  */
 @RestController
 @RequestMapping("/data/list")
@@ -30,6 +43,12 @@ public class DataManageController extends BaseController{
 
     @Autowired
     private IDataManageService dataService;
+
+    @Autowired
+    private IRemoteCallService remoteCallService;
+
+    @Autowired
+    private TokenService tokenService;
 
 //    @PreAuthorize("@ss.hasPermi('system:role:list')")
     @GetMapping
@@ -72,28 +91,75 @@ public class DataManageController extends BaseController{
     }
 
     /**
-     * 修改保存角色
+     * 修改水体数据
      */
 //    @PreAuthorize("@ss.hasPermi('system:role:edit')")
-    @Log(title = "数据管理", businessType = BusinessType.UPDATE)
+//    @Log(title = "数据管理", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult editWater(DataManage dataManage,
-                           @RequestParam(value = "", required = false) MultipartFile bandWavelengthFile,
-                           @RequestParam(value = "", required = false) MultipartFile remoteTableFile)
+    public AjaxResult editWater(@RequestParam(value = "body") String dataManageString,
+                           @RequestParam(value = "bandWavelengthFile", required = false) MultipartFile bandWavelengthFile,
+                           @RequestParam(value = "remoteTableFile", required = false) MultipartFile remoteTableFile) throws IOException
     {
+        DataManage dataManage = JSON.parseObject(dataManageString, DataManage.class);
         dataManage.setUpdateBy(SecurityUtils.getUsername());
-        return toAjax(dataService.updateWater(dataManage));
+        setFiles(bandWavelengthFile, remoteTableFile, dataManage);
+        // todo: 图像文件加上rgb，rgb_path
+        AjaxResult ajaxResult = toAjax(dataService.updateWater(dataManage));
+        return ajaxResult;
     }
 
     /**
      * 新增
      */
-    @Log(title = "数据管理", businessType = BusinessType.INSERT)
+//    @Log(title = "数据管理", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult addWater(@RequestBody DataManage dataManage)
+    public AjaxResult addWater(@RequestParam(value = "body") String dataManageString,
+                                @RequestParam(value = "bandWavelengthFile", required = false) MultipartFile bandWavelengthFile,
+                                @RequestParam(value = "remoteTableFile", required = false) MultipartFile remoteTableFile) throws IOException
     {
+        DataManage dataManage = JSON.parseObject(dataManageString, DataManage.class);
         dataManage.setCreateBy(SecurityUtils.getUsername());
+        // todo: 图像文件加上rgb，rgb_path
+        setFiles(bandWavelengthFile, remoteTableFile, dataManage);
         return toAjax(dataService.insertWater(dataManage));
+    }
+
+    private void setFiles(@RequestParam(value = "bandWavelengthFile", required = false) MultipartFile bandWavelengthFile, @RequestParam(value = "remoteTableFile", required = false) MultipartFile remoteTableFile, DataManage dataManage) throws IOException {
+        if (dataManage.getType().equals("自定义") && !bandWavelengthFile.isEmpty()) {
+            int waterId;
+            if(dataManage.getWaterId() == null) {
+                waterId = dataService.selectMaxWaterId()+1;
+            } else {
+                waterId = Math.toIntExact(dataManage.getWaterId())+1;
+            }
+            String fileName = "custom_" + waterId + ".txt";
+            String bandWavelength = FileUploadUtils.uploadAbsolutePath(RuoYiConfig.getProfile()+"/bandWavelengthFile",
+                    bandWavelengthFile, fileName);
+            long linesNum = Files.lines(Paths.get(RuoYiConfig.getProfile()+"/bandWavelengthFile/"+fileName)).count();
+            dataManage.setBands(Math.toIntExact(linesNum));
+            dataManage.setType(fileName);
+            dataManage.setBandWavelengthFilePath(bandWavelength);
+            // TODO: 设置bands
+        }
+        if (remoteTableFile!=null && !remoteTableFile.isEmpty()) {
+            String remoteTable = FileUploadUtils.uploadAbsolutePath(RuoYiConfig.getProfile()+"/remoteTableFile",
+                    remoteTableFile);
+        }
+        if(dataManage.getDataType() == 0)
+        {
+            String filePath=dataManage.getFilePath();
+            String bandWavelengthPath=dataManage.getBandWavelengthFilePath();
+            String rgbPathPrefix = "/rgbFile";
+            String params="{\"filePath\":\"" + filePath +
+                    "\",\"bandWavelengthPath\":\"" + bandWavelengthPath +
+                    "\",\"rgbPathPrefix\":\"" + rgbPathPrefix+
+                    "\",\"profilePath\":\"" + RuoYiConfig.getProfile() +"\"}";
+            System.out.println("params: " + params);
+            JSONObject ans = remoteCallService.remoteCall("getRgbFile", params);
+            String rgbPath = ans.getString("rgbPath");
+            System.out.println("ans: " + rgbPath);
+            dataManage.setRgbPath(rgbPath);
+        }
     }
 
     @PreAuthorize("@ss.hasPermi('system:user:remove')")

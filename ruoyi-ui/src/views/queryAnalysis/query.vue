@@ -19,12 +19,11 @@
         <el-option v-for="item in dataTypeOptions" :key="item.value" :label="item.label" :value="item.value" />
       </el-select>
       <el-date-picker
-        v-model="listQuery.dateRange"
+        v-model="dateRange"
         type="daterange"
         range-separator="至"
         start-placeholder="开始日期"
         end-placeholder="结束日期"
-        value-format="timestamp"
         class="filter-item"
         style="width: 350px"
       />
@@ -106,6 +105,11 @@
       <el-table-column label="数据类型" class-name="status-col" width="100">
         <template slot-scope="scope">
           <span>{{ scope.row.dataType }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="水质要求" class-name="status-col" width="100">
+        <template slot-scope="scope">
+          <span>{{ scope.row.waterQualityStandard }}</span>
         </template>
       </el-table-column>
       <!-- <el-table-column label="RGB图片" class-name="status-col" width="110">
@@ -262,12 +266,13 @@
       </el-table-column>
     </el-table>
 
-    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
+    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit"
+     @pagination="getResultList" />
   </div>
 </template>
 
 <script>
-import { fetchResultList, fetchResult, fetchLevel } from '@/api/data'
+import { fetchWaterQuality, fetchLevel } from '@/api/data'
 
 import waves from '@/directive/waves' // waves directive
 import { parseTime, isAssetTypeAnImage } from '@/utils'
@@ -280,6 +285,7 @@ const provinceOptions = [
   '福建省', '天津市', '云南省', '四川省', '广西壮族自治区', '安徽省', '海南省', '江西省', '湖北省', '山西省', '辽宁省', '台湾省',
   '黑龙江', '内蒙古自治区', '澳门特别行政区', '贵州省', '甘肃省', '青海省', '新疆维吾尔自治区', '西藏自治区', '吉林省', '宁夏回族自治区'
 ]
+const cityOptions = []
 const dataTypeOptions = [{'label':'影像数据', 'value':0}, 
                          {'label':'列表数据', 'value':1}]
 const dataTypeMap = {0:'影像数据', 1:'列表数据'}
@@ -331,8 +337,11 @@ export default {
         city: undefined
       },
       typeOptions: [],
+      cityOptions,
       dataTypeOptions,
       provinceOptions,
+      // 检索日期范围
+      dateRange: [],
       dataTypeMap,
       provinceNunique: 0,
       nameOptions,
@@ -367,12 +376,14 @@ export default {
     },
     getResultList() {
       this.listLoading = true
-      fetchResultList(this.addDateRange(this.listQuery, this.dateRange)).then(response => {
+      fetchWaterQuality(this.addDateRange(this.listQuery, this.dateRange)).then(response => {
         // this.list = response.rows;
         this.total = response.total;
         this.list = response.rows;
         this.list.forEach(function(element){
           const dataTypeMap = {0:'影像数据', 1:'列表数据'}
+          const standardMap = {'无':'无', 'one': 1, 'two': '2', 'three': '3', 'four': '4', 'five': '5'}
+
           if(element.rgbPath!=null) element.rgbPath=process.env.VUE_APP_BASE_API + '/profile/' + element.rgbPath
           if(element.tpResultPath!=null) element.tpResultPath = process.env.VUE_APP_BASE_API + '/profile/' + element.tpResultPath
           if(element.tnResultPath!=null) element.tnResultPath = process.env.VUE_APP_BASE_API + '/profile/' + element.tnResultPath
@@ -380,6 +391,7 @@ export default {
           if(element.chlaResultPath!=null) element.chlaResultPath = process.env.VUE_APP_BASE_API + '/profile/' + element.chlaResultPath
           if(element.nhResultPath!=null) element.nhResultPath = process.env.VUE_APP_BASE_API + '/profile/' + element.nhResultPath
           if(element.codResultPath!=null) element.codResultPath = process.env.VUE_APP_BASE_API + '/profile/' + element.codResultPath
+          element.waterQualityStandard = standardMap[element.waterQualityStandard]
           element.dataType = dataTypeMap[element.dataType]
         })
 

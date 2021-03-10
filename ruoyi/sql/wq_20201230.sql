@@ -47,19 +47,20 @@ CREATE TABLE `water_info`  (
   `contact` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT '' COMMENT '联系人',
   `phonenumber` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT '' COMMENT '联系方式',
   `band_wavelength_file_path` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
+  `water_quality_standard` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT "无" COMMENT '水质等级要求',
   PRIMARY KEY (`water_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1010 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin COMMENT = '水体信息表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of water_info
 -- ----------------------------
-INSERT INTO `water_info` VALUES (1000, '茅洲河', '2019-03-11 16:39:39', '中国', '广东省', '深圳市', 'custom_1000', 1, 303, 'admin', '2020-11-27 16:40:53', 'admin', NULL, NULL, 'maozhouhe0311.csv', 'remoteTableFile/maozhouhe0311.csv', NULL, '0', -1, '', '深圳境内羊台山北麓', '深州市水务管理局', 'D', '17812345569', NULL);
-INSERT INTO `water_info` VALUES (1001, '茅洲河', '2019-03-11 16:42:53', '中国', '广东省', '深圳市', 'custom_1001', 0, 270, 'admin', '2020-11-27 16:43:45', 'admin', NULL, NULL, 'maozhouhe0311.tif', 'remoteImageFile/maozhouhe0311.tif', 'rgbFile/maozhouhe0311.png', '0', -1, '', '深圳境内羊台山北麓', '深州市水务管理局', 'D', '17812345569', NULL);
-INSERT INTO `water_info` VALUES (1002, '茅洲河', '2019-08-05 16:47:25', '中国', '广东省', '深圳市', 'custom_1002', 1, 751, 'admin', '2020-11-27 16:48:34', 'admin', NULL, NULL, 'maozhouhe0805.csv', 'remoteTableFile/maozhouhe0805.csv', NULL, '0', -1, '', '深圳境内羊台山北麓', '深州市水务管理局', 'D', '17812345569', NULL);
-INSERT INTO `water_info` VALUES (1006, '滇池', '2018-08-31 00:00:00', '中国', '云南省', '昆明市', 'LANDSAT-8', 0, 11, 'czk', '2019-10-06 11:33:00', 'admin', '2019-10-19 11:33:00', '', 'dianchi20191101', '/waterData/origin/1001.img', '/dev-api/profile/waterData/origin/rgb/1001.jpg', '0', 1, '', '云南省昆明市西南部', '昆明市水务管理局', 'A', '17812345523', NULL);
-INSERT INTO `water_info` VALUES (1007, '西湖', '2018-12-31 00:00:00', '中国', '浙江省', '杭州市', 'LANDSAT-5', 0, 7, 'czk', '2019-10-16 11:33:00', 'admin', '2019-10-29 11:33:00', '', 'xihu20191101', '/waterData/origin/1001.img', '/dev-api/profile/dev-api/profile/waterData/origin/rgb/1002.jpg', '0', 1, '', '杭州市西湖区东南面', '杭州市水务管理局', 'B', '17812345567', NULL);
-INSERT INTO `water_info` VALUES (1008, '太湖', '2018-10-31 00:00:00', '中国', '江苏省', '苏州市', 'MODIS', 0, 36, 'czk', '2019-10-13 11:33:00', 'admin', '2019-10-27 11:33:00', '', 'taihu20191101', '/waterData/origin/1001.img', '/dev-api/profile/waterData/origin/rgb/1003.jpg', '0', 1, '', '江苏省南部和浙江省北部交界处', '苏州市水务管理局', 'C', '17812345568', NULL);
-INSERT INTO `water_info` VALUES (1009, '茅洲河', '2019-08-05 19:02:11', '中国', '广东省', '深圳市', 'custom_1009', 0, 272, 'admin', '2020-11-27 19:03:30', 'admin', NULL, NULL, 'maozhouhe0805.tif', 'remoteTableFile/maozhouhe0805.tif', 'rgbFile/maozhouhe0805.png', '0', -1, '', '深圳境内羊台山北麓', '深圳市水务管理局', 'D', '17812345569', NULL);
+INSERT INTO `water_info` VALUES (1000, '茅洲河', '2019-03-11 16:39:39', '中国', '广东省', '深圳市', 'custom_1000', 1, 303, 'admin', '2020-11-27 16:40:53', 'admin', NULL, NULL, 'maozhouhe0311.csv', 'remoteTableFile/maozhouhe0311.csv', NULL, '0', -1, '', '深圳境内羊台山北麓', '深州市水务管理局', 'D', '17812345569', NULL, "three");
+INSERT INTO `water_info` VALUES (1001, '茅洲河', '2019-03-11 16:42:53', '中国', '广东省', '深圳市', 'custom_1001', 0, 270, 'admin', '2020-11-27 16:43:45', 'admin', NULL, NULL, 'maozhouhe0311.tif', 'remoteImageFile/maozhouhe0311.tif', 'rgbFile/maozhouhe0311.png', '0', -1, '', '深圳境内羊台山北麓', '深州市水务管理局', 'D', '17812345569', NULL, "three");
+INSERT INTO `water_info` VALUES (1002, '茅洲河', '2019-08-05 16:47:25', '中国', '广东省', '深圳市', 'custom_1002', 1, 751, 'admin', '2020-11-27 16:48:34', 'admin', NULL, NULL, 'maozhouhe0805.csv', 'remoteTableFile/maozhouhe0805.csv', NULL, '0', -1, '', '深圳境内羊台山北麓', '深州市水务管理局', 'D', '17812345569', NULL, "three");
+INSERT INTO `water_info` VALUES (1006, '滇池', '2018-08-31 00:00:00', '中国', '云南省', '昆明市', 'LANDSAT-8', 0, 11, 'czk', '2019-10-06 11:33:00', 'admin', '2019-10-19 11:33:00', '', 'dianchi20191101', '/waterData/origin/1001.img', '/dev-api/profile/waterData/origin/rgb/1001.jpg', '0', 1, '', '云南省昆明市西南部', '昆明市水务管理局', 'A', '17812345523', NULL, "three");
+INSERT INTO `water_info` VALUES (1007, '西湖', '2018-12-31 00:00:00', '中国', '浙江省', '杭州市', 'LANDSAT-5', 0, 7, 'czk', '2019-10-16 11:33:00', 'admin', '2019-10-29 11:33:00', '', 'xihu20191101', '/waterData/origin/1001.img', '/dev-api/profile/dev-api/profile/waterData/origin/rgb/1002.jpg', '0', 1, '', '杭州市西湖区东南面', '杭州市水务管理局', 'B', '17812345567', NULL, "three");
+INSERT INTO `water_info` VALUES (1008, '太湖', '2018-10-31 00:00:00', '中国', '江苏省', '苏州市', 'MODIS', 0, 36, 'czk', '2019-10-13 11:33:00', 'admin', '2019-10-27 11:33:00', '', 'taihu20191101', '/waterData/origin/1001.img', '/dev-api/profile/waterData/origin/rgb/1003.jpg', '0', 1, '', '江苏省南部和浙江省北部交界处', '苏州市水务管理局', 'C', '17812345568', NULL, "three");
+INSERT INTO `water_info` VALUES (1009, '茅洲河', '2019-08-05 19:02:11', '中国', '广东省', '深圳市', 'custom_1009', 0, 272, 'admin', '2020-11-27 19:03:30', 'admin', NULL, NULL, 'maozhouhe0805.tif', 'remoteTableFile/maozhouhe0805.tif', 'rgbFile/maozhouhe0805.png', '0', -1, '', '深圳境内羊台山北麓', '深圳市水务管理局', 'D', '17812345569', NULL, "three");
 
 -- ----------------------------
 -- Table structure for water_land
@@ -82,25 +83,173 @@ CREATE TABLE `water_land`  (
 INSERT INTO `water_land` VALUES (1001, '2020-11-27 16:43:45', 0, 5, 5, 'waterLandFile/maozhouhe0311.png', '');
 
 -- ----------------------------
+-- Table structure for water_quality_standard
+-- ----------------------------
+DROP TABLE IF EXISTS `water_quality_standard`;
+CREATE TABLE `water_quality_standard` (
+  `param` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '水质指标',
+  `direct` varchar(8) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT 'above' COMMENT '应该大于还是小于，above or below',
+  `one` double NULL DEFAULT 0 COMMENT '一级',
+  `two` double NULL DEFAULT 0 COMMENT '二级',
+  `three` double NULL DEFAULT 0 COMMENT '三级',
+  `four` double NULL DEFAULT 0 COMMENT '四级',
+  `five` double NULL DEFAULT 0 COMMENT '五级',
+  PRIMARY KEY (`param`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin COMMENT = '水质标准基本项目限值' ROW_FORMAT = Dynamic;
+
+INSERT INTO `water_quality_standard` VALUES ('cod', 'below', 15, 15, 20, 30, 40);
+INSERT INTO `water_quality_standard` VALUES ('nh', 'below', 0.15, 0.5, 1.0, 1.5, 2.0);
+INSERT INTO `water_quality_standard` VALUES ('tp', 'below', 0.02, 0.1, 0.2, 0.3, 0.4);
+INSERT INTO `water_quality_standard` VALUES ('tn', 'below', 0.2, 0.5, 1.0, 1.5, 2.0);
+
+-- ----------------------------
+-- Table structure for water_info
+-- ----------------------------
+DROP TABLE IF EXISTS `device`;
+CREATE TABLE `device`  (
+  `device_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '设备id',
+  `device_name` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL DEFAULT '' COMMENT '设备名称',
+  `index_type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT '' COMMENT '指标类型',
+  `time_offset` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT '' COMMENT '采样间隔',
+  `lower_limit` double NULL DEFAULT NULL COMMENT '报警下限',
+  `upper_limit` double NULL DEFAULT NULL COMMENT '报警上限',
+  `current_status` varchar(2) NULL DEFAULT "1" COMMENT '运行状态，"1" or "0"',
+  `current_value` double NOT NULL DEFAULT 0 COMMENT '当前读数',
+  `generate_time` datetime(0) NULL DEFAULT NULL COMMENT '监测时间',
+  `province` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT '浙江省' COMMENT '省份',
+  `city` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT '杭州市' COMMENT '城市',
+  `location` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT '' COMMENT '位置',
+  `department` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT '' COMMENT '主管部门',
+  `contact` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT '' COMMENT '责任人',
+  `phonenumber` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT '' COMMENT '联系方式',
+  `email_address` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT '' COMMENT '联系邮箱',
+  PRIMARY KEY (`device_id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 10000 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin COMMENT = '设备信息表' ROW_FORMAT = Dynamic;
+
+INSERT INTO `device` VALUES (100000, "悬浮物污泥浓度计", "悬浮物浓度",  '6小时', NULL, NULL, "1", 6.9, 
+                              "2020-08-06 06:00:00", "广东省","深圳市",
+                              "深圳市茅洲河洋涌大桥断面","深州市水务管理局","D",
+                              "17812345569","17812345569@xx.com");  
+INSERT INTO `device` VALUES (100001, "ph测定仪", "ph值", '6小时', 6.0, 9.0, "1", 7.6, 
+                              "2020-08-05 06:00:00", "广东省","深圳市",
+                              "深圳市茅洲河洋涌大桥断面","深州市水务管理局","D",
+                              "17812345569","17812345569@xx.com");
+INSERT INTO `device` VALUES (100002, "溶解氧测定仪", "溶解氧",  '6小时', 3, 3, "1", 8.5, 
+                              "2020-08-05 06:00:00", "广东省","深圳市",
+                              "深圳市茅洲河洋涌大桥断面","深州市水务管理局","D",
+                              "17812345569","17812345569@xx.com");    
+INSERT INTO `device` VALUES (100003, "化学需氧量测定仪", "化学需氧量", '6小时', NULL, 30, "1", 23.6, 
+                              "2020-08-05 06:00:00", "广东省","深圳市",
+                              "深圳市茅洲河洋涌大桥断面","深州市水务管理局","D",
+                              "17812345569","17812345569@xx.com");    
+INSERT INTO `device` VALUES (100004, "悬浮物污泥浓度计", "悬浮物浓度",  '6小时', NULL, NULL, "1", 6.9, 
+                              "2020-08-05 06:00:00", "广东省","深圳市",
+                              "深圳市茅洲河洋涌大桥断面","深州市水务管理局","D",
+                              "17812345569","17812345569@xx.com");  
+INSERT INTO `device` VALUES (100005, "ph测定仪", "ph值",  "6小时", 6.0, 9.0, "1", 8.5, 
+                              "2020-08-05 06:00:00", "广东省","深圳市",
+                               "深圳市茅洲河共和村断面","深州市水务管理局","D",
+                               "17812345569","17812345569@xx.com");   
+INSERT INTO `device` VALUES (100006, "溶解氧测定仪", "溶解氧",  "6小时", 3, 3, "1", 7.1, 
+                              "2020-08-05 06:00:00", "广东省","深圳市",
+                               "深圳市茅洲河共和村断面","深州市水务管理局","D",
+                               "17812345569","17812345569@xx.com");   
+INSERT INTO `device` VALUES (100007, "化学需氧量测定仪", "化学需氧量",  "6小时", NULL, 30, "1", 23.6, 
+                              "2020-08-05 06:00:00", "广东省","深圳市",
+                               "深圳市茅洲河共和村断面","深州市水务管理局","D",
+                               "17812345569","17812345569@xx.com");   
+INSERT INTO `device` VALUES (100008, "悬浮物污泥浓度计", "悬浮物浓度",  "6小时", NULL, NULL, "1", 8.1, 
+                              "2020-08-05 06:00:00", "广东省","深圳市",
+                               "深圳市茅洲河共和村断面","深州市水务管理局","D",
+                               "17812345569","17812345569@xx.com");  
+INSERT INTO `device` VALUES (100009, "ph测定仪", "ph值", "6小时", 6.0, 9.0, "1", 7.6, 
+                              "2020-08-05 00:00:00", "广东省","深圳市",
+                               "深圳市茅洲河洋涌大桥断面","深州市水务管理局","D",
+                               "17812345569","17812345569@xx.com");   
+INSERT INTO `device` VALUES (100010, "溶解氧测定仪", "溶解氧",  "6小时", 3, 3, "1", 8.5, 
+                              "2020-08-05 00:00:00", "广东省","深圳市",
+                               "深圳市茅洲河洋涌大桥断面","深州市水务管理局","D",
+                               "17812345569","17812345569@xx.com");   
+INSERT INTO `device` VALUES (100011, "化学需氧量测定仪", "化学需氧量",  "6小时", NULL, 30, "1", 23.6, 
+                              "2020-08-05 00:00:00", "广东省","深圳市",
+                               "深圳市茅洲河洋涌大桥断面","深州市水务管理局","D",
+                               "17812345569","17812345569@xx.com");   
+INSERT INTO `device` VALUES (100012, "悬浮物污泥浓度计", "悬浮物浓度",  "6小时", NULL, NULL, "1", 6.9, 
+                              "2020-08-05 00:00:00", "广东省","深圳市",
+                               "深圳市茅洲河洋涌大桥断面","深州市水务管理局","D",
+                               "17812345569","17812345569@xx.com");   
+INSERT INTO `device` VALUES (100013, "ph测定仪", "ph值",  "6小时", 6.0, 9.0, "1", 8.5, 
+                              "2020-08-05 00:00:00", "广东省","深圳市",
+                               "深圳市茅洲河共和村断面","深州市水务管理局","D",
+                               "17812345569","17812345569@xx.com");   
+INSERT INTO `device` VALUES (100014, "溶解氧测定仪", "溶解氧",  "6小时", 3, 3, "1", 7.1, 
+                              "2020-08-05 00:00:00", "广东省","深圳市",
+                               "深圳市茅洲河共和村断面","深州市水务管理局","D",
+                               "17812345569","17812345569@xx.com");   
+INSERT INTO `device` VALUES (100015, "化学需氧量测定仪", "化学需氧量",  "6小时", NULL, 30, "1", 23.6, 
+                              "2020-08-05 00:00:00", "广东省","深圳市",
+                               "深圳市茅洲河共和村断面","深州市水务管理局","D",
+                               "17812345569","17812345569@xx.com");   
+INSERT INTO `device` VALUES (100016, "悬浮物污泥浓度计", "悬浮物浓度",  "6小时", NULL, NULL, "1", 8.1, 
+                              "2020-08-05 00:00:00", "广东省","深圳市",
+                               "深圳市茅洲河共和村断面","深州市水务管理局","D",
+                               "17812345569","17812345569@xx.com");
+
+DROP TABLE IF EXISTS `device_history`;
+CREATE TABLE `device_history`  (
+  `device_id` bigint(20) NOT NULL COMMENT '设备id',
+  `current_value` double NOT NULL DEFAULT 0 COMMENT '当前读数',
+  `generate_time` datetime(0) NOT NULL COMMENT '监测时间',
+  PRIMARY KEY (`device_id`, `generate_time`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin COMMENT = '设备历史数据表' ROW_FORMAT = Dynamic;
+
+INSERT INTO `device_history` VALUES (100000, 6.9, "2020-08-06 06:00:00"); 
+INSERT INTO `device_history` VALUES (100000, 7.6, "2020-08-06 00:00:00");  
+INSERT INTO `device_history` VALUES (100000, 7.2, "2020-08-05 18:00:00");  
+INSERT INTO `device_history` VALUES (100000, 7.3, "2020-08-05 12:00:00");  
+INSERT INTO `device_history` VALUES (100000, 7.9, "2020-08-05 06:00:00");  
+INSERT INTO `device_history` VALUES (100000, 6.6, "2020-08-05 00:00:00");  
+INSERT INTO `device_history` VALUES (100000, 6.8, "2020-08-04 18:00:00");  
+INSERT INTO `device_history` VALUES (100000, 6.9, "2020-08-04 12:00:00");  
+INSERT INTO `device_history` VALUES (100000, 7.6, "2020-08-04 06:00:00");  
+INSERT INTO `device_history` VALUES (100000, 7.2, "2020-08-04 00:00:00");  
+INSERT INTO `device_history` VALUES (100001, 7.6, "2020-08-05 06:00:00");
+INSERT INTO `device_history` VALUES (100002, 8.5, "2020-08-05 06:00:00");    
+INSERT INTO `device_history` VALUES (100003, 23.6, "2020-08-05 06:00:00");    
+INSERT INTO `device_history` VALUES (100004, 6.9, "2020-08-05 06:00:00");  
+INSERT INTO `device_history` VALUES (100005, 8.5, "2020-08-05 06:00:00");   
+INSERT INTO `device_history` VALUES (100006, 7.1, "2020-08-05 06:00:00");   
+INSERT INTO `device_history` VALUES (100007, 23.6, "2020-08-05 06:00:00");   
+INSERT INTO `device_history` VALUES (100008, 8.1, "2020-08-05 06:00:00");  
+INSERT INTO `device_history` VALUES (100009, 7.6, "2020-08-05 00:00:00");   
+INSERT INTO `device_history` VALUES (100010, 8.5, "2020-08-05 00:00:00");   
+INSERT INTO `device_history` VALUES (100011, 23.6, "2020-08-05 00:00:00");   
+INSERT INTO `device_history` VALUES (100012, 6.9, "2020-08-05 00:00:00");   
+INSERT INTO `device_history` VALUES (100013, 8.5, "2020-08-05 00:00:00");   
+INSERT INTO `device_history` VALUES (100014, 7.1, "2020-08-05 00:00:00");   
+INSERT INTO `device_history` VALUES (100015, 23.6, "2020-08-05 00:00:00");   
+INSERT INTO `device_history` VALUES (100016, 8.1, "2020-08-05 00:00:00");
+-- ----------------------------
 -- Table structure for tss
 -- ----------------------------
 DROP TABLE IF EXISTS `tss`;
 CREATE TABLE `tss`  (
   `water_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '水体id',
   `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
-  `min` double NULL DEFAULT 0 COMMENT 'min',
-  `max` double NULL DEFAULT 0 COMMENT 'max',
-  `mean` double NULL DEFAULT 0 COMMENT 'mean',
+  `min` double NULL DEFAULT NULL COMMENT 'min',
+  `max` double NULL DEFAULT NULL COMMENT 'max',
+  `mean` double NULL DEFAULT NULL COMMENT 'mean',
   `params` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT 'tss' COMMENT '参数',
   `save_method` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
   `result_path` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
+  `custom_model` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
   PRIMARY KEY (`water_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1010 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin COMMENT = '总悬浮物表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of tss
 -- ----------------------------
-INSERT INTO `tss` VALUES (1001, '2020-11-27 16:43:45', 4, 18, 12, 'tss', 'ModifiedQAA', 'retrievalResultFile/TSMResultFile/maozhouhe0311.png');
+INSERT INTO `tss` VALUES (1001, '2020-11-27 16:43:45', 4, 18, 12, 'tss', 'Modified-QAA', 'retrievalResultFile/TSMResultFile/maozhouhe0311.png', null);
 
 -- ----------------------------
 -- Table structure for chla
@@ -109,19 +258,19 @@ DROP TABLE IF EXISTS `chla`;
 CREATE TABLE `chla`  (
   `water_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '水体id',
   `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
-  `min` double NULL DEFAULT 0 COMMENT 'min',
-  `max` double NULL DEFAULT 0 COMMENT 'max',
-  `mean` double NULL DEFAULT 0 COMMENT 'mean',
+  `min` double NULL DEFAULT NULL COMMENT 'min',
+  `max` double NULL DEFAULT NULL COMMENT 'max',
+  `mean` double NULL DEFAULT NULL COMMENT 'mean',
   `params` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT 'chla' COMMENT '参数',
   `save_method` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
   `result_path` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
+  `custom_model` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
   PRIMARY KEY (`water_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1010 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin COMMENT = '叶绿素a表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of chla
 -- ----------------------------
-INSERT INTO `chla` VALUES (1000, '2020-11-27 16:40:53',  5, 2, 6, 'chla', NULL, NULL);
 
 -- ----------------------------
 -- Table structure for cod
@@ -130,12 +279,13 @@ DROP TABLE IF EXISTS `cod`;
 CREATE TABLE `cod`  (
   `water_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '水体id',
   `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
-  `min` double NULL DEFAULT 0 COMMENT 'min',
-  `max` double NULL DEFAULT 0 COMMENT 'max',
-  `mean` double NULL DEFAULT 0 COMMENT 'mean',
+  `min` double NULL DEFAULT NULL COMMENT 'min',
+  `max` double NULL DEFAULT NULL COMMENT 'max',
+  `mean` double NULL DEFAULT NULL COMMENT 'mean',
   `params` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT 'cod' COMMENT '参数',
   `save_method` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
   `result_path` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
+  `custom_model` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
   PRIMARY KEY (`water_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1010 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin COMMENT = 'cod表' ROW_FORMAT = Dynamic;
 
@@ -151,12 +301,13 @@ DROP TABLE IF EXISTS `nh`;
 CREATE TABLE `nh`  (
   `water_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '水体id',
   `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
-  `min` double NULL DEFAULT 0 COMMENT 'min',
-  `max` double NULL DEFAULT 0 COMMENT 'max',
-  `mean` double NULL DEFAULT 0 COMMENT 'mean',
+  `min` double NULL DEFAULT NULL COMMENT 'min',
+  `max` double NULL DEFAULT NULL COMMENT 'max',
+  `mean` double NULL DEFAULT NULL COMMENT 'mean',
   `params` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT 'nh' COMMENT '参数',
   `save_method` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
   `result_path` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
+  `custom_model` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
   PRIMARY KEY (`water_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1010 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin COMMENT = '氨氮表' ROW_FORMAT = Dynamic;
 
@@ -172,12 +323,13 @@ DROP TABLE IF EXISTS `tp`;
 CREATE TABLE `tp`  (
   `water_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '水体id',
   `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
-  `min` double NULL DEFAULT 0 COMMENT 'min',
-  `max` double NULL DEFAULT 0 COMMENT 'max',
-  `mean` double NULL DEFAULT 0 COMMENT 'mean',
+  `min` double NULL DEFAULT NULL COMMENT 'min',
+  `max` double NULL DEFAULT NULL COMMENT 'max',
+  `mean` double NULL DEFAULT NULL COMMENT 'mean',
   `params` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT 'tp' COMMENT '参数',
   `save_method` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
   `result_path` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
+  `custom_model` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
   PRIMARY KEY (`water_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1010 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin COMMENT = '总磷表' ROW_FORMAT = Dynamic;
 
@@ -188,12 +340,13 @@ DROP TABLE IF EXISTS `tn`;
 CREATE TABLE `tn`  (
   `water_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '水体id',
   `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
-  `min` double NULL DEFAULT 0 COMMENT 'min',
-  `max` double NULL DEFAULT 0 COMMENT 'max',
-  `mean` double NULL DEFAULT 0 COMMENT 'mean',
+  `min` double NULL DEFAULT NULL COMMENT 'min',
+  `max` double NULL DEFAULT NULL COMMENT 'max',
+  `mean` double NULL DEFAULT NULL COMMENT 'mean',
   `params` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT 'tn' COMMENT '参数',
   `save_method` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
   `result_path` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
+  `custom_model` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
   PRIMARY KEY (`water_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1010 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin COMMENT = '总氮表' ROW_FORMAT = Dynamic;
 

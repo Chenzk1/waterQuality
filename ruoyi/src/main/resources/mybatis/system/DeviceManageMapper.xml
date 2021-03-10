@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.system.mapper.DeviceManageMapper">
+
+    <resultMap type="DeviceManage" id="deviceManage">
+        <id     property="deviceId"       column="device_id"        />
+        <result property="deviceName"     column="device_name"      />
+        <result property="generateTime"     column="generate_time"      />
+        <result property="province"      column="province"      />
+        <result property="city"          column="city"     />
+        <result property="emailAddress"          column="email_address"     />
+        <result property="currentValue"          column="current_value"     />
+        <result property="indexType"          column="index_type"     />
+        <result property="timeOffset"          column="time_offset"     />
+        <result property="lowerLimit"          column="lower_limit"     />
+        <result property="upperLimit"          column="upper_limit"     />
+        <result property="currentStatus"          column="current_status"     />
+    </resultMap>
+
+    <sql id="selectDataVo">
+	    select distinct r.device_id, r.device_name, r.index_type,
+                        r.time_offset, r.lower_limit, r.upper_limit,
+                        r.current_status, r.current_value, r.generate_time,
+                        r.province, r.city, r.location, r.department,
+                        r.contact, r.phonenumber, r.email_address 
+        from device r
+    </sql>
+
+    <sql id="selectHistoryVo">
+	    select distinct r.device_id, r.device_name, r.index_type,
+                        r.time_offset, r.lower_limit, r.upper_limit,
+                        r.current_status, r.current_value, r.generate_time,
+                        r.province, r.city, r.location, r.department,
+                        r.contact, r.phonenumber, r.email_address
+    </sql>
+
+    <select id="selectMaxDeviceId" resultType="Integer">
+        select r.device_id
+            from device r
+        where device_id=(select max(device_id) from device);
+    </select>
+    <select id="selectUniqueDeviceName" resultType="String">
+        select distinct r.device_name
+        from device r
+    </select>
+    <select id="selectNUniqueDeviceName" resultType="Integer">
+	    select count(distinct r.device_name) from device r
+	</select>
+
+    <select id="selectUniqueProvince" resultType="String">
+        select distinct r.province
+        from device r
+    </select>
+    <select id="selectNUniqueProvince" resultType="Integer">
+	    select count(distinct r.province) from device r
+	</select>
+
+    <select id="selectUniqueCountry" resultType="String">
+        select distinct r.country
+        from device r
+    </select>
+    <select id="selectNUniqueCountry" resultType="Integer">
+	    select count(distinct r.country) from device r
+	</select>
+
+    <select id="selectUniqueCity" resultType="String">
+        select distinct r.city
+        from device r
+    </select>
+    <select id="selectNUniqueCity" resultType="Integer">
+	    select count(distinct r.city) from device r
+	</select>
+
+    <select id="selectUniqueId" resultType="String">
+        select distinct r.device_id
+        from device r
+       
+    </select>
+    <select id="selectNUniqueId" resultType="Integer">
+	    select count(distinct r.device_id) from device r
+	</select>
+
+    <select id="selectDataList" parameterType="DeviceManage" resultMap="deviceManage">
+        <include refid="selectDataVo"/>
+        <if test="province != null and province != ''">
+            and r.province =#{province}
+        </if>
+        <if test="city != null and city != ''">
+            and r.city =#{city}
+        </if>
+        <if test="deviceName != null and deviceName != ''">
+            AND r.device_name like concat('%', #{deviceName}, '%')
+        </if>
+        <if test="deviceId != null and deviceId != ''">
+            AND r.device_id = #{deviceId}
+        </if>
+        <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+            and date_format(r.generate_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+        </if>
+        <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+            and date_format(r.generate_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+        </if>
+    </select>
+
+    <select id="selectHistoryList" parameterType="DeviceManage" resultMap="deviceManage">
+        <include refid="selectHistoryVo"/>
+        from (
+            select d.device_id, d.device_name, d.index_type,
+                   d.time_offset, d.lower_limit, d.upper_limit,
+                   d.current_status, d.province, d.city, d.location, d.department,
+                   d.contact, d.phonenumber, d.email_address,
+                   h.current_value, h.generate_time
+            from (
+                select d.*
+                from device d
+                where d.device_id = #{deviceId}
+                <if test="province != null and province != ''">
+                    and d.province =#{province}
+                </if>
+                <if test="city != null and city != ''">
+                    and d.city =#{city}
+                </if>
+                <if test="deviceName != null and deviceName != ''">
+                    AND d.device_name like concat('%', #{deviceName}, '%')
+                </if>
+                <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+                    and date_format(d.generate_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+                </if>
+                <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+                    and date_format(d.generate_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+                </if>
+            ) d
+            left join device_history h on d.device_id=h.device_id
+        ) r
+    </select>
+
+    <delete id="deleteDeviceById" parameterType="Long">
+ 		delete from device where device_id = #{deviceId}
+ 	</delete>
+
+    <update id="updateDevice" parameterType="DeviceManage">
+        update device
+        <set>
+            <if test="deviceId != null and deviceId != ''">device_id = #{deviceId},</if>
+            <if test="deviceName != null and deviceName != ''">device_name = #{deviceName},</if>
+            <if test="indexType != null and indexType != ''">index_type = #{indexType},</if>
+            <if test="timeOffset != null and timeOffset != ''">time_offset = #{timeOffset},</if>
+            <if test="lowerLimit != null and lowerLimit != ''">lower_limit = #{lowerLimit},</if>
+            <if test="upperLimit != null and upperLimit != ''">upper_limit = #{upperLimit},</if>
+            <if test="currentStatus != null and currentStatus != ''">current_status = #{currentStatus},</if>
+            <if test="currentValue != null and currentValue != ''">current_value = #{currentValue},</if>
+            <if test="province != null and province != ''">province = #{province},</if>
+            <if test="city != null and city != ''">city = #{city},</if>
+            <if test="generateTime != null">generate_time= #{generateTime},</if>
+            <if test="location != null and location != ''">location = #{location},</if>
+            <if test="department != null and department != ''">department = #{department},</if>
+            <if test="contact != null and contact != ''">contact = #{contact},</if>
+            <if test="phonenumber != null and phonenumber != ''">phonenumber = #{phonenumber},</if>
+            <if test="emailAddress != null and emailAddress != ''">email_address = #{emailAddress}</if>
+        </set>
+        where device_id = #{deviceId}
+    </update>
+
+    <insert id="insertDevice" parameterType="DeviceManage">
+        insert into device(
+            <if test="deviceId != null">device_id</if>
+            <if test="deviceName != null and deviceName != ''">,device_name</if>
+            <if test="indexType != null and indexType != ''">,index_type</if>
+            <if test="timeOffset != null and timeOffset != ''">,time_offset</if>
+            <if test="lowerLimit != null">,lower_limit</if>
+            <if test="upperLimit != null">,upper_limit</if>
+            <if test="currentStatus != null">,current_status</if>
+            <if test="currentValue != null">,current_value</if>
+            <if test="province != null and province != ''">,province</if>
+            <if test="city != null and city != ''">,city</if>
+            <if test="generateTime != null">,generate_time</if>
+            <if test="location != null and location != ''">,location</if>
+            <if test="department != null and department != ''">,department</if>
+            <if test="contact != null and contact != ''">,contact</if>
+            <if test="phonenumber != null and phonenumber != ''">,phonenumber</if>
+            <if test="emailAddress != null and emailAddress != ''">,email_address</if>
+        )values(
+            <if test="deviceId != null"> #{deviceId}</if>
+            <if test="deviceName != null and deviceName != ''">, #{deviceName} </if>
+            <if test="indexType != null and indexType != ''">, #{indexType} </if>
+            <if test="timeOffset != null and timeOffset != ''">, #{timeOffset} </if>
+            <if test="lowerLimit != null">, #{lowerLimit}</if>
+            <if test="upperLimit != null">, #{upperLimit}</if>
+            <if test="currentStatus != null">, #{currentStatus}</if>
+            <if test="currentValue != null">, #{currentValue}</if>
+            <if test="province != null and province != ''">, #{province}</if>
+            <if test="city != null and city != ''">, #{city}</if>
+            <if test="generateTime != null">, #{generateTime}</if>
+            <if test="location != null and location != ''">, #{location}</if>
+            <if test="department != null and department != ''">, #{department}</if>
+            <if test="contact != null and contact != ''">, #{contact}</if>
+            <if test="phonenumber != null and phonenumber != ''">, #{phonenumber}</if>
+            <if test="emailAddress != null and emailAddress != ''">,#{emailAddress}</if>
+        )
+    </insert>
+
+    <update id="updateHistory" parameterType="DeviceManage">
+        update device_history
+        <set>
+            <if test="deviceId != null and deviceId != ''">device_id = #{deviceId},</if>
+            <if test="currentValue != null and currentValue != ''">current_value = #{currentValue},</if>
+            <if test="generateTime != null">generate_time= #{generateTime}</if>
+        </set>
+        where device_id = #{deviceId}
+    </update>
+
+    <insert id="insertDeviceHistory" parameterType="DeviceManage">
+        insert into device_history(
+            <if test="deviceId != null">device_id,</if>
+            <if test="currentValue != null">current_value,</if>
+            <if test="generateTime != null">generate_time</if>
+        )values(
+            <if test="deviceId != null"> #{deviceId},</if>
+            <if test="currentValue != null"> #{currentValue},</if>
+            <if test="generateTime != null">#{generateTime}</if>
+        )
+    </insert>
+</mapper>

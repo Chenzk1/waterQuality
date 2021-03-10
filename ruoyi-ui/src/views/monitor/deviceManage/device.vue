@@ -46,7 +46,7 @@
     >
       <el-table-column fixed label="ID" prop="deviceId" sortable="custom" align="center" width="80" :class-name="getSortClass('id')">
         <template slot-scope="scope">
-          <span>{{ scope.row.deviceID }}</span>
+          <span>{{ scope.row.deviceId }}</span>
         </template>
       </el-table-column>
       <el-table-column label="设备名称" min-width="150px" align="center">
@@ -90,112 +90,14 @@
           <span>{{ scope.row.city }}</span>
         </template>
       </el-table-column>
-
-      <!-- <el-table-column label="责任人" width="80px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.contact }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="联系电话" width="80px" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.phonenumber }}</span>
-        </template>
-      </el-table-column> -->
-
-      <!-- <el-table-column fixed='right' label="Actions" align="center" width="230" class-name="small-padding fixed-width">
-        <template slot-scope="{row}">
-          <el-button type="text" size="mini" icon="el-icon-edit" @click="handleUpdate(row)">
-            编辑
-          </el-button>
-          <el-button type="text" size="mini" icon="el-icon-delete" @click="handleDelete(row)" v-hasPermi="['system:user:remove']">
-            删除
-          </el-button>
-        </template>
-      </el-table-column> -->
     </el-table>
 
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.pageSize" @pagination="getList" />
-
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="90px" style="width: 400px; margin-left:50px;">
-        <el-form-item label="设备名称" prop="deviceName">
-          <el-input v-model="temp.deviceName" />
-        </el-form-item>
-        <el-form-item label="指标类型" prop="type">
-          <el-select v-model="temp.indexType" placeholder="指标类型">
-            <el-option v-for="item in indexTypeOptions" :key="item" :label="item" :value="item" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="状态" prop="status">
-            <el-radio-group v-model="temp.status">
-                    <el-radio
-                    v-for="dict in statusOptions"
-                    :key="dict.dictValue"
-                    :label="dict.dictValue"
-                    >{{dict.dictLabel}}</el-radio>
-            </el-radio-group>
-        </el-form-item>
-        <el-form-item label="报警上限" prop="upperLimit">
-          <el-input v-model="temp.upperLimit" />
-        </el-form-item>
-        <el-form-item label="报警下限" prop="lowerLimit">
-          <el-input v-model="temp.lowerLimit" />
-        </el-form-item>
-        <el-form-item label="采样间隔" prop="timeOffset">
-          <el-input v-model="temp.timeOffset" />
-        </el-form-item>
-        <el-form-item label="时间" prop="generateTime">
-          <el-date-picker v-model="temp.generateTime" type="datetime" placeholder="请选择日期" />
-        </el-form-item>
-        <el-form-item label="省份" prop="province">
-          <el-input v-model="temp.province" />
-        </el-form-item>
-        <el-form-item label="城市" prop="city">
-          <el-input v-model="temp.city" />
-        </el-form-item>
-        <el-form-item label="区县" width="80px">
-          <el-input v-model="temp.county" />
-        </el-form-item>
-        <el-form-item label="位置" width="80px">
-          <el-input v-model="temp.location" />
-        </el-form-item>
-        <el-form-item label="主管部门" width="80px">
-          <el-input v-model="temp.department" />
-        </el-form-item>
-        <el-form-item label="责任人" width="80px">
-          <el-input v-model="temp.contact" />
-        </el-form-item>
-        <el-form-item label="责任人电话" width="80px">
-          <el-input v-model="temp.phonenumber" />
-        </el-form-item>
-        <el-form-item label="责任人邮箱" width="80px">
-          <el-input v-model="temp.emailAddress" />
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">
-          Cancel
-        </el-button>
-        <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">
-          Confirm
-        </el-button>
-      </div>
-    </el-dialog>
-<!-- 
-    <el-dialog :visible.sync="dialogPvVisible" title="Reading statistics">
-      <el-table :data="pvData" border fit highlight-current-row style="width: 100%">
-        <el-table-column prop="key" label="Channel" />
-        <el-table-column prop="pv" label="Pv" />
-      </el-table>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="dialogPvVisible = false">Confirm</el-button>
-      </span>
-    </el-dialog> -->
   </div>
 </template>
 
 <script>
-import { fetchList, fetchCreate, fetchUpdate, delWaterId } from '@/api/data'
+import { fetchDeviceHistory } from '@/api/data'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import { parseTime } from "@/utils/ruoyi";
@@ -218,17 +120,8 @@ if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1
 return fmt;
 }
 const indexTypeOptions = ['总悬浮物', '叶绿素', '溶解氧', '氨氮', '总磷', '化学需氧量']
-const dataindexTypeOptions = [{'label':'影像数据', 'value':0}, 
-                         {'label':'列表数据', 'value':1}]
-const dataTypeMap = {0:'影像数据', 1:'列表数据'}
 const statusOptions = [{'dictValue': 1, 'dictLable': '运行'},
                        {'dictValue': 0, 'dictLable': '停用'}]
-let deviceNameOptions = []
-let provinceOptions = [
-  '北京市', '广东省', '山东省', '江苏省', '河南省', '上海市', '河北省', '浙江省', '香港特别行政区', '陕西省', '湖南省', '重庆市',
-  '福建省', '天津市', '云南省', '四川省', '广西壮族自治区', '安徽省', '海南省', '江西省', '湖北省', '山西省', '辽宁省', '台湾省',
-  '黑龙江', '内蒙古自治区', '澳门特别行政区', '贵州省', '甘肃省', '青海省', '新疆维吾尔自治区', '西藏自治区', '吉林省', '宁夏回族自治区'
-]
 // arr to obj, such as { CN : "China", US : "USA" }
 const calendarTypeKeyValue = indexTypeOptions.reduce((acc, cur) => {
   acc[cur.key] = cur.display_name
@@ -236,7 +129,7 @@ const calendarTypeKeyValue = indexTypeOptions.reduce((acc, cur) => {
 }, {})
 
 export default {
-  name: 'deviceManage',
+  name: 'deviceHistory',
   components: { Pagination },
   directives: { waves },
   filters: {
@@ -262,6 +155,7 @@ export default {
         page: 1,
         pageSize: 5,
         province: undefined,
+        deviceId: undefined,
         deviceName: undefined,
         indexType: undefined,
         sort: '+id',
@@ -317,21 +211,15 @@ export default {
     }
   },
   created() {
+    console.log('id:', this.$route.params.id)
     if(this.$route.params.id==':id'){
-        this.listQuery.deviceId=100001
+      this.listQuery.deviceId=100000
+    } else {
+      this.listQuery.deviceId = this.$route.params.id
     }
+    console.log('query:', this.listQuery)
     this.getList();
     this.getUser();
-    // this.getUnique("type").then(response => {
-    //   this.indexTypeOptions = response.data;
-    // });
-    this.getUnique("province").then(response => {
-      this.provinceOptions = response.data;
-    });
-    // this.getUnique("deviceName").then(response => {
-    //   this.deviceNameOptions = response.data;
-    // });
-
   },
   methods: {
     getUser() {
@@ -343,60 +231,14 @@ export default {
     },
     getList() {
       this.listLoading = true
-      this.list = [
-        {"deviceID":"100001", "deviceName":"ph测定仪", "indexType":"ph值", "timeOffset": '6小时',
-         "lowerLimit":"6.0", "upperLimit":"9.0", "status": "1", "currentValue": 7.6, 
-         "generateTime":"2020-08-05T06:00:00.000+0000", "province":"广东省","city":"深圳市",
-         "location":"深圳市茅洲河洋涌大桥断面","department":"深州市水务管理局","contact":"D",
-         "phonenumber":"17812345569", "emailAddress": "17812345569@xx.com"},  
-        {"deviceID":"100001", "deviceName":"ph测定仪", "indexType":"ph值", "timeOffset": '6小时',
-         "lowerLimit":"6.0", "upperLimit":"9.0", "status": "1", "currentValue": 7.2, 
-         "generateTime":"2020-08-05T00:00:00.000+0000", "province":"广东省","city":"深圳市",
-         "location":"深圳市茅洲河洋涌大桥断面","department":"深州市水务管理局","contact":"D",
-         "phonenumber":"17812345569", "emailAddress": "17812345569@xx.com"},  
-        {"deviceID":"100001", "deviceName":"ph测定仪", "indexType":"ph值", "timeOffset": '6小时',
-         "lowerLimit":"6.0", "upperLimit":"9.0", "status": "1", "currentValue": 7.3, 
-         "generateTime":"2020-08-04T18:00:00.000+0000", "province":"广东省","city":"深圳市",
-         "location":"深圳市茅洲河洋涌大桥断面","department":"深州市水务管理局","contact":"D",
-         "phonenumber":"17812345569", "emailAddress": "17812345569@xx.com"},  
-        {"deviceID":"100001", "deviceName":"ph测定仪", "indexType":"ph值", "timeOffset": '6小时',
-         "lowerLimit":"6.0", "upperLimit":"9.0", "status": "1", "currentValue": 7.7, 
-         "generateTime":"2020-08-04T12:00:00.000+0000", "province":"广东省","city":"深圳市",
-         "location":"深圳市茅洲河洋涌大桥断面","department":"深州市水务管理局","contact":"D",
-         "phonenumber":"17812345569", "emailAddress": "17812345569@xx.com"},  
-        {"deviceID":"100001", "deviceName":"ph测定仪", "indexType":"ph值", "timeOffset": '6小时',
-         "lowerLimit":"6.0", "upperLimit":"9.0", "status": "1", "currentValue": 7.8, 
-         "generateTime":"2020-08-04T06:00:00.000+0000", "province":"广东省","city":"深圳市",
-         "location":"深圳市茅洲河洋涌大桥断面","department":"深州市水务管理局","contact":"D",
-         "phonenumber":"17812345569", "emailAddress": "17812345569@xx.com"},  
-        {"deviceID":"100001", "deviceName":"ph测定仪", "indexType":"ph值", "timeOffset": '6小时',
-         "lowerLimit":"6.0", "upperLimit":"9.0", "status": "1", "currentValue": 7.6, 
-         "generateTime":"2020-08-04T00:00:00.000+0000", "province":"广东省","city":"深圳市",
-         "location":"深圳市茅洲河洋涌大桥断面","department":"深州市水务管理局","contact":"D",
-         "phonenumber":"17812345569", "emailAddress": "17812345569@xx.com"},  
-        {"deviceID":"100001", "deviceName":"ph测定仪", "indexType":"ph值", "timeOffset": '6小时',
-         "lowerLimit":"6.0", "upperLimit":"9.0", "status": "1", "currentValue": 7.5, 
-         "generateTime":"2020-08-03T18:00:00.000+0000", "province":"广东省","city":"深圳市",
-         "location":"深圳市茅洲河洋涌大桥断面","department":"深州市水务管理局","contact":"D",
-         "phonenumber":"17812345569", "emailAddress": "17812345569@xx.com"}, 
-         {"deviceID":"100001", "deviceName":"ph测定仪", "indexType":"ph值", "timeOffset": '6小时',
-         "lowerLimit":"6.0", "upperLimit":"9.0", "status": "1", "currentValue": 7.3, 
-         "generateTime":"2020-08-03T12:00:00.000+0000", "province":"广东省","city":"深圳市",
-         "location":"深圳市茅洲河洋涌大桥断面","department":"深州市水务管理局","contact":"D",
-         "phonenumber":"17812345569", "emailAddress": "17812345569@xx.com"}, 
-         {"deviceID":"100001", "deviceName":"ph测定仪", "indexType":"ph值", "timeOffset": '6小时',
-         "lowerLimit":"6.0", "upperLimit":"9.0", "status": "1", "currentValue": 7.6, 
-         "generateTime":"2020-08-03T06:00:00.000+0000", "province":"广东省","city":"深圳市",
-         "location":"深圳市茅洲河洋涌大桥断面","department":"深州市水务管理局","contact":"D",
-         "phonenumber":"17812345569", "emailAddress": "17812345569@xx.com"},  
-         {"deviceID":"100001", "deviceName":"ph测定仪", "indexType":"ph值", "timeOffset": '6小时',
-         "lowerLimit":"6.0", "upperLimit":"9.0", "status": "1", "currentValue": 7.8, 
-         "generateTime":"2020-08-03T00:00:00.000+0000", "province":"广东省","city":"深圳市",
-         "location":"深圳市茅洲河洋涌大桥断面","department":"深州市水务管理局","contact":"D",
-         "phonenumber":"17812345569", "emailAddress": "17812345569@xx.com"},      
-      ]
-      this.total = 20
-      this.listLoading = false
+      this.temp = Object.assign({}, this.listQuery) // copy obj
+      console.log(this.temp)
+      fetchDeviceHistory(this.temp).then(response => {
+        this.list = response.rows;
+        this.total = response.total;
+        // Just to simulate the time of the request
+        this.listLoading = false;
+      })
     },
     handleFilter() {
       this.listQuery.page = 1

@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ruoyi.project.system.mapper.InverseMapper">
+    <resultMap type="DataManage" id="dataManageQuery">
+        <id     property="waterId"       column="water_id"        />
+        <result property="waterName"     column="water_name"      />
+        <result property="photoTime"     column="photo_time"      />
+        <result property="country"       column="country"      />
+        <result property="province"      column="province"      />
+        <result property="city"          column="city"     />
+        <result property="type"          column="type"         />
+        <result property="dataType"      column="datatype"         />
+        <result property="bands"         column="bands"       />
+        <result property="createBy"      column="create_by"      />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"      column="update_by"      />
+        <result property="updateTime"    column="update_time"    />
+        <result property="filePath"      column="file_path"         />
+        <result property="rgbPath"       column="rgb_path"         />
+        <result property="bandWavelengthFilePath"       column="band_wavelength_file_path"    />
+        <result property="waterQualityStandard"       column="water_quality_standard"    />
+    </resultMap>
+
+    <resultMap type="ListResult" id="listResult">
+        <id     property="waterId"       column="water_id"        />
+        <result property="waterName"       column="water_name"        />
+        <result property="photoTime"       column="photo_time"         />
+        <result property="dataType"          column="datatype"         />
+        <result property="filePath"          column="file_path"         />
+        <result property="bandWavelengthFilePath"          column="band_wavelength_file_path"         />
+        <result property="waterQualityStandard"       column="water_quality_standard"    />
+        <result property="tpMin"       column="tp_min"         />
+        <result property="tpMax"       column="tp_max"         />
+        <result property="tpMean"       column="tp_mean"       />
+        <result property="tnMin"       column="tn_min"         />
+        <result property="tnMax"       column="tn_max"         />
+        <result property="tnMean"       column="tn_mean"       />
+        <result property="tssMin"       column="tss_min"         />
+        <result property="tssMax"       column="tss_max"         />
+        <result property="tssMean"       column="tss_mean"       />
+        <result property="chlaMin"       column="chla_min"         />
+        <result property="chlaMax"       column="chla_max"         />
+        <result property="chlaMean"       column="chla_mean"       />
+        <result property="codMin"       column="cod_min"         />
+        <result property="codMax"       column="cod_max"         />
+        <result property="codMean"       column="cod_mean"       />
+        <result property="nhMin"       column="nh_min"         />
+        <result property="nhMax"       column="nh_max"         />
+        <result property="nhMean"       column="nh_mean"       />
+        <result property="nhResultPath"       column="nh_result_path"       />
+        <result property="tpResultPath"       column="tp_result_path"       />
+        <result property="tssResultPath"       column="tss_result_path"       />
+        <result property="codResultPath"       column="cod_result_path"       />
+        <result property="chlaResultPath"       column="chla_result_path"       />
+        <result property="tnResultPath"       column="tn_result_path"       />
+        <result property="rgbPath"       column="rgb_path"       />
+        <result property="phonenumber"       column="phonenumber"       />
+        <result property="nhSaveMethod"       column="nh_save_method"       />
+        <result property="tpSaveMethod"       column="tp_save_method"       />
+        <result property="tssSaveMethod"       column="tss_save_method"       />
+        <result property="codSaveMethod"       column="cod_save_method"       />
+        <result property="chlaSaveMethod"       column="chla_save_method"       />
+        <result property="tnSaveMethod"       column="tn_save_method"       />
+        <result property="nhCustomModel"       column="nh_custom_model"       />
+        <result property="tpCustomModel"       column="tp_custom_model"       />
+        <result property="tssCustomModel"       column="tss_custom_model"       />
+        <result property="codCustomModel"       column="cod_custom_model"       />
+        <result property="chlaCustomModel"       column="chla_custom_model"       />
+        <result property="tnCustomModel"       column="tn_custom_model"       />
+    </resultMap>
+
+    <resultMap type="WaterLandData" id="waterLandData">
+        <id     property="waterId"       column="water_id"        />
+        <result property="updateTime"    column="update_time"     />
+        <result property="ndwiParam"    column="ndwi_param"     />
+        <result property="openParam"    column="open_param"     />
+        <result property="closeParam"    column="close_param"     />
+        <result property="waterLandPath"    column="water_land_path"     />
+    </resultMap>
+
+    <sql id="selectDataQuery">
+        select
+            w.*
+        from water_info w
+        where w.del_flag='0'
+        <if test="waterId != null">
+            and w.water_id =#{waterId}
+        </if>
+        <if test="waterName != null">
+            and w.water_name =#{waterName}
+        </if>
+        <if test="province != null">
+            and w.province =#{province}
+        </if>
+        <if test="city != null">
+            and w.city =#{city}
+        </if>
+        <if test="type != null">
+            and w.type =#{type}
+        </if>
+        <if test="dataType != null and dataType == 0 ">
+            and w.datatype = 0
+        </if>
+        <if test="dataType != null and dataType == 1 ">
+            and w.datatype = 1
+        </if>
+        <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+            and date_format(w.photo_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+        </if>
+        <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+            and date_format(w.photo_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+        </if>
+    </sql>
+
+    <select id="selectInverseResult" parameterType="DataManage" resultMap="listResult">
+        select wi.water_id water_id,
+            wi.water_name water_name,
+            wi.photo_time photo_time,
+            wi.province province,
+            wi.city city,
+            wi.type type,
+            wi.datatype datatype,
+            wi.location location,
+            wi.bands bands,
+            wi.rgb_path rgb_path, wi.department department,
+            wi.contact contact, wi.phonenumber phonenumber,
+            wi.water_quality_standard water_quality_standard,
+            wi.file_path file_path, wi.band_wavelength_file_path band_wavelength_file_path,
+            tp.min tp_min, tp.max tp_max, tp.mean tp_mean,
+            tp.result_path tp_result_path, tp.save_method tp_save_method,
+            tp.custom_model tp_custom_model,
+            tn.min tn_min, tn.max tn_max, tn.mean tn_mean,
+            tn.result_path tn_result_path, tn.save_method tn_save_method,
+            tn.custom_model tn_custom_model,
+            tss.min tss_min, tss.max tss_max, tss.mean tss_mean,
+            tss.result_path tss_result_path, tss.save_method tss_save_method,
+            tss.custom_model tss_custom_model,
+            chla.min chla_min, chla.max chla_max, chla.mean chla_mean,
+            chla.result_path chla_result_path, chla.save_method chla_save_method,
+            chla.custom_model chla_custom_model,
+            cod.min cod_min, cod.max cod_max, cod.mean cod_mean,
+            cod.result_path cod_result_path, cod.save_method cod_save_method,
+            cod.custom_model cod_custom_model,
+            nh.min nh_min, nh.max nh_max, nh.mean nh_mean,
+            nh.result_path nh_result_path, nh.save_method nh_save_method,
+            nh.custom_model nh_custom_model
+        from
+        (
+            <include refid="selectDataQuery"> </include>
+        ) wi
+        left join tp tp on wi.water_id=tp.water_id
+        left join tn tn on wi.water_id=tn.water_id
+        left join tss tss on wi.water_id=tss.water_id
+        left join nh nh on wi.water_id=nh.water_id
+        left join cod cod on wi.water_id=cod.water_id
+        left join chla chla on wi.water_id=chla.water_id
+    </select>
+
+    <select id="selectWaterLandResult" parameterType="DataManage" resultMap="waterLandData">
+        select wi.water_id water_id, wl.update_time update_time, wl.ndwi_param ndwi_param,
+               wl.open_param open_param, wl.close_param close_param, wl.water_land_path water_land_path
+        from
+        (
+            <include refid="selectDataQuery"> </include>
+        ) wi
+        left join water_land wl on wi.water_id=wl.water_id
+    </select>
+
+    <update id="updateWaterLandData" parameterType="WaterLandData">
+        update water_land
+        <set>
+            <if test="ndwiParam != null">ndwi_param = #{ndwiParam},</if>
+            <if test="closeParam != null">close_param = #{closeParam},</if>
+            <if test="openParam != null">open_param = #{openParam},</if>
+            <if test="waterLandPath != null">water_land_path = #{waterLandPath}</if>
+        </set>
+        where water_id = #{waterId}
+    </update>
+</mapper>

@@ -217,27 +217,36 @@ export const constantRoutes = [
           title: '水务监控与报警',
           icon: 'druid'
         }
-      },
-    ]
-  },
-  {
-    path: '/waterMatterDruid',
-    component: Layout,
-    // redirect: '/MonitorEvaluation/monitor',
-    hidden: true,
-    name: '/waterMatterDruid',
-    children: [
-      {
+      }, {
         path: 'device/:id',
         component: () => import('@/views/monitor/deviceManage/device'),
         name: 'Device',
         meta: {
           title: '设备历史数据',
           icon: 'example'
-        }
+        },
+        hidden: true
       },
     ]
   },
+  // {
+  //   path: '/deviceHistory',
+  //   component: Layout,
+  //   // redirect: '/MonitorEvaluation/monitor',
+  //   hidden: true,
+  //   name: 'deviceHistory',
+  //   children: [
+  //     {
+  //       path: 'device/:id',
+  //       component: () => import('@/views/monitor/deviceManage/device'),
+  //       name: 'Device',
+  //       meta: {
+  //         title: '设备历史数据',
+  //         icon: 'example'
+  //       }
+  //     },
+  //   ]
+  // },
   {
     path: '/waterMatterNotice',
     component: Layout,

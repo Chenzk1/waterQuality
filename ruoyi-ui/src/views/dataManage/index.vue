@@ -112,6 +112,11 @@
           <span>{{ scope.row.bands }}</span>
         </template>
       </el-table-column>
+      <el-table-column label="水质要求" class-name="status-col" width="100">
+        <template slot-scope="scope">
+          <span>{{ scope.row.waterQualityStandard }}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="波段文件" class-name="status-col" width="100" v-if="false">
         <template slot-scope="scope">
           <span>{{ scope.row.bandWavelengthFilePath }}</span>
@@ -173,6 +178,16 @@
         </el-form-item>
         <el-form-item label="位置" width="80px">
           <el-input v-model="temp.location" />
+        </el-form-item>
+        <el-form-item label="水质要求" prop="waterQualityStandard">
+          <el-radio-group v-model="temp.waterQualityStandard" size="small">
+            <el-radio label="无"> 无 </el-radio>
+            <el-radio label="1"> Ⅰ级 </el-radio>
+            <el-radio label="2"> II级 </el-radio>
+            <el-radio label="3"> III级 </el-radio>
+            <el-radio label="4"> IV级 </el-radio>
+            <el-radio label="5"> V级</el-radio>
+          </el-radio-group>
         </el-form-item>
         <el-form-item label="主管部门" width="80px">
           <el-input v-model="temp.department" />
@@ -414,6 +429,8 @@ export default {
           if(!element.bandWavelengthFilePath) {
             element.bandWavelengthFilePath = 'bandWavelengthFile/' + element.type + ".txt"
           }
+          const standardMap = {'无':'无', 'one': 1, 'two': '2', 'three': '3', 'four': '4', 'five': '5'}
+          element.waterQualityStandard = standardMap[element.waterQualityStandard]
         })
         this.total = response.total;
         // Just to simulate the time of the request
@@ -461,8 +478,19 @@ export default {
         department:'',
         contact:'',
         phonenumber:'',
-        remark:""
-      }
+        remark:"",
+        waterQualityStandard: '无'
+      };
+      this.uploadCsv = {fileList: [],
+                  headers: { Authorization: "Bearer " + getToken() },
+                  isUploading: false,
+                  url: process.env.VUE_APP_BASE_API + '/profile/' + 'remoteTableFile/'
+      };
+      this.uploadBand = {fileList: [],
+                   headers: { Authorization: "Bearer " + getToken() },
+                   isUploading: false,
+                   url: process.env.VUE_APP_BASE_API + '/profile/' + 'bandWavelengthFile/'
+      };
     },
     handleView(row) {
       // this.temp = Object.assign({}, row) // copy obj
@@ -482,10 +510,28 @@ export default {
       })
     },
     createData() {
-      // this.temp.fileName = this.fileList[0].name
+      let upFormData = new FormData();
+      if (this.temp.type==='自定义' && this.uploadBand.fileList.length>=1) {
+        this.temp.bandWavelengthFilePath = 'bandWavelengthFile/' + this.uploadBand.fileList[0].name
+        this.$refs.uploadBand.submit()
+        if(!this.uploadBand.file) {this.uploadBand.file = this.uploadBand.fileList[0].raw}
+        upFormData.append('bandWavelengthFile', this.uploadBand.file)
+      }
+      if (this.temp.dataType===1 && this.uploadCsv.fileList.length>=1) {
+        this.temp.filePath = 'remoteTableFile/' + this.uploadCsv.fileList[0].name
+        this.temp.fileName = this.uploadCsv.fileList[0].name
+        this.$refs.uploadCsv.submit()
+        if(!this.uploadCsv.file) {this.uploadCsv.file = this.uploadCsv.fileList[0].raw}
+        upFormData.append('remoteTableFile', this.uploadCsv.file)
+      }
+      const standardMap = {'无':'无', '1': 'one', '2': 'two', '3':'three', '4': 'four', '5': 'five'}
+      this.temp.waterQualityStandard = standardMap[this.temp.waterQualityStandard]
+      // upFormData.append('body', this.temp)
+      upFormData.append('body', JSON.stringify(this.temp))
+
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          fetchCreateList(this.temp).then(() => {
+          fetchCreateList(upFormData).then(() => {
             this.list.unshift(this.temp)
             this.dialogFormVisible = false
             this.$notify({
@@ -535,10 +581,10 @@ export default {
       })
     },
     updateData() {
-      console.log('test')
       let upFormData = new FormData();
       if (this.temp.type==='自定义' && this.uploadBand.fileList.length>=1) {
         this.temp.bandWavelengthFilePath = 'bandWavelengthFile/' + this.uploadBand.fileList[0].name
+        console.log(this.temp.bandWavelengthFilePath)
         this.$refs.uploadBand.submit()
         if(!this.uploadBand.file) {this.uploadBand.file = this.uploadBand.fileList[0].raw}
         upFormData.append('bandWavelengthFile', this.uploadBand.file)
@@ -552,7 +598,9 @@ export default {
         if(!this.uploadCsv.file) {this.uploadCsv.file = this.uploadCsv.fileList[0].raw}
         upFormData.append('remoteTableFile', this.uploadCsv.file)
       }
-      
+      const standardMap = {'无':'无', '1': 'one', '2': 'two', '3':'three', '4': 'four', '5': 'five'}
+      this.temp.waterQualityStandard = standardMap[this.temp.waterQualityStandard]
+      // upFormData.append('body', this.temp)
       upFormData.append('body', JSON.stringify(this.temp))
       // const tempData = Object.assign({}, this.temp);
       // this.$refs.uploadCsv.submit();
@@ -618,7 +666,7 @@ export default {
     beforeBandUpload(file) {
       let fileName = file.name
       let pos = fileName.lastIndexOf('.')
-      let lastName = fileName.subsring(pos, fileName.length)
+      let lastName = fileName.substring(pos, fileName.length)
       const fileType = lastName.toLowerCase() !== ".txt";
       const fileLimit = file.size / 1024 / 1024 < 100;
       if (fileType) {

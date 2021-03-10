@@ -46,7 +46,7 @@
     >
       <el-table-column fixed label="ID" prop="deviceId" sortable="custom" align="center" width="80" :class-name="getSortClass('id')">
         <template slot-scope="scope">
-          <span>{{ scope.row.deviceID }}</span>
+          <span>{{ scope.row.deviceId }}</span>
         </template>
       </el-table-column>
       <el-table-column label="设备名称" min-width="150px" align="center">
@@ -68,7 +68,7 @@
       <el-table-column label="运行状态" class-name="status-col" width="100"  align="center">
         <template slot-scope="scope">
             <el-switch
-            v-model="scope.row.status"
+            v-model="scope.row.currentStatus"
             active-value=1
             inactive-value=0
             @change="handleStatusChange(scope.row)"
@@ -107,7 +107,7 @@
           </el-button>
         </template>
       </el-table-column>
-      <el-table-column label="接口" min-width="150px" align="center">
+      <!-- <el-table-column label="接口" min-width="150px" align="center">
         <template slot-scope="{row}">
           <el-popover
             placement="right"
@@ -131,7 +131,7 @@
             </el-table>
             <el-button slot="reference" type="primary" icon="el-icon-document">代码示例</el-button>
           </el-popover>
-        </template>
+        </template> -->
         <!-- <template slot-scope="{row}">
           <el-button type="text" size="mini" icon="el-icon-view" @click="handleView(row)">
             点击查看
@@ -184,13 +184,10 @@
             <el-option v-for="item in indexTypeOptions" :key="item" :label="item" :value="item" />
           </el-select>
         </el-form-item>
-        <el-form-item label="状态" prop="status">
-            <el-radio-group v-model="temp.status">
-                    <el-radio
-                    v-for="dict in statusOptions"
-                    :key="dict.dictValue"
-                    :label="dict.dictValue"
-                    >{{dict.dictLabel}}</el-radio>
+        <el-form-item label="状态" prop="currentStatus">
+            <el-radio-group v-model="temp.currentStatus">
+              <el-radio label="1"> 运行 </el-radio>
+              <el-radio label="0"> 停用 </el-radio>
             </el-radio-group>
         </el-form-item>
         <el-form-item label="报警上限" prop="upperLimit">
@@ -205,14 +202,14 @@
         <el-form-item label="时间" prop="generateTime">
           <el-date-picker v-model="temp.generateTime" type="datetime" placeholder="请选择日期" />
         </el-form-item>
+        <el-form-item label="当前值" prop="currentValue">
+          <el-input v-model="temp.currentValue" />
+        </el-form-item>
         <el-form-item label="省份" prop="province">
           <el-input v-model="temp.province" />
         </el-form-item>
         <el-form-item label="城市" prop="city">
           <el-input v-model="temp.city" />
-        </el-form-item>
-        <el-form-item label="区县" width="80px">
-          <el-input v-model="temp.county" />
         </el-form-item>
         <el-form-item label="位置" width="80px">
           <el-input v-model="temp.location" />
@@ -239,22 +236,11 @@
         </el-button>
       </div>
     </el-dialog>
-
-<!-- 
-    <el-dialog :visible.sync="dialogPvVisible" title="Reading statistics">
-      <el-table :data="pvData" border fit highlight-current-row style="width: 100%">
-        <el-table-column prop="key" label="Channel" />
-        <el-table-column prop="pv" label="Pv" />
-      </el-table>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="dialogPvVisible = false">Confirm</el-button>
-      </span>
-    </el-dialog> -->
   </div>
 </template>
 
 <script>
-import { fetchList, fetchCreate, fetchUpdate, delWaterId } from '@/api/data'
+import { fetchDeviceList, fetchCreateDevice, fetchUpdateDevice, delDeviceId } from '@/api/data'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import { parseTime } from "@/utils/ruoyi";
@@ -277,17 +263,8 @@ if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1
 return fmt;
 }
 const indexTypeOptions = ['总悬浮物', '叶绿素', '溶解氧', '氨氮', '总磷', '化学需氧量']
-const dataindexTypeOptions = [{'label':'影像数据', 'value':0}, 
-                         {'label':'列表数据', 'value':1}]
-const dataTypeMap = {0:'影像数据', 1:'列表数据'}
-const statusOptions = [{'dictValue': 1, 'dictLable': '运行'},
-                       {'dictValue': 0, 'dictLable': '停用'}]
-let deviceNameOptions = []
-let provinceOptions = [
-  '北京市', '广东省', '山东省', '江苏省', '河南省', '上海市', '河北省', '浙江省', '香港特别行政区', '陕西省', '湖南省', '重庆市',
-  '福建省', '天津市', '云南省', '四川省', '广西壮族自治区', '安徽省', '海南省', '江西省', '湖北省', '山西省', '辽宁省', '台湾省',
-  '黑龙江', '内蒙古自治区', '澳门特别行政区', '贵州省', '甘肃省', '青海省', '新疆维吾尔自治区', '西藏自治区', '吉林省', '宁夏回族自治区'
-]
+const statusOptions = [{'dictValue': "1", 'dictLable': '运行'},
+                       {'dictValue': "0", 'dictLable': '停用'}]
 // arr to obj, such as { CN : "China", US : "USA" }
 const calendarTypeKeyValue = indexTypeOptions.reduce((acc, cur) => {
   acc[cur.key] = cur.display_name
@@ -295,7 +272,7 @@ const calendarTypeKeyValue = indexTypeOptions.reduce((acc, cur) => {
 }, {})
 
 export default {
-  name: 'deviceHistory',
+  name: 'deviceManage',
   components: { Pagination },
   directives: { waves },
   filters: {
@@ -348,7 +325,7 @@ export default {
         department:'',
         contact:'',
         phonenumber:'',
-        status:""
+        currentStatus:""
       },
       dialogFormVisible: false,
       apiDialogFormVisible: false,
@@ -363,11 +340,12 @@ export default {
       pvData: [],
       rules: {
         indexType: [{ required: true, message: '请输入测量指标', trigger: 'blur' }],
+        currentValue: [{ required: true, message: '请输入测量读数', trigger: 'blur' }],
         generateTime: [{ type: 'date', required: true, message: '请输入数据生成时间', trigger: 'blur' }],
         deviceName: [{ required: true, message: '请输入设备名称', trigger: 'blur' }],
         province: [{ required: true, message: '请输入省份', trigger: 'blur' }],
         city: [{ required: true, message: '请输入城市', trigger: 'blur' }],
-        status: [{ required: true, message: '请输入设备状态', trigger: 'blur' }],
+        currentStatus: [{ required: true, message: '请输入设备状态', trigger: 'blur' }],
         contact: [{ required: true, message: '请输入责任人', trigger: 'blur' }],
         emailAddress: [{ required: true, message: '请输入责任人邮箱', trigger: 'blur' }],
       },
@@ -400,90 +378,14 @@ export default {
     },
     getList() {
       this.listLoading = true
-      this.list = [
-        {"deviceID":"100001", "deviceName":"ph测定仪", "indexType":"ph值", "timeOffset": '6小时',
-         "lowerLimit":"6.0", "upperLimit":"9.0", "status": "1", "currentValue": 7.6, 
-         "generateTime":"2020-08-05T06:00:00.000+0000", "province":"广东省","city":"深圳市",
-         "location":"深圳市茅洲河洋涌大桥断面","department":"深州市水务管理局","contact":"D",
-         "phonenumber":"17812345569", "emailAddress": "17812345569@xx.com"},    
-         {"deviceID":"100002", "deviceName":"溶解氧测定仪", "indexType":"溶解氧",  "timeOffset": '6小时',
-         "lowerLimit":"3", "upperLimit":"3", "status": "1", "currentValue": 8.5, 
-         "generateTime":"2020-08-05T06:00:00.000+0000", "province":"广东省","city":"深圳市",
-         "location":"深圳市茅洲河洋涌大桥断面","department":"深州市水务管理局","contact":"D",
-         "phonenumber":"17812345569", "emailAddress": "17812345569@xx.com"},    
-         {"deviceID":"100003", "deviceName":"化学需氧量测定仪", "indexType":"化学需氧量", "timeOffset": '6小时', 
-         "lowerLimit":"无", "upperLimit":"30", "status": "1", "currentValue": 23.6, 
-         "generateTime":"2020-08-05T06:00:00.000+0000", "province":"广东省","city":"深圳市",
-         "location":"深圳市茅洲河洋涌大桥断面","department":"深州市水务管理局","contact":"D",
-         "phonenumber":"17812345569", "emailAddress": "17812345569@xx.com"},    
-         {"deviceID":"100004", "deviceName":"悬浮物污泥浓度计", "indexType":"悬浮物浓度",  "timeOffset": '6小时',
-         "lowerLimit":"无", "upperLimit":"无", "status": "1", "currentValue": 6.9, 
-         "generateTime":"2020-08-05T06:00:00.000+0000", "province":"广东省","city":"深圳市",
-         "location":"深圳市茅洲河洋涌大桥断面","department":"深州市水务管理局","contact":"D",
-         "phonenumber":"17812345569", "emailAddress": "17812345569@xx.com"},    
-         {"deviceID":"100005", "deviceName":"ph测定仪", "indexType":"ph值",  "timeOffset": '6小时',
-         "lowerLimit":"6.0", "upperLimit":"9.0", "status": "1", "currentValue": 8.5, 
-         "generateTime":"2020-08-05T06:00:00.000+0000", "province":"广东省","city":"深圳市",
-         "location":"深圳市茅洲河共和村断面","department":"深州市水务管理局","contact":"D",
-         "phonenumber":"17812345569", "emailAddress": "17812345569@xx.com"},    
-         {"deviceID":"100006", "deviceName":"溶解氧测定仪", "indexType":"溶解氧",  "timeOffset": '6小时',
-         "lowerLimit":"3", "upperLimit":"3", "status": "1", "currentValue": 7.1, 
-         "generateTime":"2020-08-05T06:00:00.000+0000", "province":"广东省","city":"深圳市",
-         "location":"深圳市茅洲河共和村断面","department":"深州市水务管理局","contact":"D",
-         "phonenumber":"17812345569", "emailAddress": "17812345569@xx.com"},    
-         {"deviceID":"100007", "deviceName":"化学需氧量测定仪", "indexType":"化学需氧量",  "timeOffset": '6小时',
-         "lowerLimit":"无", "upperLimit":"30", "status": "1", "currentValue": 23.6, 
-         "generateTime":"2020-08-05T06:00:00.000+0000", "province":"广东省","city":"深圳市",
-         "location":"深圳市茅洲河共和村断面","department":"深州市水务管理局","contact":"D",
-         "phonenumber":"17812345569", "emailAddress": "17812345569@xx.com"},    
-         {"deviceID":"100008", "deviceName":"悬浮物污泥浓度计", "indexType":"悬浮物浓度",  "timeOffset": '6小时',
-         "lowerLimit":"无", "upperLimit":"无", "status": "1", "currentValue": 8.1, 
-         "generateTime":"2020-08-05T06:00:00.000+0000", "province":"广东省","city":"深圳市",
-         "location":"深圳市茅洲河共和村断面","department":"深州市水务管理局","contact":"D",
-         "phonenumber":"17812345569", "emailAddress": "17812345569@xx.com"},   
-         {"deviceID":"100009", "deviceName":"ph测定仪", "indexType":"ph值", "timeOffset": '6小时',
-         "lowerLimit":"6.0", "upperLimit":"9.0", "status": "1", "currentValue": 7.6, 
-         "generateTime":"2020-08-05T00:00:00.000+0000", "province":"广东省","city":"深圳市",
-         "location":"深圳市茅洲河洋涌大桥断面","department":"深州市水务管理局","contact":"D",
-         "phonenumber":"17812345569", "emailAddress": "17812345569@xx.com"},    
-         {"deviceID":"100010", "deviceName":"溶解氧测定仪", "indexType":"溶解氧",  "timeOffset": '6小时',
-         "lowerLimit":"3", "upperLimit":"3", "status": "1", "currentValue": 8.5, 
-         "generateTime":"2020-08-05T00:00:00.000+0000", "province":"广东省","city":"深圳市",
-         "location":"深圳市茅洲河洋涌大桥断面","department":"深州市水务管理局","contact":"D",
-         "phonenumber":"17812345569", "emailAddress": "17812345569@xx.com"},    
-         {"deviceID":"100011", "deviceName":"化学需氧量测定仪", "indexType":"化学需氧量",  "timeOffset": '6小时',
-         "lowerLimit":"无", "upperLimit":"30", "status": "1", "currentValue": 23.6, 
-         "generateTime":"2020-08-05T00:00:00.000+0000", "province":"广东省","city":"深圳市",
-         "location":"深圳市茅洲河洋涌大桥断面","department":"深州市水务管理局","contact":"D",
-         "phonenumber":"17812345569", "emailAddress": "17812345569@xx.com"},    
-         {"deviceID":"100012", "deviceName":"悬浮物污泥浓度计", "indexType":"悬浮物浓度",  "timeOffset": '6小时',
-         "lowerLimit":"无", "upperLimit":"无", "status": "1", "currentValue": 6.9, 
-         "generateTime":"2020-08-05T00:00:00.000+0000", "province":"广东省","city":"深圳市",
-         "location":"深圳市茅洲河洋涌大桥断面","department":"深州市水务管理局","contact":"D",
-         "phonenumber":"17812345569", "emailAddress": "17812345569@xx.com"},    
-         {"deviceID":"100013", "deviceName":"ph测定仪", "indexType":"ph值",  "timeOffset": '6小时',
-         "lowerLimit":"6.0", "upperLimit":"9.0", "status": "1", "currentValue": 8.5, 
-         "generateTime":"2020-08-05T00:00:00.000+0000", "province":"广东省","city":"深圳市",
-         "location":"深圳市茅洲河共和村断面","department":"深州市水务管理局","contact":"D",
-         "phonenumber":"17812345569", "emailAddress": "17812345569@xx.com"},    
-         {"deviceID":"100014", "deviceName":"溶解氧测定仪", "indexType":"溶解氧",  "timeOffset": '6小时',
-         "lowerLimit":"3", "upperLimit":"3", "status": "1", "currentValue": 7.1, 
-         "generateTime":"2020-08-05T00:00:00.000+0000", "province":"广东省","city":"深圳市",
-         "location":"深圳市茅洲河共和村断面","department":"深州市水务管理局","contact":"D",
-         "phonenumber":"17812345569", "emailAddress": "17812345569@xx.com"},    
-         {"deviceID":"100015", "deviceName":"化学需氧量测定仪", "indexType":"化学需氧量",  "timeOffset": '6小时',
-         "lowerLimit":"无", "upperLimit":"30", "status": "1", "currentValue": 23.6, 
-         "generateTime":"2020-08-05T00:00:00.000+0000", "province":"广东省","city":"深圳市",
-         "location":"深圳市茅洲河共和村断面","department":"深州市水务管理局","contact":"D",
-         "phonenumber":"17812345569", "emailAddress": "17812345569@xx.com"},    
-         {"deviceID":"100016", "deviceName":"悬浮物污泥浓度计", "indexType":"悬浮物浓度",  "timeOffset": '6小时',
-         "lowerLimit":"无", "upperLimit":"无", "status": "1", "currentValue": 8.1, 
-         "generateTime":"2020-08-05T00:00:00.000+0000", "province":"广东省","city":"深圳市",
-         "location":"深圳市茅洲河共和村断面","department":"深州市水务管理局","contact":"D",
-         "phonenumber":"17812345569", "emailAddress": "17812345569@xx.com"},   
-      ]
-      this.total = 20
-      this.listLoading = false
+      this.temp = Object.assign({}, this.listQuery) // copy obj
+      fetchDeviceList(this.temp).then(response => {
+        this.list = response.rows;
+        this.total = response.total;
+        // Just to simulate the time of the request
+        console.log(this.list)
+        this.listLoading = false;
+      })
     },
     handleFilter() {
       this.listQuery.page = 1
@@ -494,7 +396,7 @@ export default {
         message: '操作Success',
         type: 'success'
       })
-      row.status = status
+      row.currentStatus = status
     },
     sortChange(data) {
       const { prop, order } = data
@@ -526,21 +428,13 @@ export default {
         department:'',
         contact:'',
         phonenumber:'',
-        status:""
+        currentStatus:"1"
       }
     },
     handleView(row) {
-      // this.temp = Object.assign({}, row) // copy obj
-      // this.temp.generateTime= new Date(this.temp.timestamp)
-      // this.dialogStatus = 'view'
-      // this.dialogFormVisible = true
       this.$router.push({
         path: `/waterMatterDruid/device/${row.deviceId}`
       })
-    },
-    handleApiView(row) {
-      this.temp = Object.assign({}, row) // copy obj
-      this.apiDialogFormVisible = true
     },
     handleCreate() {
       this.resetTemp()
@@ -551,10 +445,16 @@ export default {
       })
     },
     createData() {
-      // this.temp.fileName = this.fileList[0].name
+      var tempData = {}
+      console.log(this.temp)
+      for (var key in this.temp) {
+        if (this.temp[key] != '') {tempData[key] = this.temp[key]}
+      }
+      let upFormData = new FormData();
+      upFormData.append('body', JSON.stringify(tempData))
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          fetchCreate(this.temp).then(() => {
+          fetchCreateDevice(upFormData).then(() => {
             this.list.unshift(this.temp)
             this.dialogFormVisible = false
             this.$notify({
@@ -570,13 +470,6 @@ export default {
     },
     handleUpdate(row) {
       this.temp = Object.assign({}, row) // copy obj
-
-      const dataTypeMap = {'影像数据':0, '列表数据': 1}
-      this.temp.dataType = dataTypeMap[row.dataType]
-
-      if (this.temp.filePath!=null){
-        this.fileList.push({name:this.temp.fileName, url:this.temp.filePath})
-      }
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
       this.$nextTick(() => {
@@ -584,16 +477,12 @@ export default {
       })
     },
     updateData() {
-      this.temp.fileName = this.fileList[0].name
-      console.log('test')
-      console.log(this.$refs['dataForm'])
+      let upFormData = new FormData();
+      upFormData.append('body', JSON.stringify(this.temp))
 
-      const tempData = Object.assign({}, this.temp)
-      console.log('test1')
-
-      fetchUpdate(tempData).then(() => {
+      fetchUpdateDevice(upFormData).then(() => {
         for (const v of this.list) {
-          if (v.waterId === this.temp.waterId) {
+          if (v.deviceId === this.temp.deviceId) {
             const index = this.list.indexOf(v)
             this.list.splice(index, 1, this.temp)
             break
@@ -609,51 +498,17 @@ export default {
       })
 
     },
-    beforeUpload(file){
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => {
-        this.temp.fileName = reader.result.fileName;
-      };
-    },
-    // handleRemove(file, fileList) {
-    //     this.temp.fileName;
-    // },
-    // handleDelete(row) {
-    //   this.$notify({
-    //     title: 'Success',
-    //     message: '删除成功',
-    //     type: 'success',
-    //     duration: 2000
-    //   })
-    //   const index = this.list.indexOf(row)
-    //   this.list.splice(index, 1)
-    // },
     handleDelete(row) {
-      this.$confirm('是否确认删除ID为"' + row.waterId + '"的水体数据?', "警告", {
+      this.$confirm('是否确认删除ID为"' + row.deviceId + '"的设备数据?', "警告", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
         }).then(function() {
-          return delWaterId(row.waterId);
+          return delDeviceId(row.deviceId);
         }).then(() => {
           this.getList();
           this.msgSuccess("删除成功");
         }).catch(function() {});
-    },
-    handleDownload() {
-      this.downloadLoading = true
-      import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['waterId','generateTime', 'waterName', 'type', 'province']
-        const filterVal = ['waterId','generateTime', 'waterName', 'type', 'province']
-        const data = this.formatJson(filterVal, this.list)
-        excel.export_json_to_excel({
-          header: tHeader,
-          data,
-          filename: '导出'
-        })
-        this.downloadLoading = false
-      })
     },
     formatJson(filterVal, jsonData) {
       return jsonData.map(v => filterVal.map(j => {
