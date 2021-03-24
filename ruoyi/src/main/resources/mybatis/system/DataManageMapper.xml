@@ -21,6 +21,7 @@
         <result property="filePath"      column="file_path"         />
         <result property="rgbPath"       column="rgb_path"         />
         <result property="bandWavelengthFilePath"       column="band_wavelength_file_path"         />
+        <result property="waterQualityStandard" column="water_quality_standard" />
     </resultMap>
 
     <resultMap type="RetrievalResult" id="RetrievalResult">
@@ -74,14 +75,26 @@
         <result property="codSaveMethod"       column="cod_save_method"       />
         <result property="chlaSaveMethod"       column="chla_save_method"       />
         <result property="tnSaveMethod"       column="tn_save_method"       />
+        <result property="nhCustomModel"       column="nh_custom_model"       />
+        <result property="tpCustomModel"       column="tp_custom_model"       />
+        <result property="tssCustomModel"       column="tss_custom_model"       />
+        <result property="codCustomModel"       column="cod_custom_model"       />
+        <result property="chlaCustomModel"       column="chla_custom_model"       />
+        <result property="tnCustomModel"       column="tn_custom_model"       />
     </resultMap>
 
     <sql id="selectDataVo">
 	    select distinct r.water_id, r.water_name, r.photo_time, r.country, r.province, r.band_wavelength_file_path,
             r.city, r.type, r.datatype, r.bands, r.create_by, r.create_time, r.update_by, r.update_time,
-            r.file_path, r.rgb_path, r.county, r.location, r.department, r.contact, r.phonenumber
+            r.file_path, r.rgb_path, r.county, r.location, r.department, r.contact, r.phonenumber, r.water_quality_standard
         from water_info r
     </sql>
+
+    <select id="selectMaxWaterId" resultType="Integer">
+        select r.water_id
+            from water_info r
+        where water_id=(select max(water_id) from water_info);
+    </select>
 
     <sql id="selectResultVo">
 	    select distinct r.water_id, r.update_time, r.ndwi_param, r.close_param,
@@ -92,6 +105,7 @@
         select distinct r.type
         from water_info r where r.del_flag = '0'
     </select>
+
     <select id="selectNUniqueType" resultType="Integer">
 	    select count(distinct r.type) from water_info r where r.del_flag = '0'
 	</select>
@@ -344,6 +358,7 @@
         update water_info
         <set>
             <if test="type != null and type != ''">type = #{type},</if>
+            <if test="dataType != null and dataType != ''">datatype = #{dataType},</if>
             <if test="waterName != null and waterName != ''">water_name = #{waterName},</if>
             <if test="country != null and country != ''">country = #{country},</if>
             <if test="province != null and province != ''">province = #{province},</if>
@@ -361,6 +376,7 @@
             <if test="phonenumber != null and phonenumber != ''">phonenumber = #{phonenumber},</if>
             <if test="updateTime != null">update_time= #{updateTime},</if>
             <if test="updateBy != null">update_by= #{updateBy},</if>
+            <if test="bandWavelengthFilePath != null and bandWavelengthFilePath != ''">band_wavelength_file_path = #{bandWavelengthFilePath},</if>
         </set>
         where water_id = #{waterId}
     </update>
@@ -368,11 +384,13 @@
     <insert id="insertWater" parameterType="DataManage" useGeneratedKeys="true" keyProperty="waterId">
         insert into water_info(
         <if test="type != null and type != ''">type,</if>
+        <if test="dataType != null and dataType != ''">datatype,</if>
         <if test="waterName != null and waterName != ''">water_name,</if>
         <if test="country != null and country != ''">country,</if>
         <if test="province != null and province != ''">province,</if>
         <if test="city != null and city != ''">city,</if>
         <if test="photoTime != null">photo_time,</if>
+        <if test="remark != null and remark != ''">remar,</if>
         <if test="bands != null and bands != ''">bands,</if>
         <if test="filePath != null and filePath != ''">file_path,</if>
         <if test="fileName != null and fileName != ''">file_name,</if>
@@ -382,16 +400,19 @@
         <if test="department != null and department != ''">department,</if>
         <if test="contact != null and contact != ''">contact,</if>
         <if test="phonenumber != null and phonenumber != ''">phonenumber,</if>
-        <if test="createBy != null and createBy != ''">create_by,</if>
-        <if test="remark != null and remark != ''">remark,</if>
+        <if test="updateTime != null">update_time,</if>
+        <if test="updateBy != null">update_by,</if>
+        <if test="bandWavelengthFilePath != null and bandWavelengthFilePath != ''">band_wavelength_file_path,</if>
         create_time
         )values(
         <if test="type != null and type != ''">#{type},</if>
+        <if test="dataType != null and dataType != ''">#{dataType},</if>
         <if test="waterName != null and waterName != ''">#{waterName},</if>
         <if test="country != null and country != ''">#{country},</if>
         <if test="province != null and province != ''">#{province},</if>
         <if test="city != null and city != ''">#{city},</if>
         <if test="photoTime != null">#{photoTime},</if>
+        <if test="remark != null and remark != ''">#{remark},</if>
         <if test="bands != null and bands != ''">#{bands},</if>
         <if test="filePath != null and filePath != ''">#{filePath},</if>
         <if test="fileName != null and fileName != ''">#{fileName},</if>
@@ -401,8 +422,9 @@
         <if test="department != null and department != ''">#{department},</if>
         <if test="contact != null and contact != ''">#{contact},</if>
         <if test="phonenumber != null and phonenumber != ''">#{phonenumber},</if>
-        <if test="createBy != null and createBy != ''">#{createBy},</if>
-        <if test="remark != null and remark != ''">#{remark},</if>
+        <if test="updateTime != null">#{updateTime},</if>
+        <if test="updateBy != null">#{updateBy},</if>
+        <if test="bandWavelengthFilePath != null and bandWavelengthFilePath != ''">#{bandWavelengthFilePath},</if>
         sysdate()
         )
     </insert>
@@ -466,6 +488,25 @@
         sysdate()
         )
     </insert>
+
+    <insert id="insertWaterLand" parameterType="long" useGeneratedKeys="true" keyProperty="waterId">
+        insert into water_land(
+        <if test="waterId != null and waterId != ''">water_id,</if>
+        update_time
+        )values(
+        <if test="waterId != null and waterId != ''">#{waterId},</if>
+        sysdate()
+        )
+    </insert>
+
+    <update id="updateTss" parameterType="DataManage">
+        update water_info
+        <set>
+            <if test="updateBy != null">update_by= #{updateBy},</if>
+            <if test="bandWavelengthFilePath != null and bandWavelengthFilePath != ''">band_wavelength_file_path = #{bandWavelengthFilePath},</if>
+        </set>
+        where water_id = #{waterId}
+    </update>
 
     <delete id="deleteWaterById" parameterType="Long">
  		delete from water_info where water_id = #{waterId}

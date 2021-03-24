@@ -19,6 +19,8 @@ import com.ruoyi.project.system.domain.ListResult;
 import com.ruoyi.project.system.mapper.DataManageMapper;
 import com.ruoyi.project.system.service.IDataManageService;
 
+import static java.lang.Integer.max;
+
 //import javax.validation.constraints.NotNull;
 
 /**
@@ -88,6 +90,11 @@ public class DataManageServiceImpl implements IDataManageService {
         return result;
     }
 
+    @Transactional
+    public int selectMaxWaterId(){
+        return max(dataManageMapper.selectMaxWaterId(), 0);
+    }
+
     @Override
     public List<RetrievalResult> selectResultByDictCode(RetrievalResult dataQuery)
     {
@@ -121,10 +128,7 @@ public class DataManageServiceImpl implements IDataManageService {
     @Transactional
     public int updateWater(DataManage dataManage)
     {
-        dataManageMapper.updateWater(dataManage);
-        // 删除角色与菜单关联
-//        dataManageMapper.deleteRoleMenuByRoleId(role.getRoleId());
-        return 1;
+         return dataManageMapper.updateWater(dataManage);
     }
 
     @Override
@@ -133,6 +137,10 @@ public class DataManageServiceImpl implements IDataManageService {
     {
         int row = dataManageMapper.insertWater(dataManage);
         long waterId = dataManage.getWaterId();
+        int dataType = dataManage.getDataType();
+        if (dataType==1) {
+            dataManageMapper.insertWaterLand(waterId);
+        }
         // 关联
         dataManageMapper.insertTp(waterId);
         dataManageMapper.insertTn(waterId);

@@ -26,6 +26,8 @@ public interface DataManageMapper {
     public int selectNUniqueProvince();
     public int selectNUniqueCity();
 
+    public int selectMaxWaterId();
+
     public List<RetrievalResult> selectTp(long waterId);
     public List<RetrievalResult> selectTn(long waterId);
     public List<RetrievalResult> selectNh(long waterId);
@@ -33,7 +35,7 @@ public interface DataManageMapper {
     public List<RetrievalResult> selectChla(long waterId);
     public List<RetrievalResult> selectTss(long waterId);
 
-    public void updateWater(DataManage dataManage);
+    public int updateWater(DataManage dataManage);
     public int insertWater(DataManage dataManage);
     public void insertTp(@Param("waterId")long waterId);
     public void insertTn(@Param("waterId")long waterId);
@@ -41,6 +43,7 @@ public interface DataManageMapper {
     public void insertCod(@Param("waterId")long waterId);
     public void insertChla(@Param("waterId")long waterId);
     public void insertNh(@Param("waterId")long waterId);
+    public void insertWaterLand(@Param("waterId")long waterId);
     public int deleteWaterById(long waterId);
 
 }

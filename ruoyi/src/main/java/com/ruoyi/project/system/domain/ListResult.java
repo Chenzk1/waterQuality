@@ -16,45 +16,54 @@ public class ListResult extends BaseEntity{
     private String location;
     private String type;
     private Integer dataType;
+    private String waterQualityStandard;
 
     private String rgbPath;
     private String waterName;
+    private String filePath;
+    private String bandWavelengthFilePath;
 
     private Float tpMin;
     private Float tpMax;
     private Float tpMean;
     private String tpResultPath;
     private String tpSaveMethod;
+    private String tpCustomModel;
 
     private Float tnMin;
     private Float tnMax;
     private Float tnMean;
     private String tnResultPath;
     private String tnSaveMethod;
+    private String tnCustomModel;
 
     private Float tssMin;
     private Float tssMax;
     private Float tssMean;
     private String tssResultPath;
     private String tssSaveMethod;
+    private String tssCustomModel;
 
     private String chlaResultPath;
     private Float chlaMin;
     private Float chlaMax;
     private Float chlaMean;
     private String chlaSaveMethod;
+    private String chlaCustomModel;
 
     private Float nhMin;
     private Float nhMax;
     private Float nhMean;
     private String nhResultPath;
     private String nhSaveMethod;
+    private String nhCustomModel;
 
     private Float codMin;
     private Float codMax;
     private Float codMean;
     private String codResultPath;
     private String codSaveMethod;
+    private String codCustomModel;
 
     private String retrievalParams;
 
@@ -101,6 +110,13 @@ public class ListResult extends BaseEntity{
         return phonenumber;
     }
 
+    public void setFilePath(String filePath) {this.filePath = filePath;}
+    public String getFilePath() { return filePath; }
+
+    public void setBandWavelengthFilePath(String bandWavelengthFilePath)
+    { this.bandWavelengthFilePath = bandWavelengthFilePath; }
+    public String getBandWavelengthFilePath() {return bandWavelengthFilePath;}
+
     public Date getPhotoTime()
     {
         return photoTime;
@@ -128,16 +144,6 @@ public class ListResult extends BaseEntity{
     {
         this.waterId = waterId;
     }
-
-//    public Date getUpdateTime()
-//    {
-//        return updateTime;
-//    }
-//
-//    public void setUpdateTime(Date updateTime)
-//    {
-//        this.updateTime = updateTime;
-//    }
 
     public String getRgbPath()
     {
@@ -385,4 +391,66 @@ public class ListResult extends BaseEntity{
     {
         this.chlaSaveMethod = chlaSaveMethod;
     }
+
+    public String getTpCustomModel()
+    {
+        return tpCustomModel;
+    }
+    public void setTpCustomModel(String tpCustomModel)
+    {
+        this.tpCustomModel = tpCustomModel;
+    }
+
+    public String getTnCustomModel()
+    {
+        return tnCustomModel;
+    }
+    public void setTnCustomModel(String tnCustomModel)
+    {
+        this.tnCustomModel = tnCustomModel;
+    }
+
+    public String getTssCustomModel()
+    {
+        return tssCustomModel;
+    }
+    public void setTssCustomModel(String tssCustomModel)
+    {
+        this.tssCustomModel = tssCustomModel;
+    }
+
+    public String getCodCustomModel()
+    {
+        return codCustomModel;
+    }
+    public void setCodCustomModel(String codCustomModel)
+    {
+        this.codCustomModel = codCustomModel;
+    }
+
+    public String getNhCustomModel()
+    {
+        return nhCustomModel;
+    }
+    public void setNhCustomModel(String nhCustomModel)
+    {
+        this.nhCustomModel = nhCustomModel;
+    }
+
+    public String getChlaCustomModel()
+    {
+        return chlaCustomModel;
+    }
+    public void setChlaCustomModel(String chlaCustomModel)
+    {
+        this.chlaCustomModel = chlaCustomModel;
+    }
+
+    public void setWaterQualityStandard(String waterQualityStandard)
+    {
+        this.waterQualityStandard = waterQualityStandard;
+    }
+
+    public String getWaterQualityStandard() {return waterQualityStandard;}
+
 }

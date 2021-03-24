@@ -8,8 +8,9 @@ ruoyi:
   copyrightYear: 2019
   # 实例演示开关
   demoEnabled: true
-  # 文件路径 示例（ Windows配置D:/ruoyi/uploadPath，Linux配置 /home/ruoyi/uploadPath）
-  profile: C:/Users/Chenzk/Documents/Learning/waterQuality/waterQuality/Files/
+  # 文件路径 示例（ Windows配置D:/ruoyi/uploadPath，Linux配置 /home/chenzhongkai/wqms/Files）
+  profile: /home/chenzhongkai/wqms/Files
+#  profile: C:/Users/Chenzk/Documents/Learning/waterQuality/waterQuality/Files/
   # 获取ip地址开关
   addressEnabled: true
 
@@ -73,6 +74,15 @@ spring:
         max-active: 8
         # #连接池最大阻塞等待时间（使用负值表示没有限制）
         max-wait: -1ms
+  mail:
+    host: smtp.qq.com
+    username: 1226269691@qq.com
+    password: roivytqvtigzigce
+    resources:
+
+mail:
+  fromMail:
+    addr: 1226269691@qq.com # 发邮件者
 
 # token配置
 token:

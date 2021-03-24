@@ -7,9 +7,9 @@
             <h3>水体信息</h3>              
           </div>
           <div class="form-wrapper">
-            <el-form :inline="true" ref="waterId" :model="listForm" prop="listForm" label-width="100px">
+            <el-form :inline=true ref="waterId" prop="listForm" label-width="100px" @submit.native.prevent onSubmit="return false">
               <el-form-item label="水体ID" prop="waterId">
-                <el-input v-model="listQuery.waterId" />
+                <el-input v-model="listQuery.waterId"  @keyup.enter.native="changeWater"/>
               </el-form-item>
               <el-form-item style="float: right;">  
                 <el-button type="primary" style="float: right;" @click="changeWater">重新选择水体</el-button>
@@ -18,55 +18,44 @@
             <el-divider></el-divider>    
             <el-form ref="listForm" :model="listForm" prop="listForm" label-width="100px">
               <el-form-item label="水体" prop="waterName" >
-                <!-- <el-input v-model="listForm.waterName" :disabled="true" /> -->
                 <span>{{listForm.waterName}}</span>
               </el-form-item>
               <el-form-item label="数据源" prop="type">
                 <span>{{listForm.type}}</span>
-                <!-- <el-input v-model="listForm.type" :disabled="true" /> -->
               </el-form-item>
               <el-form-item label="数据类型" prop="dataType">
                 <span>{{listForm.dataType}}</span>
-                <!-- <el-input v-model="listForm.type" :disabled="true" /> -->
               </el-form-item>
               <el-form-item label="数据生成时间" name="photoTime">
                 <span>{{parseTime(listForm.photoTime)}}</span>
-                <!-- <el-date-picker v-model="listForm.photoTime" :disabled="true" align="right" type="date" placeholder="日期" /> -->
               </el-form-item>
               <el-form-item label="省份" prop="province">
                 <span>{{listForm.province}}</span>
-                <!-- <el-input v-model="listForm.province" /> -->
               </el-form-item>
               <el-form-item label="城市" prop="city">
                 <span>{{listForm.city}}</span>              
-                <!-- <el-input v-model="listForm.city" /> -->
               </el-form-item>
               <el-form-item label="区县">
                 <span>{{listForm.county}}</span>
-                <!-- <el-input v-model="listForm.county" /> -->
               </el-form-item>
               <el-form-item label="详细位置">
                 <span>{{listForm.location}}</span>
-                <!-- <el-input v-model="listForm.location" /> -->
               </el-form-item>
               <el-form-item label="主管部门">
                 <span>{{listForm.department}}</span>
-                <!-- <el-input v-model="listForm.department" /> -->
               </el-form-item>
               <el-form-item label="联系人">
                 <span>{{listForm.contact}}</span>
-                <!-- <el-input v-model="listForm.contact" /> -->
               </el-form-item>
               <el-form-item label="联系方式">
                 <span>{{listForm.contactInformation}}</span>
-                <!-- <el-input v-model="listForm.contactInformation" /> -->
               </el-form-item>
               <!-- <el-form-item label="波段数" prop="bands">
                 <span>{{listForm.bands}}</span>
                 <!-- <el-input v-model="listForm.bands" :disabled="true" /> -->
               <!-- </el-form-item>       -->
               <el-form-item label="RGB图片" prop="rgbPath" v-if="listForm.dataType == '影像数据'">
-                <el-image v-if="listForm.rgbPath" :src="listForm.rgbPath" :alt="listForm.rgbPath" :fit='fit'
+                <el-image v-if="listForm.rgbPath" :src="listForm.rgbPath" :alt="listForm.rgbPath"
                   style="width:380px;height:80px;display:block" :preview-src-list="listForm.previewSrcList">
                 </el-image>
               </el-form-item>
@@ -76,36 +65,36 @@
       </el-col>
       <el-col :xs="24" :sm="24" :md="12" :lg="12">
         <el-row :gutter="12" style="margin:10px">
-          <el-card class="box-card">
+          <el-card class="box-card" v-if="listForm.dataType == '影像数据'">
             <div slot="header" class="clearfix">
               <h3>水体提取</h3>              
             </div>
             <div class="form-wrapper">
               <el-form ref="waterLandForm" :model="waterLandForm" prop="waterLandForm" label-width="100px">
                 <el-form-item label="NDWI阈值">
-                  <el-slider v-model="waterLandForm.ndwiPara" show-input step=0.1
-                    min=-100 max=100 :format-tooltip="formatTooltip"></el-slider>
+                  <el-slider v-model="waterLandForm.ndwiParam" show-input :step="0.01"
+                    :min="-20" :max="20"></el-slider>
                 </el-form-item>
                 <el-form-item label="闭运算核大小">
-                  <el-slider v-model="waterLandForm.closePara" show-input
-                    max=20></el-slider>
+                  <el-slider v-model="waterLandForm.closeParam" show-input
+                    :max="20"></el-slider>
                 </el-form-item>
                 <el-form-item label="开运算核大小">
-                  <el-slider v-model="waterLandForm.openPara" show-input
-                    max=20></el-slider>
+                  <el-slider v-model="waterLandForm.openParam" show-input
+                    :max="20"></el-slider>
                 </el-form-item>
                 <el-form-item style="vertical-align:middle;text-align:center" label=''>
-                  <el-button type="primary" round="True" size="medium" @click="waterLandSegment()">水体提取</el-button>
+                  <el-button type="primary" round size="medium" @click="waterLandSegment()">水体提取</el-button>
                 </el-form-item>
                 <el-form-item v-if="waterLandForm.waterLandPath!=''" 
                   style="vertical-align:middle;text-align:center" label='提取结果'>
-                  <el-image :src="waterLandForm.waterLandPath" v-if="waterLandForm.waterLandPath!=''" :alt="waterLandForm.waterLandPath"
+                  <el-image :src="waterLandForm.waterLandPath" v-if="waterLandForm.waterLandPath" :alt="waterLandForm.waterLandPath"
                   :preview-src-list="waterLandForm.previewSrcList" style="width:380px;height:80px;display:block">
                   </el-image>
                 </el-form-item>
                 <el-form-item v-if="waterLandForm.waterLandPath!=''" style="vertical-align:middle;text-align:center" label=''>
                   <el-button v-if="waterLandForm.waterLandPath!=''"
-                   type="primary" round="True" size="medium" @click="saveWaterLandResult()">保存</el-button>
+                   type="primary" round size="medium" @click="saveWaterLandResult()">保存</el-button>
                 </el-form-item>
               </el-form>
             </div>
@@ -116,118 +105,190 @@
             <div slot="header" class="clearfix">
               <h3>指标反演</h3>              
             </div>
-            <el-collapse v-model="activeNames" >
-              <el-collapse-item title="总悬浮物" name="5">
+            <el-collapse>
+              <el-collapse-item title="总悬浮物" name="0">
                 <div class="form-wrapper">
-                  <el-form ref="resultForm.tss" :model="resultForm" prop="resultForm.tss" label-width="100px">
+                  <el-form ref="listForm.tss" :model="listForm" prop="listForm.tss" 
+                   @submit.native.prevent label-width="100px">
                     <el-form-item style="vertical-align:middle;text-align:center;margin-top:20px" label='反演算法选择'>
-                      <el-select v-model="resultForm.tss.method" placeholder="Modified QAA">
+                      <el-select v-model="listForm.tssSaveMethod" placeholder="Modified-QAA">
                         <el-option
-                          v-for="item in retrieveMethodOptions"
+                          v-for="item in inverseMethodOptions.tss"
                           :key="item.value"
                           :label="item.label"
                           :value="item.value">
                         </el-option>
                       </el-select>
+                      <el-input v-model="listForm.tssCustomModel" v-if='listForm.tssSaveMethod === "自定义"'
+                        placeholder="自定义反演模型" style="vertical-align:middle;text-align:center;margin-top:20px"/>
                     </el-form-item>
                     <el-form-item style="vertical-align:middle;text-align:center" label=''>
-                      <el-button type="primary" round="True" size="medium" @click="retrieval('tss')">总悬浮物反演</el-button>
+                      <el-button type="primary" round size="medium" @click="waterQualityInverse('tss')">总悬浮物反演</el-button>
                     </el-form-item>
                     <el-form-item 
-                      style="vertical-align:middle;text-align:center" label='反演结果'>
-                      <el-image :src="tssResultPath" :alt="tssResultPath"
-                      :preview-src-list="tssPreviewSrcList" style="width:380px;height:80px;display:block,margin-top:auto;margin-bottom:auto;">
+                      style="vertical-align:middle;text-align:center" label='反演结果' v-if="listForm.tssResultPath">
+                      <el-image :src="listForm.tssResultPath" :alt="listForm.tssResultPath" v-if="listForm.tssResultPath"
+                        :preview-src-list="listForm.tssPreviewSrcList" style="width:380px;height:80px;display:block,margin-top:auto;margin-bottom:auto;">
                       </el-image>
                     </el-form-item>
-                    <el-form-item 
+                    <el-form-item  v-if="listForm.tssMin || listForm.tssMax || listForm.tssMean"
                       style="vertical-align:middle;text-align:center" label='反演统计量'>
-                      最小值：4.0，平均值：8.1，最大值：12.6
+                      最小值：{{listForm.tssMin}}，平均值：{{listForm.tssMean}}，最大值：{{listForm.tssMax}}
                     </el-form-item>
-                    <el-form-item v-if="tssResultPath!=null" style="vertical-align:middle;text-align:center" label=''>
-                      <el-button v-if="tssResultPath!=null"
-                      type="primary" round="True" size="medium" @click="saveWaterLandResult()">保存</el-button>
-                    </el-form-item>
-                  </el-form>
-                </div>
-              </el-collapse-item>
-              <el-collapse-item title="总磷" name="1">
-                <div class="form-wrapper">
-                  <el-form ref="resultForm.tp" :model="resultForm" prop="result.tp" label-width="100px">
-                    <el-form-item label="参数1">
-                      <el-input v-model="resultForm.tp.para1" placeholder="5" />
-                    </el-form-item>
-                    <el-form-item label="参数2">
-                      <el-input v-model="resultForm.tp.para2" placeholder="5" />
-                    </el-form-item>
-                    <el-form-item style="vertical-align:middle;text-align:center" label='反演结果'>
-                      <el-button type="primary" round="True" size="medium" @click="retrieval('tp')">总磷反演</el-button>
-                    </el-form-item>
-                    <el-form-item style="vertical-align:middle;text-align:center">
-                      <img v-if="resultForm.tp.rgbPath" :src="resultForm.tp.rgbPath" style="width:380px;height:380px;display:block,margin-top:auto;margin-bottom:auto;">
+                    <el-form-item v-if="tssResultPath" style="vertical-align:middle;text-align:center" label=''>
+                      <el-button v-if="tssResultPath"
+                      type="primary" round size="medium" @click="saveWaterQuality('tss')">保存</el-button>
                     </el-form-item>
                   </el-form>
                 </div>
               </el-collapse-item>
-              <el-collapse-item title="总氮" name="2">
+              <el-collapse-item title="叶绿素" name="1">
                 <div class="form-wrapper">
-                  <el-form ref="resultForm.tn" :model="resultForm" prop="result.tn" label-width="100px">
-                    <el-form-item label="参数1">
-                      <el-input v-model="resultForm.tn.para1" placeholder="5" />
+                  <el-form ref="listForm.chla" :model="listForm" prop="listForm.chla" 
+                   @submit.native.prevent label-width="100px">
+                    <el-form-item style="vertical-align:middle;text-align:center;margin-top:20px" label='反演算法选择'>
+                      <el-select v-model="listForm.chlaSaveMethod" placeholder="PNN-L1-NN">
+                        <el-option
+                          v-for="item in inverseMethodOptions.chla"
+                          :key="item.value"
+                          :label="item.label"
+                          :value="item.value">
+                        </el-option>
+                      </el-select>
+                      <el-input v-model="listForm.chlaCustomModel" v-if='listForm.chlaSaveMethod === "自定义"'
+                        placeholder="自定义反演模型" style="vertical-align:middle;text-align:center;margin-top:20px"/>
                     </el-form-item>
-                    <el-form-item label="参数2">
-                      <el-input v-model="resultForm.tn.para2" placeholder="5" />
+                    <el-form-item style="vertical-align:middle;text-align:center" label=''>
+                      <el-button type="primary" round size="medium" @click="waterQualityInverse('chla')">总悬浮物反演</el-button>
                     </el-form-item>
-                    <el-form-item style="vertical-align:middle;text-align:center" label='反演结果'>
-                      <el-button type="primary" round="True" size="medium" @click="retrieval('tn')">总氮反演</el-button>
+                    <el-form-item 
+                      style="vertical-align:middle;text-align:center" label='反演结果' v-if="listForm.chlaResultPath">
+                      <el-image :src="listForm.chlaResultPath" :alt="listForm.chlaResultPath" v-if="listForm.chlaResultPath"
+                        :preview-src-list="listForm.chlaPreviewSrcList" style="width:380px;height:80px;display:block,margin-top:auto;margin-bottom:auto;">
+                      </el-image>
                     </el-form-item>
-                    <el-form-item style="vertical-align:middle;text-align:center">
-                      <img v-if="resultForm.tn.rgbPath" :src="resultForm.tn.rgbPath" style="width:380px;height:380px;display:block,margin-top:auto;margin-bottom:auto;">
+                    <el-form-item  v-if="listForm.chlaMin || listForm.chlaMax || listForm.chlaMean"
+                      style="vertical-align:middle;text-align:center" label='反演统计量'>
+                      最小值：{{listForm.chlaMin}}，平均值：{{listForm.chlaMean}}，最大值：{{listForm.chlaMax}}
                     </el-form-item>
-                  </el-form>
-                </div>
-              </el-collapse-item>
-              <el-collapse-item title="叶绿素a" name="3">
-                <div class="form-wrapper">
-                  <el-form ref="resultForm.chla" :model="resultForm" prop="resultForm.chla" label-width="100px">
-                    <el-form-item label="反演算法">
-                      <el-radio v-model="resultForm.chla.para1" label=5.0>2BDA</el-radio>
-                      <el-radio v-model="resultForm.chla.para1" label=6>3BDA</el-radio>
-                      <el-radio v-model="resultForm.chla.para1" label=7>BDCI</el-radio>
-                    </el-form-item>
-                    <!-- <el-form-item label="参数1">
-                      <el-input v-model="resultForm.chla.para1" placeholder="5" />
-                    </el-form-item>
-                    <el-form-item label="参数2">
-                      <el-input v-model="resultForm.chla.para2" placeholder="5" />
-                    </el-form-item> -->
-                    <el-form-item size="medium" style="vertical-align:middle;text-align:center">
-                      <el-button type="primary" round="True" size="medium" @click="retrieval('chla')">叶绿素a反演</el-button>
-                    </el-form-item>
-                    <el-form-item style="vertical-align:middle;text-align:center">
-                      <img v-if="resultForm.chla.rgbPath" :src="resultForm.chla.rgbPath" style="width:380px;height:380px;display:block,margin-top:auto;margin-bottom:auto;">
-                    </el-form-item>
-                  </el-form>
-                </div>
-              </el-collapse-item>
-              <el-collapse-item title="氨氮" name="4">
-                <div class="form-wrapper">
-                  <el-form ref="resultForm.nh" :model="resultForm" prop="resultForm.nh" label-width="100px">
-                    <el-form-item label="参数1">
-                      <el-input v-model="resultForm.nh.para1" placeholder="5" />
-                    </el-form-item>
-                    <el-form-item label="参数2">
-                      <el-input v-model="resultForm.nh.para2" placeholder="5" />
-                    </el-form-item>
-                    <el-form-item size="medium" style="vertical-align:middle;text-align:center">
-                      <el-button type="primary" round="True" size="medium" @click="retrieval('nh')">氨氮反演</el-button>
-                    </el-form-item>
-                    <el-form-item style="vertical-align:middle;text-align:center" label='反演结果'>
-                      <img v-if="resultForm.nh.rgbPath" :src="resultForm.nh.rgbPath" style="width:380px;height:380px;display:block,margin-top:auto;margin-bottom:auto;">
+                    <el-form-item v-if="chlaResultPath" style="vertical-align:middle;text-align:center" label=''>
+                      <el-button v-if="chlaResultPath"
+                      type="primary" round size="medium" @click="saveWaterQuality('chla')">保存</el-button>
                     </el-form-item>
                   </el-form>
                 </div>
               </el-collapse-item>
 
+              <el-collapse-item title="氨氮" name="2">
+                <div class="form-wrapper">
+                  <el-form ref="listForm.nh" :model="listForm" prop="listForm.nh" 
+                   @submit.native.prevent label-width="100px">
+                    <el-form-item style="vertical-align:middle;text-align:center;margin-top:20px" label='反演算法选择'>
+                      <el-select v-model="listForm.nhSaveMethod" placeholder="多元回归模型">
+                        <el-option
+                          v-for="item in inverseMethodOptions.nh"
+                          :key="item.value"
+                          :label="item.label"
+                          :value="item.value">
+                        </el-option>
+                      </el-select>
+                      <el-input v-model="listForm.nhCustomModel" v-if='listForm.nhSaveMethod === "自定义"'
+                        placeholder="自定义反演模型" style="vertical-align:middle;text-align:center;margin-top:20px"/>
+                    </el-form-item>
+                    <el-form-item style="vertical-align:middle;text-align:center" label=''>
+                      <el-button type="primary" round size="medium" @click="waterQualityInverse('nh')">总悬浮物反演</el-button>
+                    </el-form-item>
+                    <el-form-item 
+                      style="vertical-align:middle;text-align:center" label='反演结果' v-if="listForm.nhResultPath">
+                      <el-image :src="listForm.nhResultPath" :alt="listForm.nhResultPath" v-if="listForm.nhResultPath"
+                        :preview-src-list="listForm.nhPreviewSrcList" style="width:380px;height:80px;display:block,margin-top:auto;margin-bottom:auto;">
+                      </el-image>
+                    </el-form-item>
+                    <el-form-item  v-if="listForm.nhMin || listForm.nhMax || listForm.nhMean"
+                      style="vertical-align:middle;text-align:center" label='反演统计量'>
+                      最小值：{{listForm.nhMin}}，平均值：{{listForm.nhMean}}，最大值：{{listForm.nhMax}}
+                    </el-form-item>
+                    <el-form-item v-if="nhResultPath" style="vertical-align:middle;text-align:center" label=''>
+                      <el-button v-if="nhResultPath"
+                      type="primary" round size="medium" @click="saveWaterQuality('nh')">保存</el-button>
+                    </el-form-item>
+                  </el-form>
+                </div>
+              </el-collapse-item>
+
+              <el-collapse-item title="总磷" name="3">
+                <div class="form-wrapper">
+                  <el-form ref="listForm.tp" :model="listForm" prop="listForm.tp" 
+                   @submit.native.prevent label-width="100px">
+                    <el-form-item style="vertical-align:middle;text-align:center;margin-top:20px" label='反演算法选择'>
+                      <el-select v-model="listForm.tpSaveMethod" placeholder="一阶微分模型">
+                        <el-option
+                          v-for="item in inverseMethodOptions.tp"
+                          :key="item.value"
+                          :label="item.label"
+                          :value="item.value">
+                        </el-option>
+                      </el-select>
+                      <el-input v-model="listForm.tpCustomModel" v-if='listForm.tpSaveMethod === "自定义"'
+                        placeholder="自定义反演模型" style="vertical-align:middle;text-align:center;margin-top:20px"/>
+                    </el-form-item>
+                    <el-form-item style="vertical-align:middle;text-align:center" label=''>
+                      <el-button type="primary" round size="medium" @click="waterQualityInverse('tp')">总悬浮物反演</el-button>
+                    </el-form-item>
+                    <el-form-item 
+                      style="vertical-align:middle;text-align:center" label='反演结果' v-if="listForm.tpResultPath">
+                      <el-image :src="listForm.tpResultPath" :alt="listForm.tpResultPath" v-if="listForm.tpResultPath"
+                        :preview-src-list="listForm.tpPreviewSrcList" style="width:380px;height:80px;display:block,margin-top:auto;margin-bottom:auto;">
+                      </el-image>
+                    </el-form-item>
+                    <el-form-item  v-if="listForm.tpMin || listForm.tpMax || listForm.tpMean"
+                      style="vertical-align:middle;text-align:center" label='反演统计量'>
+                      最小值：{{listForm.tpMin}}，平均值：{{listForm.tpMean}}，最大值：{{listForm.tpMax}}
+                    </el-form-item>
+                    <el-form-item v-if="tpResultPath" style="vertical-align:middle;text-align:center" label=''>
+                      <el-button v-if="tpResultPath"
+                      type="primary" round size="medium" @click="saveWaterQuality('tp')">保存</el-button>
+                    </el-form-item>
+                  </el-form>
+                </div>
+              </el-collapse-item>
+
+              <el-collapse-item title="总氮" name="4">
+                <div class="form-wrapper">
+                  <el-form ref="listForm.tn" :model="listForm" prop="listForm.tn" 
+                   @submit.native.prevent label-width="100px">
+                    <el-form-item style="vertical-align:middle;text-align:center;margin-top:20px" label='反演算法选择'>
+                      <el-select v-model="listForm.tnSaveMethod" placeholder="比值模型">
+                        <el-option
+                          v-for="item in inverseMethodOptions.tn"
+                          :key="item.value"
+                          :label="item.label"
+                          :value="item.value">
+                        </el-option>
+                      </el-select>
+                      <el-input v-model="listForm.tnCustomModel" v-if='listForm.tnSaveMethod === "自定义"'
+                        placeholder="自定义反演模型" style="vertical-align:middle;text-align:center;margin-top:20px"/>
+                    </el-form-item>
+                    <el-form-item style="vertical-align:middle;text-align:center" label=''>
+                      <el-button type="primary" round size="medium" @click="waterQualityInverse('tn')">总悬浮物反演</el-button>
+                    </el-form-item>
+                    <el-form-item 
+                      style="vertical-align:middle;text-align:center" label='反演结果' v-if="listForm.tnResultPath">
+                      <el-image :src="listForm.tnResultPath" :alt="listForm.tnResultPath" v-if="listForm.tnResultPath"
+                        :preview-src-list="listForm.tnPreviewSrcList" style="width:380px;height:80px;display:block,margin-top:auto;margin-bottom:auto;">
+                      </el-image>
+                    </el-form-item>
+                    <el-form-item  v-if="listForm.tnMin || listForm.tnMax || listForm.tnMean"
+                      style="vertical-align:middle;text-align:center" label='反演统计量'>
+                      最小值：{{listForm.tnMin}}，平均值：{{listForm.tnMean}}，最大值：{{listForm.tnMax}}
+                    </el-form-item>
+                    <el-form-item v-if="tnResultPath" style="vertical-align:middle;text-align:center" label=''>
+                      <el-button v-if="tnResultPath"
+                      type="primary" round size="medium" @click="saveWaterQuality('tn')">保存</el-button>
+                    </el-form-item>
+                  </el-form>
+                </div>
+              </el-collapse-item>
               <el-collapse-item title="水质评价" name="6">
                 <div class="form-wrapper">
                   <el-form ref="listForm.level" :model="listForm" prop="listForm.level" label-width="100px">
@@ -243,7 +304,7 @@
                       </el-select>
                     </el-form-item>
                     <el-form-item style="vertical-align:middle;text-align:center" label='反演结果'>
-                      <el-button type="primary" round="True" size="medium" @click="displayLevel(levelSelect)">水质评价</el-button>
+                      <el-button type="primary" round size="medium" @click="displayLevel(levelSelect)">水质评价</el-button>
                     </el-form-item> -->
                     <el-form-item label="水质评价结果">
                       1
@@ -267,22 +328,25 @@
 </template>
 
 <script>
-import { fetchList, createData, updateData, fetchRetrieval, fetchLevel, fetchResult } from '@/api/data'
+import { fetchList, fetchWaterQuality, inverseWaterQuality,
+         fetchLevel, fetchWaterLand, segmentWaterLand } from '@/api/data'
 import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils'
-const TypeOptions = [
-  { key: 'MODIS', display_name: 'MODIS' },
-  { key: 'GF-1', display_name: '高分一号' },
-  { key: 'GF-2', display_name: '高分一号' },
-  { key: 'GF-3', display_name: '高分一号' },
-  { key: 'LANDSAT-5', display_name: 'LANDSAT-5' },
-  { key: 'LANDSAT-8', display_name: 'LANDSAT-8' }
-]
-const retrieveMethodOptions = [{label: 'Modified QAA', value: 0},
-                  {label: 'PNN-L1-RF', value: 1},
-                  {label: 'PNN-L1-NN', value: 2},
-                  {label: 'PNN-L2-RF', value: 3},
-                  {label: 'PNN-L2-NN', value: 4},]
+
+const inverseMethodOptions = {'tss': [{label: 'Modified-QAA', value: 'Modified-QAA'},
+                                      {label: 'PNN-L1-NN',    value: 'PNN-L1-NN'},
+                                      {label: 'PNN-L2-NN',    value: 'PNN-L2-NN'},
+                                      {label: "自定义",        value: "自定义"}],
+                              'chla': [{label: 'PNN-L1-NN',   value: 'PNN-L1-NN'},
+                                      {label: 'PNN-L2-NN',    value: 'PNN-L2-NN'},
+                                      {label: "自定义",        value: "自定义"}],
+                              'nh':   [{label: '多元回归模型', value: 'multiple-regression'},
+                                      {label: "自定义",        value: "自定义"}],
+                              'tp':   [{label: '一阶微分模型', value: '一阶微分模型'},
+                                      {label: "自定义",        value: "自定义"}],
+                              'tn':   [{label: '比值模型',     value: '比值模型'},
+                                      {label: "自定义",        value: "自定义"}],
+                              }
 const evaluteMethodOptions = [
   { key: '1', label: '单因子', value: 'single', disabled: false },
   { key: '2', label: '多因子', value: 'multi', disabled: false },
@@ -293,11 +357,7 @@ const provinceOptions = [
   '福建省', '天津市', '云南省', '四川省', '广西壮族自治区', '安徽省', '海南省', '江西省', '湖北省', '山西省', '辽宁省', '台湾省',
   '黑龙江', '内蒙古自治区', '澳门特别行政区', '贵州省', '甘肃省', '青海省', '新疆维吾尔自治区', '西藏自治区', '吉林省', '宁夏回族自治区'
 ]
-// arr to obj, such as { CN : "China", US : "USA" }
-const calendarTypeKeyValue = TypeOptions.reduce((acc, cur) => {
-  acc[cur.key] = cur.display_name
-  return acc
-}, {})
+
 const levelSelect = 'single'
 export default {
   name: 'Monitor',
@@ -310,32 +370,18 @@ export default {
         deleted: 'danger'
       }
       return statusMap[status]
-    },
-    typeFilter(type) {
-      return calendarTypeKeyValue[type]
     }
   },
   data() {
     return {
-      tssResultPath: '/dev-api/profile/retrievalResultFile/TSMResultFile/maozhouhe0311.png',
-      tssPreviewSrcList: ['/dev-api/profile/retrievalResultFile/TSMResultFile/maozhouhe0311.png',],
       tableKey: 0,
       list: null,
       listForm: { waterId: 1000 },
-      waterLandForm: {},
-      resultForm: { 
-        waterId: 1000,
-        tp:{para1:undefined, para2:undefined, para3:undefined, min:undefined, max:undefined, mean:undefined, rgbPath:undefined},
-        tn:{para1:undefined, para2:undefined, para3:undefined, min:undefined, max:undefined, mean:undefined, rgbPath:undefined},
-        tss:{para1:undefined, para2:undefined, para3:undefined, min:undefined, max:undefined, mean:undefined, rgbPath:undefined},
-        nh:{para1:undefined, para2:undefined, para3:undefined, min:undefined, max:undefined, mean:undefined, rgbPath:undefined},
-        chla:{para1:5.0, para2:undefined, para3:undefined, min:undefined, max:undefined, mean:undefined, rgbPath:undefined},
-        cod:{para1:undefined, para2:undefined, para3:undefined, min:undefined, max:undefined, mean:undefined, rgbPath:undefined},
-
-      },
-      retrievalParams: {
+      waterLandForm: {waterId: undefined, ndwiParam: undefined, closeParam: undefined,
+                      openParam: undefined, waterLandPath: undefined, previewSrcList: undefined },
+      retrievalParamms: {
         waterId: undefined,
-        retrievalParams: 'tp',
+        retrievalParamms: 'tp',
         para1: 0,
         para2: 0,
         para3: 0
@@ -345,19 +391,18 @@ export default {
       listQuery: {
         waterId: this.$route.params.id,
       },
-      resultQuery: {
+      inverseQuery: {
         waterId: this.$route.params.id,
-        retrievalParams: 'tp'
+        retrievalParamms: 'tp'
       },
       importanceOptions: [1, 2, 3],
-      TypeOptions,
       provinceOptions,
       evaluteMethodOptions,
-      retrieveMethodOptions,
+      inverseMethodOptions,
       sortOptions: [{ label: 'ID Ascending', key: '+id' }, { label: 'ID Descending', key: '-id' }],
       showReviewer: false,
       temp: {
-        id: undefined,
+        waterId: undefined,
         timestamp: new Date(),
         name: '',
         type: '',
@@ -380,367 +425,150 @@ export default {
         title: [{ required: true, message: 'title is required', trigger: 'blur' }]
       },
       downloadLoading: false,
-      multipleSelection: [],
-      levelSelect
+      levelSelect, 
+      wrongIdFlag: 0,
     }
   },
   created() {
     if(this.$route.params.id==':id'){
-        this.listQuery.waterId=1000
-        this.resultQuery.waterId=1000
-      }
-    console.log(this.$route.params.id)
-    this.getList()
-    this.getWaterLandForm()
-    //this.getResult()
-    this.getResult('tp')
-    this.getResult('tn')
-    this.getResult('tss')
-    this.getResult('nh')
-    this.getResult('chla')
-    // console.log(this.list)
-    // console.log(this.listForm)
+      this.listQuery.waterId=1000
+      this.inverseQuery.waterId=1000
+    }
+    this.getData()
   },
   methods: {
-    handleSelectionChange(val) {
-      this.multipleSelection = val
-    },
-    formatTooltip(val) {
-      return val / 10;
-    },
-    disableWaterLandFn() {
-
-    },
-    getList() {
-      this.listLoading = true
-      
-      console.log(this.listQuery)
-      fetchList(this.listQuery).then(response => {
-        if(response.total==0)
-        {
-          this.listQuery.waterId = this.listForm.waterId || 1000;
-          this.msgSuccess("数据库中不存在此水体");
-        }
-        else{
-        this.listForm = response.rows[0];
-        const dataTypeMap = {0:'影像数据', 1:'列表数据'}
+    formatListForm() {
+      const dataTypeMap = {0:'影像数据', 1:'列表数据'}
+      if (this.listForm ) {
         this.listForm.dataType = dataTypeMap[this.listForm.dataType]
-        this.listForm.rgbPath = process.env.VUE_APP_BASE_API + response.rows[0].rgbPath // need to modify
-        this.listForm.previewSrcList = [this.listForm.rgbPath, ]
-        console.log(this.listForm.rgbPath)
-        // need to add 表格预览
-        this.total = response.total;
-        // Just to simulate the time of the request
-        setTimeout(() => {
-          this.listLoading = false
-        }, 1.5 * 1000)
+        if(this.listForm.dataType == "影像数据") {
+          this.listForm.rgbPath = process.env.VUE_APP_BASE_API + "/profile/" +this.listForm.rgbPath
+          this.listForm.previewSrcList = [this.listForm.rgbPath, ]
+          if(this.listForm.tssResultPath) {
+            this.listForm.tssResultPath = process.env.VUE_APP_BASE_API + "/profile/" + this.listForm.tssResultPath
+            this.listForm.tssPreviewSrcList = [this.listForm.tssResultPath]
+          }
+          if(this.listForm.chlaResultPath) {
+            this.listForm.chlaResultPath = process.env.VUE_APP_BASE_API + "/profile/" + this.listForm.chlaResultPath
+            this.listForm.chlaPreviewSrcList = [this.listForm.chlaResultPath]
+          }
+          if(this.listForm.nhResultPath) {
+            this.listForm.nhResultPath = process.env.VUE_APP_BASE_API + "/profile/" + this.listForm.nhResultPath
+            this.listForm.nhPreviewSrcList = [this.listForm.nhResultPath]
+          }
+          if(this.listForm.tpResultPath) {
+            this.listForm.tpResultPath = process.env.VUE_APP_BASE_API + "/profile/" + this.listForm.tpResultPath
+            this.listForm.tpPreviewSrcList = [this.listForm.tpResultPath]
+          }
+          if(this.listForm.tnResultPath) {
+            this.listForm.tnResultPath = process.env.VUE_APP_BASE_API + "/profile/" + this.listForm.tnResultPath
+            this.listForm.tnPreviewSrcList = [this.listForm.tnResultPath]
+          }
         }
-      })
+      }
     },
-    getWaterLandForm() {
-      this.waterLandForm = {ndwiPara:0.0,
-                            closePara: 5,
-                            openPara: 5,
-                            waterLandPath: process.env.VUE_APP_BASE_API + '/profile/waterLandFile/maozhouhe0311.png',
-                            previewSrcList: [process.env.VUE_APP_BASE_API + '/profile/waterLandFile/maozhouhe0311.png']}
-    },
-    saveWaterLandResult() {},
-    changeWater() {
-      // this.listLoading = true
-      console.log('test:',this.listQuery.waterId)
-      fetchList(this.listQuery).then(response => {
-        console.log('total:',response.total)
+    getWaterQuality() {
+      this.listLoading = true
+      fetchWaterQuality(this.listQuery).then(response => {
         if(response.total==0)
         {
           this.listQuery.waterId = this.listForm.waterId || 1000;
+          this.wrongIdFlag = 1
           this.msgSuccess("数据库中不存在此水体");
         }
         else{
-          this.$router.push({
-            path: `/monitorEvaluation/monitor/${this.listQuery.waterId}`
-            })
-          // setTimeout(() => {
-          // this.listLoading = false
-          // }, 1.5 * 1000)
+          this.listForm = response.rows[0];
+          this.formatListForm()
+          this.total = response.total;
+          this.listLoading = false
         }
       })
     },
-    getResult(){
-      this.resultQuery.waterId = this.listForm.waterId
-
-      this.resultForm.tp = this.flushResult
-      var arr=['tp','tn','tss','chla','nh','cod']
-      arr.forEach(function(element){
-        this.resultQuery.retrievalParams = element;
-        fetchResult(this.resultQuery).then(response => {
-          // console.log(this.resultQuery)
-          // console.log(response)
-          switch (element){
-            case 'tp':
-              this.resultForm.tp = response.rows[0];
-              this.resultForm.tp.rgbPath = process.env.VUE_APP_BASE_API + '/profile' + response.rows[0].rgbPath
-              break;
-            case 'tn':
-              this.resultForm.tn = response.rows[0];
-              this.resultForm.tn.rgbPath = process.env.VUE_APP_BASE_API + '/profile' + response.rows[0].rgbPath
-              break;
-            case 'tss':
-              this.resultForm.tss = response.rows[0];
-              this.resultForm.tss.rgbPath = process.env.VUE_APP_BASE_API + '/profile' + response.rows[0].rgbPath
-              this.resultForm.tss.resultPath = process.env.VUE_APP_BASE_API + '/profile' + '/retrievalResultFile/TSMResultFile/maozhouhe0311.png'
-              console.log(this.resultForm.tss.resultPath)
-              console.log('testing')
-              this.resultForm.tss.previewSrcList = [process.env.VUE_APP_BASE_API + '/profile' + '/retrievalResultFile/TSMResultFile/maozhouhe0311.png']
-              break;
-            case 'nh':
-              this.resultForm.nh = response.rows[0];
-              this.resultForm.nh.rgbPath = process.env.VUE_APP_BASE_API + '/profile' + response.rows[0].rgbPath
-              break;          
-            case 'chla':
-              this.resultForm.chla = response.rows[0];
-              this.resultForm.chla.rgbPath = process.env.VUE_APP_BASE_API + '/profile' + response.rows[0].rgbPath
-              break;
-            case 'cod':
-              this.resultForm.cod = response.rows[0];
-              this.resultForm.cod.rgbPath = process.env.VUE_APP_BASE_API + '/profile' + response.rows[0].rgbPath
-
-              break;
-            default:
-              alert('获取反演结果失败！')
-              break;
+    getWaterLand() {
+      this.listLoading = true
+      fetchWaterLand(this.listQuery).then(response => {
+        if(response.total==0)
+        {
+          this.listQuery.waterId = this.listForm.waterId || 1000;
+          this.msgError("数据库中不存在此水体");
+        }
+        else{
+          this.waterLandForm = response.rows[0];
+          this.waterLandForm.waterLandPath = process.env.VUE_APP_BASE_API + "/profile/" + this.waterLandForm.waterLandPath
+          this.waterLandForm.previewSrcList = [this.waterLandForm.waterLandPath]
+          // Just to simulate the time of the request
+          this.listLoading = false
+        }
+      })
+    },
+    getData() {
+      this.listLoading = true
+      fetchWaterQuality(this.listQuery).then(response => {
+        if(response.total==0)
+        {
+          this.listQuery.waterId = this.listForm.waterId || 1000;
+          this.wrongIdFlag = 1
+          this.msgSuccess("数据库中不存在此水体");
+        }
+        else{
+          this.listForm = response.rows[0];
+          this.formatListForm()
+          if (this.listForm.dataType == "影像数据") {
+            this.getWaterLand()
+          } else {
+            this.wrongIdFlag = 0
           }
-        
-        })
-      })
-    },
-    getResult(r) {
-      this.listLoading = true;
-      let resultQuery ={}
-      resultQuery["waterId"] = this.listQuery.waterId
-      resultQuery["retrievalParams"] = r
-      console.log(resultQuery)
-      fetchResult(resultQuery).then(response => {
-        // console.log(this.resultQuery)
-        // console.log(response)
-        switch (r){
-          case 'tp':
-            this.resultForm.tp = response.rows[0];
-            this.resultForm.tp.rgbPath = process.env.VUE_APP_BASE_API + '/profile' + response.rows[0].rgbPath
-            break;
-          case 'tn':
-            this.resultForm.tn = response.rows[0];
-            this.resultForm.tn.rgbPath = process.env.VUE_APP_BASE_API + '/profile' + response.rows[0].rgbPath
-            break;
-          case 'tss':
-            this.resultForm.tss = response.rows[0];
-            this.resultForm.tss.rgbPath = process.env.VUE_APP_BASE_API + '/profile' + response.rows[0].rgbPath
-            break;
-          case 'nh':
-            this.resultForm.nh = response.rows[0];
-            this.resultForm.nh.rgbPath = process.env.VUE_APP_BASE_API + '/profile' + response.rows[0].rgbPath
-            break;          
-          case 'chla':
-            this.resultForm.chla = response.rows[0];
-            this.resultForm.chla.rgbPath = process.env.VUE_APP_BASE_API + '/profile' + response.rows[0].rgbPath
-            break;
-          case 'cod':
-            this.resultForm.cod = response.rows[0];
-            this.resultForm.cod.rgbPath = process.env.VUE_APP_BASE_API + '/profile' + response.rows[0].rgbPath
-
-            break;
-          default:
-            alert('获取反演结果失败！')
-            break;
         }
-        // Just to simulate the time of the request
-        setTimeout(() => {
-          this.listLoading = false
-        }, 1.5 * 1000)
       })
     },
-    retrieval(param) {
-      this.retrievalParams.waterId = this.listQuery.waterId
-      this.retrievalParams.retrievalParams = param
-      switch (param){
-        case 'tp':
-            this.retrievalParams.para1 = this.resultForm.tp.para1;
-            this.retrievalParams.para2 = this.resultForm.tp.para2;
-            break;
-          case 'tn':
-            this.retrievalParams.para1 = this.resultForm.tn.para1;
-            this.retrievalParams.para2 = this.resultForm.tn.para2;
-            break;
-          case 'tss':
-            this.retrievalParams.para1 = this.resultForm.tss.para1;
-            this.retrievalParams.para2 = this.resultForm.tss.para2;
-            break;
-          case 'nh':
-            this.retrievalParams.para1 = this.resultForm.nh.para1;
-            this.retrievalParams.para2 = this.resultForm.nh.para2;
-            break;          
-          case 'chla':
-            this.retrievalParams.para1 = this.resultForm.chla.para1;
-            this.retrievalParams.para2 = this.resultForm.chla.para2;
-            break;
-          case 'cod':
-            this.retrievalParams.para1 = this.resultForm.cod.para1;
-            this.retrievalParams.para2 = this.resultForm.cod.para2;
-            break;
-          default:
-            alert('反演失败！')
-            break;
+    changeWater() {
+      this.getData()
+    },
+    waterLandSegment() {
+      let upFormData = new FormData();
+      this.tempWaterLandForm = Object.assign({}, this.waterLandForm) // copy obj
+      if (this.tempWaterLandForm.waterLandPath.indexOf("profile/") > 0) {
+        this.tempWaterLandForm.waterLandPath = this.waterLandForm.waterLandPath.split("profile/")[1]
       }
-      fetchRetrieval(this.retrievalParams).then(response => {
-        switch (param){
-          case 'tp':
-            this.resultForm.tp = response.rows[0];
-            this.resultForm.tp.rgbPath = process.env.VUE_APP_BASE_API + '/profile' + response.rows[0].rgbPath
-            break;
-          case 'tn':
-            this.resultForm.tn = response.rows[0];
-            this.resultForm.tn.rgbPath = process.env.VUE_APP_BASE_API + '/profile' + response.rows[0].rgbPath
-            break;
-          case 'tss':
-            this.resultForm.tss = response.rows[0];
-            this.resultForm.tss.rgbPath = process.env.VUE_APP_BASE_API + '/profile' + response.rows[0].rgbPath
-            break;
-          case 'nh':
-            this.resultForm.nh = response.rows[0];
-            this.resultForm.nh.rgbPath = process.env.VUE_APP_BASE_API + '/profile' + response.rows[0].rgbPath
-            break;          
-          case 'chla':
-            this.resultForm.chla = response.rows[0];
-            this.resultForm.chla.rgbPath = process.env.VUE_APP_BASE_API + '/profile' + response.rows[0].rgbPath
-            break;
-          case 'cod':
-            this.resultForm.cod = response.rows[0];
-            this.resultForm.cod.rgbPath = process.env.VUE_APP_BASE_API + '/profile' + response.rows[0].rgbPath
-            break;
-          default:
-            alert('反演失败！')
-            break;
+      upFormData.append('body', JSON.stringify(this.tempWaterLandForm))
+      upFormData.append('filePath', this.listForm.filePath)
+      upFormData.append('bandWavelengthPath', this.listForm.bandWavelengthFilePath)
+      upFormData.append('save', "false")
+      segmentWaterLand(upFormData).then(response => {
+        if(response.code === 200 && response.imgUrl != undefined && response.imgUrl != null && response.imgUrl != "")
+        {
+          this.waterLandForm.waterLandPath = process.env.VUE_APP_BASE_API + "/profile/" + response.imgUrl;
+          this.waterLandForm.previewSrcList = [this.waterLandForm.waterLandPath]
+          this.msgSuccess("水体提取成功");
+          console.log(response.imgUrl)
+        } else {
+          this.msgError(response.msg);
         }
-        // Just to simulate the time of the request
-        setTimeout(() => {
-          this.listLoading = false
-        }, 1.5 * 1000)
-    })},
-    handleFilter() {
-      this.listQuery.page = 1
-      this.getList()
-    },
-    handleModifyStatus(row, status) {
-      this.$message({
-        message: '操作Success',
-        type: 'success'
       })
-      row.status = status
     },
-    resetTemp() {
-      this.temp = {
-        waterId: undefined,
-        photoTime: new Date(),
-        waterName: '',
-        type: '',
-        province: '浙江省',
-        rgbPath: ''
+    saveWaterLandResult() {
+      let upFormData = new FormData();
+      this.tempWaterLandForm = Object.assign({}, this.waterLandForm) // copy obj
+      if (this.tempWaterLandForm.waterLandPath.indexOf("profile/") > 0) {
+        this.tempWaterLandForm.waterLandPath = this.waterLandForm.waterLandPath.split("profile/")[1]
       }
-    },
-    handleView(row) {
-      this.temp = Object.assign({}, row) // copy obj
-      this.temp.timestamp = new Date(this.temp.timestamp)
-      this.dialogStatus = 'view'
-      this.dialogFormVisible = true
-    },
-    handleCreate() {
-      this.resetTemp()
-      this.dialogStatus = 'create'
-      this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
-    },
-    createData() {
-      this.$refs['dataForm'].validate((valid) => {
-        if (valid) {
-          this.temp.id = parseInt(Math.random() * 100) + 1024 // mock a id
-          this.temp.author = 'vue-element-admin'
-          createData(this.temp).then(() => {
-            this.list.unshift(this.temp)
-            this.dialogFormVisible = false
-            this.$notify({
-              title: 'Success',
-              message: 'Created Successfully',
-              type: 'success',
-              duration: 2000
-            })
-          })
+      upFormData.append('body', JSON.stringify(this.tempWaterLandForm))
+      upFormData.append('filePath', this.listForm.filePath)
+      upFormData.append('bandWavelengthPath', this.listForm.bandWavelengthFilePath)
+      upFormData.append('save', "true")
+      segmentWaterLand(upFormData).then(response => {
+        if(response.code === 200 && response.imgUrl != undefined && response.imgUrl != null && response.imgUrl != "")
+        {
+          this.waterLandForm.waterLandPath = process.env.VUE_APP_BASE_API + "/profile/" + response.imgUrl;
+          this.waterLandForm.previewSrcList = [this.waterLandForm.waterLandPath]
+          this.msgSuccess("水体保存成功");
+        } else {
+          this.msgError(response.msg);
         }
       })
     },
-    handleUpdate(row) {
-      this.temp = Object.assign({}, row) // copy obj
-      this.temp.timestamp = new Date(this.temp.timestamp)
-      this.dialogStatus = 'update'
-      this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
-    },
-    updateData() {
-      this.$refs['dataForm'].validate((valid) => {
-        if (valid) {
-          const tempData = Object.assign({}, this.temp)
-          tempData.timestamp = +new Date(tempData.timestamp) // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
-          updateData(tempData).then(() => {
-            for (const v of this.list) {
-              if (v.id === this.temp.id) {
-                const index = this.list.indexOf(v)
-                this.list.splice(index, 1, this.temp)
-                break
-              }
-            }
-            this.dialogFormVisible = false
-            this.$notify({
-              title: 'Success',
-              message: 'Update Successfully',
-              type: 'success',
-              duration: 2000
-            })
-          })
-        }
-      })
-    },
-    handleDelete(row) {
-      this.$notify({
-        title: 'Success',
-        message: 'Delete Successfully',
-        type: 'success',
-        duration: 2000
-      })
-      const index = this.list.indexOf(row)
-      this.list.splice(index, 1)
-    },
-    handleFetchPv(pv) {
-      fetchPv(pv).then(response => {
-        this.pvData = response.data.pvData
-        this.dialogPvVisible = true
-      })
-    },
-    handleDownload() {
-      this.downloadLoading = true
-      import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['timestamp', 'title', 'type', 'importance', 'status']
-        const filterVal = ['timestamp', 'title', 'type', 'importance', 'status']
-        const data = this.formatJson(filterVal, this.list)
-        excel.export_json_to_excel({
-          header: tHeader,
-          data,
-          filename: 'table-list'
-        })
-        this.downloadLoading = false
-      })
-    },
+    waterQualityInverse() {},
+    saveWaterQuality() {},
     formatJson(filterVal, jsonData) {
       return jsonData.map(v => filterVal.map(j => {
         if (j === 'timestamp') {

@@ -43,6 +43,7 @@ public interface IDataManageService
     //public void checkUserAllowed(DataManage dataManage);
 
     public int deleteWaterById(Long waterId);
+    public int selectMaxWaterId();
 //    public List<DataManage> insertDataManage(DataManage dataManage);
 //    /**
 //     * 根据用户ID查询角色
