@@ -1,5 +1,5 @@
-./ruoyi/target/
-.vscode
-./tmp/
-./Images/*
-./Files/*
+ruoyi/target/
+.vscode/
+tmp/
+Images/
+Files/
